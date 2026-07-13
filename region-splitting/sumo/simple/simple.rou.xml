@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-03-22T00:47:32.498005+05:30 by Eclipse SUMO netedit 1.26.0
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="DEFAULT_VEHTYPE" vClass="trailer"/>
+    <vType id="buses" vClass="bus" color="red"/>
+    <vType id="cars"/>
+    <vType id="containers" vClass="trailer" color="128,0,0"/>
+    <vType id="emv" vClass="emergency"/>
+    <vType id="pedestrians" vClass="pedestrian"/>
+    <vType id="t_0"/>
+    <vType id="t_1"/>
+    <vType id="taxi" vClass="taxi"/>
+    <!-- Vehicles, persons and containers (sorted by depart) -->
+    <flow id="f_1" type="containers" begin="0.00" end="3600.00" perHour="10.00" color="128,0,0" from="E21" to="E51" via="E24 E29 E26 -E1 -E0.67 -E0"/>
+    <flow id="f_11" type="emv" begin="0.00" end="3600.00" perHour="5.00" color="white" from="E16" to="E51" via="-E5 E0.67 E1 E27 E28 E30 E37 E50"/>
+    <flow id="f_2" type="buses" begin="0.00" end="3600.00" perHour="20.00" color="128,0,0" from="E17" to="E51" via="E18 -E7 E1 E27 E28 E30 E37 E50"/>
+    <flow id="f_4" type="cars" begin="0.00" end="3600.00" perHour="30.00" color="128,0,0" from="E52" to="E22" via="E49 E0 E0.67 E8"/>
+    <flow id="f_5" type="cars" begin="0.00" end="3600.00" perHour="30.00" color="128,0,0" from="E52" to="E22" via="E39 E40 E25"/>
+    <flow id="f_6" type="emv" begin="0.00" number="5" period="exp(0.10000000000000000555)" from="E27" to="E22" via="E32 E36 E40 E25"/>
+    <flow id="f_8" type="emv" begin="0.00" end="3600.00" perHour="5.00" color="white" from="E2.71" to="E22" via="E41 E44 E40 E25"/>
+    <flow id="f_0" type="taxi" begin="0.00" end="3600.00" perHour="200.00" fromJunction="clusterJ101_J87_J88_J90" toJunction="J108"/>
+    <flow id="f_10" type="cars" begin="0.00" end="3600.00" perHour="250.00" color="green" fromJunction="clusterJ57_J59_J63_J65_#2more" toJunction="J42"/>
+    <flow id="f_3" type="cars" begin="0.00" end="3600.00" perHour="500.00" color="red" fromJunction="J36" toJunction="J108"/>
+    <flow id="f_7" type="cars" begin="0.00" end="3600.00" perHour="200.00" fromJunction="clusterJ57_J59_J63_J65_#2more" toJunction="J42"/>
+    <flow id="f_9" type="cars" begin="0.00" end="3600.00" perHour="500.00" color="red" fromJunction="J36" toJunction="J108"/>
+    <personFlow id="pf_0" type="pedestrians" begin="0.00" end="3600.00" perHour="1800.00">
+        <personTrip fromJunction="J110" toJunction="J51"/>
+    </personFlow>
+</routes>

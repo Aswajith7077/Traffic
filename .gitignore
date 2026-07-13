@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+.pyc
+.vscode/
+.ruff_cache/
+temp/
+ai-models/
+/models/
+visualizations/
+graphify-out/

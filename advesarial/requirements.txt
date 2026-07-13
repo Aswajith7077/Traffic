@@ -1,0 +1,12 @@
+
+# Core dependencies
+torch
+numpy
+
+
+traci
+pydantic
+
+# Development tools
+ruff
+matplotlib

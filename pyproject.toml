@@ -1,0 +1,29 @@
+[project]
+name = "traffic"
+version = "0.1.0"
+description = "Hierarchical reinforcement learning for adaptive traffic signal control using SUMO"
+requires-python = ">=3.14"
+dependencies = [
+    "leidenalg>=0.12.0",
+    "matplotlib>=3.11.0",
+    "networkx>=3.6.1",
+    "numpy>=2.5.1",
+    "pydantic>=2.13.4",
+    "python-igraph>=1.0.0",
+    "python-louvain>=0.16",
+    "ruff>=0.15.21",
+    "sumolib>=1.27.1",
+    "torch>=2.13.0",
+    "traci>=1.27.1",
+]
+
+[project.scripts]
+traffic-train = "advesarial.src.sample:main"
+traffic-eval = "advesarial.src.evaluate:main"
+traffic-cluster = "region_splitting.main:main"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]

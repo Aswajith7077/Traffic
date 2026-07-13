@@ -1,0 +1,307 @@
+--- Evaluation Snapshot: 20260330_233808 ---
+Evaluating Model: ../models\run_20260330_224316
+Total Steps Evaluated: 500
+Average Total Queue Length: 115.65 vehicles
+Average Total Wait Time: 7829.17 seconds
+Peak Total Queue Length: 231.00 vehicles
+Peak Total Wait Time: 23802.00 seconds
+
+--- Training Snapshot: 20260406_081916 ---
+Steps taken: 85
+Latest Meta Loss: 406.8315
+Latest AC Loss: 391.9710
+Latest Sub Loss: 82.0563
+Latest Reward: -34.5000
+
+--- Training Snapshot: 20260406_082015 ---
+Steps taken: 185
+Latest Meta Loss: 353.9133
+Latest AC Loss: 724.1039
+Latest Sub Loss: 71.5207
+Latest Reward: -36.9000
+
+--- Training Snapshot: 20260406_082122 ---
+Steps taken: 285
+Latest Meta Loss: 97.5946
+Latest AC Loss: 1451.3621
+Latest Sub Loss: 20.1009
+Latest Reward: -29.1000
+
+--- Training Snapshot: 20260406_082244 ---
+Steps taken: 385
+Latest Meta Loss: 1067.4363
+Latest AC Loss: 3043.4319
+Latest Sub Loss: 215.8173
+Latest Reward: -116.5000
+
+--- Training Snapshot: 20260406_082349 ---
+Steps taken: 485
+Latest Meta Loss: 5778.4541
+Latest AC Loss: 8727.7520
+Latest Sub Loss: 1157.0387
+Latest Reward: -67.4000
+
+--- Training Snapshot: 20260406_082523 ---
+Steps taken: 585
+Latest Meta Loss: 3168.6816
+Latest AC Loss: 6505.3198
+Latest Sub Loss: 636.0403
+Latest Reward: -115.2000
+
+--- Training Snapshot: 20260406_082706 ---
+Steps taken: 685
+Latest Meta Loss: 69554.4375
+Latest AC Loss: 29216.9316
+Latest Sub Loss: 13917.3574
+Latest Reward: -323.5000
+
+--- Training Snapshot: 20260406_082846 ---
+Steps taken: 785
+Latest Meta Loss: 65465.4102
+Latest AC Loss: 90977.1016
+Latest Sub Loss: 13103.1074
+Latest Reward: -501.3000
+
+--- Training Snapshot: 20260406_083028 ---
+Steps taken: 885
+Latest Meta Loss: 17601.6719
+Latest AC Loss: 34097.0508
+Latest Sub Loss: 3524.2021
+Latest Reward: -193.4000
+
+--- Training Snapshot: 20260406_083212 ---
+Steps taken: 985
+Latest Meta Loss: 5763.0269
+Latest AC Loss: 83120.4609
+Latest Sub Loss: 1155.2914
+Latest Reward: -134.3000
+
+--- Training Snapshot: 20260406_083214 ---
+Steps taken: 985
+Latest Meta Loss: 5763.0269
+Latest AC Loss: 83120.4609
+Latest Sub Loss: 1155.2914
+Latest Reward: -134.3000
+
+--- Evaluation Snapshot: 20260406_083707 ---
+Evaluating Model: ../models\run_20260406_083214
+Total Steps Evaluated: 500
+Average Total Queue Length: 97.49 vehicles
+Average Total Wait Time: 6665.06 seconds
+Peak Total Queue Length: 179.00 vehicles
+Peak Total Wait Time: 19215.00 seconds
+
+--- Training Snapshot: 20260406_091206 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_091208 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093210 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093211 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093741 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093742 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093819 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260406_093819 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260414_235856 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260414_235858 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000024 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000025 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000146 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000147 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000344 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000345 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000753 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000755 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_000922 ---
+Steps taken: 85
+Latest Meta Loss: 322.8219
+Latest AC Loss: 258.0086
+Latest Sub Loss: 64.8384
+Latest Reward: -13.7000
+
+--- Training Snapshot: 20260415_001036 ---
+Steps taken: 185
+Latest Meta Loss: 9457.7490
+Latest AC Loss: 6981.1685
+Latest Sub Loss: 1894.5239
+Latest Reward: -148.7000
+
+--- Training Snapshot: 20260415_001149 ---
+Steps taken: 285
+Latest Meta Loss: 37815.7891
+Latest AC Loss: 51021.7188
+Latest Sub Loss: 7567.3545
+Latest Reward: -209.8000
+
+--- Training Snapshot: 20260415_001303 ---
+Steps taken: 385
+Latest Meta Loss: 3399.9309
+Latest AC Loss: 129556.1719
+Latest Sub Loss: 680.4742
+Latest Reward: -24.4000
+
+--- Training Snapshot: 20260415_001411 ---
+Steps taken: 485
+Latest Meta Loss: 96.9092
+Latest AC Loss: 35865.5703
+Latest Sub Loss: 20.0498
+Latest Reward: -33.4000
+
+--- Training Snapshot: 20260415_001518 ---
+Steps taken: 585
+Latest Meta Loss: 27389.5781
+Latest AC Loss: 83408.1172
+Latest Sub Loss: 5483.0039
+Latest Reward: -254.4000
+
+--- Training Snapshot: 20260415_001625 ---
+Steps taken: 685
+Latest Meta Loss: 3479.0325
+Latest AC Loss: 126533.1172
+Latest Sub Loss: 698.2585
+Latest Reward: -122.6000
+
+--- Training Snapshot: 20260415_001733 ---
+Steps taken: 785
+Latest Meta Loss: 7008.8418
+Latest AC Loss: 70503.9141
+Latest Sub Loss: 1406.7823
+Latest Reward: -250.7000
+
+--- Training Snapshot: 20260415_001854 ---
+Steps taken: 885
+Latest Meta Loss: 1108.0367
+Latest AC Loss: 78721.3125
+Latest Sub Loss: 224.8633
+Latest Reward: -162.8000
+
+--- Training Snapshot: 20260415_002012 ---
+Steps taken: 985
+Latest Meta Loss: 302.4332
+Latest AC Loss: 76734.6797
+Latest Sub Loss: 62.9687
+Latest Reward: -124.1000
+
+--- Training Snapshot: 20260415_002014 ---
+Steps taken: 985
+Latest Meta Loss: 302.4332
+Latest AC Loss: 76734.6797
+Latest Sub Loss: 62.9687
+Latest Reward: -124.1000
+
+--- Training Snapshot: 20260415_010055 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_010056 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260415_010347 ---
+Steps taken: 85
+Latest Meta Loss: 981.8707
+Latest AC Loss: 6.9892
+Latest Sub Loss: 197.0302
+Latest Reward: -32.8000
+
+--- Training Snapshot: 20260415_010455 ---
+Steps taken: 185
+Latest Meta Loss: 1495.3361
+Latest AC Loss: 1.4777
+Latest Sub Loss: 300.3292
+Latest Reward: -63.1000
+
+--- Training Snapshot: 20260415_010612 ---
+Steps taken: 285
+Latest Meta Loss: 394.1026
+Latest AC Loss: 1.1032
+Latest Sub Loss: 79.8085
+Latest Reward: -49.4000
+
+--- Training Snapshot: 20260415_010721 ---
+Steps taken: 385
+Latest Meta Loss: 822.4453
+Latest AC Loss: 2.0277
+Latest Sub Loss: 165.3371
+Latest Reward: -42.4000
+
+--- Training Snapshot: 20260415_010841 ---
+Steps taken: 485
+Latest Meta Loss: 301.9912
+Latest AC Loss: 0.9874
+Latest Sub Loss: 61.7902
+Latest Reward: -69.6000
+
+--- Training Snapshot: 20260415_010956 ---
+Steps taken: 585
+Latest Meta Loss: 8040.6089
+Latest AC Loss: 1.3790
+Latest Sub Loss: 1610.7717
+Latest Reward: -132.5000
+
+--- Training Snapshot: 20260415_011116 ---
+Steps taken: 685
+Latest Meta Loss: 225.9642
+Latest AC Loss: 2.0006
+Latest Sub Loss: 46.3988
+Latest Reward: -60.3000
+
+--- Training Snapshot: 20260415_011237 ---
+Steps taken: 785
+Latest Meta Loss: 375.9767
+Latest AC Loss: 3.9426
+Latest Sub Loss: 76.6213
+Latest Reward: -71.3000
+
+--- Training Snapshot: 20260415_011345 ---
+Steps taken: 885
+Latest Meta Loss: 109.7153
+Latest AC Loss: 0.1209
+Latest Sub Loss: 23.2591
+Latest Reward: -65.8000
+
+--- Training Snapshot: 20260415_011453 ---
+Steps taken: 985
+Latest Meta Loss: 24736.1348
+Latest AC Loss: 0.8873
+Latest Sub Loss: 4950.9966
+Latest Reward: -188.5000
+
+--- Training Snapshot: 20260415_011454 ---
+Steps taken: 985
+Latest Meta Loss: 24736.1348
+Latest AC Loss: 0.8873
+Latest Sub Loss: 4950.9966
+Latest Reward: -188.5000
+

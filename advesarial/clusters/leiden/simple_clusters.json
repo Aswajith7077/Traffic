@@ -1,0 +1,88 @@
+{
+    "clusters": {
+        "0": [
+            "clusterJ41_J43_clusterJ13_J28_J33_clusterJ26_J7",
+            "J51",
+            "clusterJ17_J2_J52_J58_#1more",
+            "clusterJ57_J59_J63_J65_#2more",
+            "clusterJ99_clusterJ19_J45_J46_J48_#4more",
+            "clusterJ61_J62_J69_J70",
+            "clusterJ53_J55_J64",
+            "J49",
+            "clusterJ1_J15_J18_clusterJ14_J20",
+            "J42",
+            "J12"
+        ],
+        "1": [
+            "J108",
+            "clusterJ32_clusterJ23_clusterJ16_J21_J22_J4",
+            "clusterJ0_J103",
+            "clusterJ104_J105_J107_J109_#2more",
+            "J110",
+            "clusterJ106_J79"
+        ],
+        "2": [
+            "clusterJ68_J75_J76",
+            "clusterJ67_J71_J77_J78_#3more",
+            "clusterJ93_clusterJ3_J86",
+            "clusterJ5_J74",
+            "clusterJ101_J87_J88_J90"
+        ],
+        "3": [
+            "J31",
+            "clusterJ27_J34_J35_J37_#1more",
+            "J36"
+        ],
+        "4": [
+            "J6"
+        ],
+        "6": [
+            "clusterJ102_J89_J92"
+        ],
+        "9": [
+            "clusterJ98_clusterclusterJ25_J9_clusterJ44_J47",
+            "J10",
+            "J11"
+        ]
+    },
+    "metrics": {
+        "modularity": 0.2812500000000001,
+        "cluster_quality": {
+            "0": {
+                "internal": 48.84348325076243,
+                "external": 4.971426334295274,
+                "ratio": 9.82
+            },
+            "1": {
+                "internal": 93.23890506108934,
+                "external": 15.091429292671599,
+                "ratio": 6.18
+            },
+            "2": {
+                "internal": 17.67283515704672,
+                "external": 6.832920974399242,
+                "ratio": 2.59
+            },
+            "3": {
+                "internal": 12.70965215051709,
+                "external": 11.338888431193805,
+                "ratio": 1.12
+            },
+            "4": {
+                "internal": 0.0,
+                "external": 0.0,
+                "ratio": 0.0
+            },
+            "6": {
+                "internal": 0.0,
+                "external": 0.0,
+                "ratio": 0.0
+            },
+            "9": {
+                "internal": 0.0,
+                "external": 0.0,
+                "ratio": 0.0
+            }
+        }
+    }
+}

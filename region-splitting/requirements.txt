@@ -1,0 +1,8 @@
+networkx 
+python-louvain 
+matplotlib
+traci
+pydantic
+sumolib
+leidenalg 
+python-igraph

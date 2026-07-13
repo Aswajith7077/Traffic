@@ -1,0 +1,67 @@
+{
+    "clusters": {
+        "0": [
+            "clusterJ32_clusterJ23_clusterJ16_J21_J22_J4",
+            "clusterJ1_J15_J18_clusterJ14_J20",
+            "J6",
+            "clusterJ41_J43_clusterJ13_J28_J33_clusterJ26_J7",
+            "J12",
+            "J42",
+            "J31",
+            "clusterJ27_J34_J35_J37_#1more",
+            "J36"
+        ],
+        "3": [
+            "clusterJ104_J105_J107_J109_#2more",
+            "clusterJ0_J103",
+            "J108",
+            "clusterJ101_J87_J88_J90",
+            "clusterJ102_J89_J92",
+            "clusterJ93_clusterJ3_J86",
+            "clusterJ106_J79",
+            "J110"
+        ],
+        "1": [
+            "clusterJ5_J74",
+            "clusterJ67_J71_J77_J78_#3more",
+            "clusterJ17_J2_J52_J58_#1more",
+            "clusterJ53_J55_J64",
+            "clusterJ61_J62_J69_J70",
+            "clusterJ68_J75_J76",
+            "clusterJ57_J59_J63_J65_#2more"
+        ],
+        "2": [
+            "clusterJ99_clusterJ19_J45_J46_J48_#4more",
+            "clusterJ98_clusterclusterJ25_J9_clusterJ44_J47",
+            "J10",
+            "J11",
+            "J51",
+            "J49"
+        ]
+    },
+    "metrics": {
+        "modularity": 0.467952806122449,
+        "cluster_quality": {
+            "0": {
+                "internal": 12,
+                "external": 5,
+                "ratio": 2.0
+            },
+            "3": {
+                "internal": 10,
+                "external": 3,
+                "ratio": 2.5
+            },
+            "1": {
+                "internal": 13,
+                "external": 4,
+                "ratio": 2.6
+            },
+            "2": {
+                "internal": 6,
+                "external": 3,
+                "ratio": 1.5
+            }
+        }
+    }
+}
