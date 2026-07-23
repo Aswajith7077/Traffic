@@ -1,10 +1,11 @@
-import networkx as nx
-import community as community_louvain
 from collections import defaultdict
 
-from .traci import TraciService
-from .base import BaseClusteringService
+import community as community_louvain
 import matplotlib.pyplot as plt
+import networkx as nx
+
+from .base import BaseClusteringService
+from .traci import TraciService
 
 
 class LouvianService(BaseClusteringService):

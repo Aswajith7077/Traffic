@@ -8,12 +8,12 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
+from collections import defaultdict, deque
+
 import torch
 import traci
-from sumolib import checkBinary
 from schema import TraciConfig
-from collections import defaultdict
-from collections import deque
+from sumolib import checkBinary
 from utils.compute_phase_history import compute_phase_entropy
 
 
@@ -441,7 +441,7 @@ class TraciService:
 
         for lane in incoming_lanes:
             # Get pedestrians on this lane
-            edge_id = traci.lane.getEdgeID(lane) 
+            edge_id = traci.lane.getEdgeID(lane)
             person_ids = traci.edge.getLastStepPersonIDs(edge_id)
 
             for person_id in person_ids:

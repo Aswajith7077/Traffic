@@ -8,11 +8,11 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
-import traci
-import numpy as np
-from sumolib import checkBinary
-from schema import TraciConfig
 import json
+
+import traci
+from schema import TraciConfig
+from sumolib import checkBinary
 
 
 class TraciService:

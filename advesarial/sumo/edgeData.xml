@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-04-15T01:02:42.057923+05:30 by Eclipse SUMO sumo 1.26.0
+<!-- generated on 2026-07-16T14:28:59.247856+05:30 by Eclipse SUMO sumo 1.25.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.net.xml.gz"/>
-        <route-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.passenger.trips.xml"/>
-        <additional-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.poly.xml.gz,C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\output.add.xml,C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.dat.add.xml"/>
+        <net-file value="/home/aswajiths/Documents/Traffic/advesarial/sumo/osm.net.xml.gz"/>
+        <route-files value="/home/aswajiths/Documents/Traffic/advesarial/sumo/osm.passenger.trips.xml"/>
+        <additional-files value="/home/aswajiths/Documents/Traffic/advesarial/sumo/osm.poly.xml.gz,/home/aswajiths/Documents/Traffic/advesarial/sumo/output.add.xml,/home/aswajiths/Documents/Traffic/advesarial/sumo/osm.dat.add.xml"/>
     </input>
 
     <output>
-        <tripinfo-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\tripinfos.xml"/>
-        <statistic-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\stats.xml"/>
+        <tripinfo-output value="/home/aswajiths/Documents/Traffic/advesarial/sumo/tripinfos.xml"/>
+        <statistic-output value="/home/aswajiths/Documents/Traffic/advesarial/sumo/stats.xml"/>
     </output>
 
     <time>
@@ -35,11 +35,11 @@
     </report>
 
     <traci_server>
-        <remote-port value="50290"/>
+        <remote-port value="41599"/>
     </traci_server>
 
     <gui_only>
-        <gui-settings-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.view.xml"/>
+        <gui-settings-file value="/home/aswajiths/Documents/Traffic/advesarial/sumo/osm.view.xml"/>
         <start value="true"/>
     </gui_only>
 

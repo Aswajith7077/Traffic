@@ -1,9 +1,7 @@
-from schema import TraciConfig
-from services import TraciService
-from services import LouvianService
-from services import LeidenService
-
 import json
+
+from schema import TraciConfig
+from services import LeidenService, LouvianService, TraciService
 
 
 def perform_louvian(traci_service: TraciService, module_name: str):

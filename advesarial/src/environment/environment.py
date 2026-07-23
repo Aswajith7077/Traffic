@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 """
 
@@ -102,7 +102,6 @@ class Environment:
         total_waiting_time = 0
         emission_penalty = 0
         emergency_delay = 0
-        my_utility = 0.0
         ped_conflicts = 0
 
 
@@ -114,12 +113,9 @@ class Environment:
             emergency_delay += self.traci_service.get_emergency_waiting_time(intersection)
             q = self.traci_service.total_queue_length(intersection)
 
-            util_i = - (self.traci_service.total_waiting_time(intersection) + 
+            util_i = - (self.traci_service.total_waiting_time(intersection) +
                        0.5 * self.traci_service.total_queue_length(intersection))
             local_utilities.append(util_i)
-
-            # if intersection == self.current_intersection:   # or average over batch
-            my_utility = util_i
 
             non_emv_waits = self.traci_service.get_non_emv_waiting_times(intersection)   # list of floats
             non_emv_wait_times.extend(non_emv_waits)
@@ -147,11 +143,11 @@ class Environment:
 
         jain = self.compute_jain_index(non_emv_wait_times)
 
-        max_other_utility = max(local_utilities) if local_utilities else 0.0
-        envy = max(max_other_utility - my_utility, 0.0)   # classic envy measure
+        best_utility = max(local_utilities) if local_utilities else 0.0
+        envy = sum(max(best_utility - u, 0.0) for u in local_utilities) / max(len(local_utilities), 1)
 
         max_ped_wait = max(ped_wait_times) if ped_wait_times else 0.0
-        
+
 
 
         R_eff = -(self.beta1 * delta_queue + self.beta2 * delta_wait) + local_reward

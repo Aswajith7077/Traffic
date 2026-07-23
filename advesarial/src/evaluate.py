@@ -1,17 +1,14 @@
 import os
-import torch
 from datetime import datetime
 
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
+import torch
 from agents import ActorCritic
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
 from config import config
 from environment import Environment
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
+
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 
 def evaluate_models(model_dir, steps=500):

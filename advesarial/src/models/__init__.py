@@ -1,9 +1,9 @@
-from .encoder.transformer import TransformerEncoder
-from .encoder.positional import PositionalEncoder
-from .lstm import SubGoalGenerator
-from .gat import GATLayer
-from .sub_policy import SubPolicy
 from .encoder.local import LocalEncoder
+from .encoder.positional import PositionalEncoder
+from .encoder.transformer import TransformerEncoder
+from .gat import GATLayer
+from .lstm import SubGoalGenerator
+from .sub_policy import SubPolicy
 
 __all__ = [
     "TransformerEncoder",

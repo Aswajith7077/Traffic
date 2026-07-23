@@ -1,7 +1,8 @@
-from torch import nn
-from .positional import PositionalEncoder
-from schema import TransformerEncoderConfig
 import torch
+from schema import TransformerEncoderConfig
+from torch import nn
+
+from .positional import PositionalEncoder
 
 
 class TransformerEncoder(nn.Module):

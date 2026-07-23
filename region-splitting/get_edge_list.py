@@ -1,5 +1,5 @@
-import sumolib
 import networkx as nx
+import sumolib
 
 net = sumolib.net.readNet("sumo/simple.net.xml")
 

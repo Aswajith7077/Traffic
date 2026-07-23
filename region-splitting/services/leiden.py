@@ -1,10 +1,12 @@
-from .traci import TraciService
-from .base import BaseClusteringService
 from collections import defaultdict
-import leidenalg
+
 import igraph as ig
-import networkx as nx
+import leidenalg
 import matplotlib.pyplot as plt
+import networkx as nx
+
+from .base import BaseClusteringService
+from .traci import TraciService
 
 
 class LeidenService(BaseClusteringService):

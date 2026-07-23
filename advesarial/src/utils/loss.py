@@ -44,9 +44,13 @@ def compute_ac_loss(actor_critic, states, actions, rewards, next_states, dones, 
 
     log_probs = torch.log(action_probs.gather(-1, actions).squeeze(-1))
     advantages = (targets - state_values).detach()
+    advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
     actor_loss = -(log_probs * advantages).mean()
 
-    return actor_loss + critic_loss, advantages
+    entropy = -(action_probs * torch.log(action_probs + 1e-8)).sum(dim=-1).mean()
+    total_actor_loss = actor_loss - 0.01 * entropy
+
+    return total_actor_loss + critic_loss, advantages
 
 
 def compute_goal_alignment_loss(W_global, Q_global, G_t, beta_q, beta_w):

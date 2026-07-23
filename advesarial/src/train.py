@@ -1,9 +1,8 @@
+from agents import Actor
 from config import Config
 from environment import Environment
 from memory import ReplayBuffer
-from schema import ReplayBufferItem
-from agents import Actor
-from schema import TraciConfig
+from schema import ReplayBufferItem, TraciConfig
 
 
 def train(T: int = 100):

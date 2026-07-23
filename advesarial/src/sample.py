@@ -1,23 +1,17 @@
-from memory import ReplayBuffer
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
-from agents import ActorCritic
-
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
-from config import config
-from environment import Environment
-
-import torch
-import torch.nn.functional as F
 import os
 from datetime import datetime
-import matplotlib.pyplot as plt
 
-from utils import compute_meta_loss, compute_ac_loss, compute_goal_alignment_loss
+import matplotlib.pyplot as plt
+import torch
+from agents import ActorCritic
+from config import config
+from environment import Environment
+from memory import ReplayBuffer
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
+from utils import compute_ac_loss, compute_goal_alignment_loss, compute_meta_loss
+
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 # Sub Policy
 local_encoder = LocalEncoder()
@@ -145,7 +139,7 @@ def sample():
     if len(buffer) < batch_size:
         return
 
-    batch = buffer.sample(batch_size)
+    batch = buffer.sample_recent(batch_size)
     states, actions, rewards, next_states, dones = batch
     sub_goal_vector = _find_global_observation()
 
@@ -161,9 +155,9 @@ def sample():
     subgoal_optimizer.zero_grad()
 
     meta_loss.backward()
-    
-    torch.nn.utils.clip_grad_norm_(transformer_encoder.parameters(), max_norm=0.5)
-    torch.nn.utils.clip_grad_norm_(subgoal_generator.parameters(), max_norm=0.5)
+
+    torch.nn.utils.clip_grad_norm_(transformer_encoder.parameters(), max_norm=5.0)
+    torch.nn.utils.clip_grad_norm_(subgoal_generator.parameters(), max_norm=5.0)
 
     transformer_optimizer.step()
     subgoal_optimizer.step()
@@ -185,12 +179,14 @@ def sample():
 
     total_loss.backward()
     # Gradient clipping on Sub-Policy parameters
-    torch.nn.utils.clip_grad_norm_(actor_critic.parameters(), max_norm=0.5)
-    torch.nn.utils.clip_grad_norm_(local_encoder.parameters(), max_norm=0.5)
-    torch.nn.utils.clip_grad_norm_(GAT.parameters(), max_norm=0.5)
+    torch.nn.utils.clip_grad_norm_(actor_critic.parameters(), max_norm=5.0)
+    torch.nn.utils.clip_grad_norm_(local_encoder.parameters(), max_norm=5.0)
+    torch.nn.utils.clip_grad_norm_(GAT.parameters(), max_norm=5.0)
 
     local_optimizer.step()
     gat_optimizer.step()
+
+    buffer.buffer.clear()
 
     meta_losses.append(meta_loss.item())
     ac_losses.append(ac_loss.item())

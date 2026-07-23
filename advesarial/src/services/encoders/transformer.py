@@ -1,6 +1,7 @@
-from .positional import PositionalEncoding
 import torch.nn as nn
 from schema import TransformerEncoderConfig
+
+from .positional import PositionalEncoding
 
 
 class TransformerEncoding(nn.Module):
