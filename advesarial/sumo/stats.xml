@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-04-15T01:02:41.604773+05:30 by Eclipse SUMO sumo 1.26.0
+<!-- generated on 2026-07-30T13:41:31.155348+05:30 by Eclipse SUMO sumo 1.25.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.net.xml.gz"/>
-        <route-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.passenger.trips.xml"/>
-        <additional-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.poly.xml.gz,C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\output.add.xml,C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.dat.add.xml"/>
+        <net-file value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\osm.net.xml.gz"/>
+        <route-files value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\osm.passenger.trips.xml"/>
+        <additional-files value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\osm.poly.xml.gz,D:\College\Semester 9\RSL\Traffic\advesarial\sumo\output.add.xml,D:\College\Semester 9\RSL\Traffic\advesarial\sumo\osm.dat.add.xml"/>
     </input>
 
     <output>
-        <tripinfo-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\tripinfos.xml"/>
-        <statistic-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\stats.xml"/>
+        <tripinfo-output value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\tripinfos.xml"/>
+        <statistic-output value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\stats.xml"/>
     </output>
 
     <time>
@@ -35,11 +35,11 @@
     </report>
 
     <traci_server>
-        <remote-port value="50290"/>
+        <remote-port value="57149"/>
     </traci_server>
 
     <gui_only>
-        <gui-settings-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\advesarial\sumo\osm.view.xml"/>
+        <gui-settings-file value="D:\College\Semester 9\RSL\Traffic\advesarial\sumo\osm.view.xml"/>
         <start value="true"/>
     </gui_only>
 
@@ -47,4 +47,14 @@
 -->
 
 <statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+    <performance clockBegin="117525.00" clockEnd="118045.23" clockDuration="520.23" traciDuration="514.40" realTimeFactor="0.96" vehicleUpdatesPerSecond="139.34" personUpdatesPerSecond="0.00" begin="0.00" end="500.00" duration="500.00"/>
+    <vehicles loaded="488" inserted="403" running="235" waiting="1"/>
+    <teleports total="18" jam="0" yield="18" wrongLane="0"/>
+    <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
+    <persons loaded="0" running="0" jammed="0"/>
+    <personTeleports total="0" abortWait="0" wrongDest="0"/>
+    <vehicleTripStatistics count="168" routeLength="2062.77" speed="14.05" duration="152.80" waitingTime="15.24" timeLoss="51.66" departDelay="0.52" departDelayWaiting="-1.00" totalTravelTime="25671.00" totalDepartDelay="87.49"/>
+    <pedestrianStatistics number="0" routeLength="0.00" duration="0.00" timeLoss="0.00"/>
+    <rideStatistics number="0"/>
+    <transportStatistics number="0"/>
 </statistics>

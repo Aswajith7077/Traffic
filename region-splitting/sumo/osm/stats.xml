@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-03-28T12:52:08.203438+05:30 by Eclipse SUMO sumo 1.26.0
+<!-- generated on 2026-07-29T21:59:34.148635+05:30 by Eclipse SUMO sumo 1.25.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\osm.net.xml.gz"/>
-        <route-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\osm.passenger.trips.xml"/>
-        <additional-files value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\osm.poly.xml.gz,C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\output.add.xml"/>
+        <net-file value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\osm.net.xml.gz"/>
+        <route-files value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\osm.passenger.trips.xml"/>
+        <additional-files value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\osm.poly.xml.gz,D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\output.add.xml"/>
     </input>
 
     <output>
-        <tripinfo-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\tripinfos.xml"/>
-        <statistic-output value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\stats.xml"/>
+        <tripinfo-output value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\tripinfos.xml"/>
+        <statistic-output value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\stats.xml"/>
     </output>
 
     <time>
@@ -35,11 +35,11 @@
     </report>
 
     <traci_server>
-        <remote-port value="52381"/>
+        <remote-port value="63340"/>
     </traci_server>
 
     <gui_only>
-        <gui-settings-file value="C:\Users\Aswajith S\OneDrive\Documents\research-specialization-lab\region-splitting\sumo\osm\osm.view.xml"/>
+        <gui-settings-file value="D:\College\Semester 9\RSL\Traffic\region-splitting\sumo\osm\osm.view.xml"/>
         <start value="true"/>
     </gui_only>
 

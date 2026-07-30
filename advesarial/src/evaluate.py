@@ -13,6 +13,8 @@ from schema import TransformerEncoderConfig
 from config import config
 from environment import Environment
 
+import traci
+
 
 def evaluate_models(model_dir, steps=500):
     print("Initializing environment...")
@@ -109,8 +111,38 @@ def evaluate_models(model_dir, steps=500):
         )
         return subgoal_generator(local_encoding, global_encoding)
 
-    total_waiting_time = []
     total_queue_length = []
+    vehicle_metrics = {}
+    vehicle_travel_times = []
+    vehicle_delay_times = []
+    vehicle_waiting_times = []
+
+    def get_free_flow_travel_time(route):
+        """Calculate the route time at each edge's maximum lane speed."""
+        free_flow_time = 0.0
+        for edge in route:
+            lane_id = f"{edge}_0"
+            length = traci.lane.getLength(lane_id)
+            max_speed = traci.lane.getMaxSpeed(lane_id)
+            if max_speed > 0:
+                free_flow_time += length / max_speed
+        return free_flow_time
+
+    def update_active_vehicle_metrics():
+        """Cache data while vehicles remain queryable through TraCI."""
+        current_time = traci.simulation.getTime()
+        for vehicle_id in traci.vehicle.getIDList():
+            if vehicle_id not in vehicle_metrics:
+                vehicle_metrics[vehicle_id] = {
+                    "entry_time": current_time,
+                    "free_flow_time": get_free_flow_travel_time(
+                        traci.vehicle.getRoute(vehicle_id)
+                    ),
+                    "waiting_time": 0.0,
+                }
+            vehicle_metrics[vehicle_id]["waiting_time"] = (
+                traci.vehicle.getAccumulatedWaitingTime(vehicle_id)
+            )
 
     print(f"Starting evaluation for {steps} steps...")
 
@@ -123,19 +155,31 @@ def evaluate_models(model_dir, steps=500):
             action_prob, state_values = actor_critic(final_state)
             action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
 
+            # Store vehicle data before stepping because arrived vehicles can no
+            # longer be queried from TraCI after the simulation advances.
+            update_active_vehicle_metrics()
             _, reward, done = environment.step(action)
+
+            current_time = traci.simulation.getTime()
+            for vehicle_id in traci.simulation.getArrivedIDList():
+                metrics = vehicle_metrics.pop(vehicle_id, None)
+                if metrics is None:
+                    continue
+                travel_time = current_time - metrics["entry_time"]
+                vehicle_travel_times.append(travel_time)
+                vehicle_delay_times.append(travel_time - metrics["free_flow_time"])
+                vehicle_waiting_times.append(metrics["waiting_time"])
 
             # Fetch unnormalized raw values across the intersections
             intersections = traci_service.get_all_intersections()
             raw_queue = sum(traci_service.total_queue_length(i) for i in intersections)
-            raw_wait = sum(traci_service.total_waiting_time(i) for i in intersections)
 
-            total_waiting_time.append(raw_wait)
             total_queue_length.append(raw_queue)
 
             if (t + 1) % 50 == 0:
                 print(
-                    f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, Wait Total: {raw_wait:.2f}"
+                    f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, "
+                    f"Completed Vehicles: {len(vehicle_travel_times)}"
                 )
 
             if done:
@@ -144,18 +188,28 @@ def evaluate_models(model_dir, steps=500):
 
     # Summarize results
     avg_queue = sum(total_queue_length) / len(total_queue_length)
-    avg_wait = sum(total_waiting_time) / len(total_waiting_time)
     peak_queue = max(total_queue_length)
-    peak_wait = max(total_waiting_time)
+    completed_vehicles = len(vehicle_travel_times)
+    avg_wait = (
+        sum(vehicle_waiting_times) / completed_vehicles if completed_vehicles else 0.0
+    )
+    avg_travel_time = (
+        sum(vehicle_travel_times) / completed_vehicles if completed_vehicles else 0.0
+    )
+    avg_delay_time = (
+        sum(vehicle_delay_times) / completed_vehicles if completed_vehicles else 0.0
+    )
 
     print("\n" + "=" * 50)
     print("EVALUATION METRICS SUMMARY")
     print("=" * 50)
     print(f"Total Steps Evaluated      : {len(total_queue_length)}")
-    print(f"Average Total Queue Length : {avg_queue:.2f} vehicles")
-    print(f"Average Total Wait Time    : {avg_wait:.2f} seconds")
+    print(f"Completed Vehicles         : {completed_vehicles}")
+    print(f"Average Queue Length       : {avg_queue:.2f} vehicles")
+    print(f"Average Waiting Time       : {avg_wait:.2f} seconds")
+    print(f"Average Travel Time        : {avg_travel_time:.2f} seconds")
+    print(f"Average Delay Time         : {avg_delay_time:.2f} seconds")
     print(f"Peak Total Queue Length    : {peak_queue:.2f} vehicles")
-    print(f"Peak Total Wait Time       : {peak_wait:.2f} seconds")
     print("=" * 50)
 
     # Save Evaluation Run Stats
@@ -164,10 +218,12 @@ def evaluate_models(model_dir, steps=500):
         f.write(f"--- Evaluation Snapshot: {timestamp} ---\n")
         f.write(f"Evaluating Model: {model_dir}\n")
         f.write(f"Total Steps Evaluated: {len(total_queue_length)}\n")
-        f.write(f"Average Total Queue Length: {avg_queue:.2f} vehicles\n")
-        f.write(f"Average Total Wait Time: {avg_wait:.2f} seconds\n")
+        f.write(f"Completed Vehicles: {completed_vehicles}\n")
+        f.write(f"Average Queue Length: {avg_queue:.2f} vehicles\n")
+        f.write(f"Average Waiting Time: {avg_wait:.2f} seconds\n")
+        f.write(f"Average Travel Time: {avg_travel_time:.2f} seconds\n")
+        f.write(f"Average Delay Time: {avg_delay_time:.2f} seconds\n")
         f.write(f"Peak Total Queue Length: {peak_queue:.2f} vehicles\n")
-        f.write(f"Peak Total Wait Time: {peak_wait:.2f} seconds\n")
         f.write("\n")
 
     traci_service.close_simulation()

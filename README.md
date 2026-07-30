@@ -8,7 +8,7 @@ Based on the paper: **"HiLight: A Hierarchical Reinforcement Learning Framework"
 
 - **Python >= 3.14**
 - **SUMO** installed with `SUMO_HOME` environment variable set
-- **[uv](https://docs.astral.sh/uv/)** (recommended) or pip
+- **[uv](https://docus.astral.sh/uv/)** (recommended) or pip
 
 ## Installation
 

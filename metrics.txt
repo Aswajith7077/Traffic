@@ -305,3 +305,98 @@ Latest AC Loss: 0.8873
 Latest Sub Loss: 4950.9966
 Latest Reward: -188.5000
 
+--- Training Snapshot: 20260729_220505 ---
+Steps taken: 85
+Latest Meta Loss: 7.5164
+Latest AC Loss: 3.9563
+Latest Sub Loss: 1.5613
+Latest Reward: -2.9000
+
+--- Training Snapshot: 20260729_220701 ---
+Steps taken: 185
+Latest Meta Loss: 607.8159
+Latest AC Loss: 6.8220
+Latest Sub Loss: 122.5992
+Latest Reward: -51.8000
+
+--- Training Snapshot: 20260729_220851 ---
+Steps taken: 285
+Latest Meta Loss: 16759.4922
+Latest AC Loss: 2.6374
+Latest Sub Loss: 3353.6548
+Latest Reward: -87.8000
+
+--- Training Snapshot: 20260729_221204 ---
+Steps taken: 385
+Latest Meta Loss: 61.9053
+Latest AC Loss: 1.4220
+Latest Sub Loss: 12.8431
+Latest Reward: -23.1000
+
+--- Training Snapshot: 20260729_221539 ---
+Steps taken: 485
+Latest Meta Loss: 2180.6462
+Latest AC Loss: 2.9048
+Latest Sub Loss: 437.3033
+Latest Reward: -58.7000
+
+--- Training Snapshot: 20260729_221918 ---
+Steps taken: 585
+Latest Meta Loss: 5041.5547
+Latest AC Loss: 0.6640
+Latest Sub Loss: 1010.9028
+Latest Reward: -129.6000
+
+--- Training Snapshot: 20260729_222256 ---
+Steps taken: 685
+Latest Meta Loss: 44829.7812
+Latest AC Loss: 2.5329
+Latest Sub Loss: 8972.3330
+Latest Reward: -318.8000
+
+--- Training Snapshot: 20260729_222632 ---
+Steps taken: 785
+Latest Meta Loss: 2742.2339
+Latest AC Loss: 1.0931
+Latest Sub Loss: 548.5887
+Latest Reward: -7.1000
+
+--- Training Snapshot: 20260729_223007 ---
+Steps taken: 885
+Latest Meta Loss: 456.8422
+Latest AC Loss: 0.9460
+Latest Sub Loss: 92.5465
+Latest Reward: -58.9000
+
+--- Training Snapshot: 20260729_223345 ---
+Steps taken: 985
+Latest Meta Loss: 2616.7400
+Latest AC Loss: 1.0417
+Latest Sub Loss: 524.7100
+Latest Reward: -68.1000
+
+--- Training Snapshot: 20260729_223347 ---
+Steps taken: 985
+Latest Meta Loss: 2616.7400
+Latest AC Loss: 1.0417
+Latest Sub Loss: 524.7100
+Latest Reward: -68.1000
+
+--- Evaluation Snapshot: 20260730_132440 ---
+Evaluating Model: ../models\run_20260729_223347
+Total Steps Evaluated: 500
+Average Total Queue Length: 143.94 vehicles
+Average Total Wait Time: 12777.95 seconds
+Peak Total Queue Length: 265.00 vehicles
+Peak Total Wait Time: 32645.00 seconds
+
+--- Evaluation Snapshot: 20260730_135011 ---
+Evaluating Model: ../models\run_20260729_223347
+Total Steps Evaluated: 500
+Completed Vehicles: 168
+Average Queue Length: 143.94 vehicles
+Average Waiting Time: 2.63 seconds
+Average Travel Time: 152.80 seconds
+Average Delay Time: 73.97 seconds
+Peak Total Queue Length: 265.00 vehicles
+
