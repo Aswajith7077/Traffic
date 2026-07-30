@@ -1,7 +1,7 @@
-import sumolib
 import networkx as nx
+import sumolib
 
-net = sumolib.net.readNet("sumo/simple.net.xml")
+net = sumolib.net.readNet("sumo/manhattan/manhattan.net.xml")
 
 G = nx.DiGraph()
 

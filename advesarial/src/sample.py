@@ -1,30 +1,24 @@
-from memory import ReplayBuffer
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
-from agents import ActorCritic
-
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
-from config import config
-from environment import Environment
-
-import torch
-import torch.nn.functional as F
 import os
 from datetime import datetime
-import matplotlib.pyplot as plt
 
-from utils import compute_meta_loss, compute_ac_loss, compute_goal_alignment_loss
+import matplotlib.pyplot as plt
+import torch
+from agents import ActorCritic
+from config import config
+from environment import Environment
+from memory import ReplayBuffer
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
+from utils import compute_ac_loss, compute_goal_alignment_loss, compute_meta_loss
+
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 # Sub Policy
 local_encoder = LocalEncoder()
 GAT = GATLayer(feature_dim=64)
 actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
 
-traci_config = TraciConfig(config_path="sumo/osm.sumocfg")
+traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
 traci_service = TraciService(traci_config)
 traci_service.start_simulation()
 
@@ -64,9 +58,7 @@ for cid, nodes in raw_clusters.items():
 
 # Meta Policy
 m = len(clusters)
-transformer_encoder_config = TransformerEncoderConfig(
-    d_model=128, nhead=8, num_layers=6
-)
+transformer_encoder_config = TransformerEncoderConfig(d_model=128, nhead=8, num_layers=6)
 transformer_encoder = TransformerEncoder(transformer_encoder_config)
 
 subgoal_generator = SubGoalGenerator(d_reg=128, d_hidden=128, M=m, d_g=2 * len(tls_set))
@@ -134,9 +126,7 @@ def execute():
     next_final_state = torch.stack(next_final_state, dim=0)
 
     # Ensure tensors are detached correctly for storage to prevent graph leakage
-    buffer.add(
-        final_state.detach(), action.detach(), reward, next_final_state.detach(), done
-    )
+    buffer.add(final_state.detach(), action.detach(), reward, next_final_state.detach(), done)
 
 
 def sample():
@@ -161,16 +151,14 @@ def sample():
     subgoal_optimizer.zero_grad()
 
     meta_loss.backward()
-    
+
     torch.nn.utils.clip_grad_norm_(transformer_encoder.parameters(), max_norm=0.5)
     torch.nn.utils.clip_grad_norm_(subgoal_generator.parameters(), max_norm=0.5)
 
     transformer_optimizer.step()
     subgoal_optimizer.step()
 
-    ac_loss, _ = compute_ac_loss(
-        actor_critic, states, actions, rewards, next_states, dones, gamma
-    )
+    ac_loss, _ = compute_ac_loss(actor_critic, states, actions, rewards, next_states, dones, gamma)
     sub_loss = compute_goal_alignment_loss(
         w_global,
         q_global,
@@ -358,27 +346,13 @@ def load_models(model_path):
         )
     )
     subgoal_generator.load_state_dict(
-        torch.load(
-            f"{model_path}/subgoal_generator.pth", map_location="cpu", weights_only=True
-        )
+        torch.load(f"{model_path}/subgoal_generator.pth", map_location="cpu", weights_only=True)
     )
-    local_encoder.load_state_dict(
-        torch.load(
-            f"{model_path}/local_encoder.pth", map_location="cpu", weights_only=True
-        )
-    )
-    GAT.load_state_dict(
-        torch.load(f"{model_path}/gat.pth", map_location="cpu", weights_only=True)
-    )
-    actor_critic.load_state_dict(
-        torch.load(
-            f"{model_path}/actor_critic.pth", map_location="cpu", weights_only=True
-        )
-    )
+    local_encoder.load_state_dict(torch.load(f"{model_path}/local_encoder.pth", map_location="cpu", weights_only=True))
+    GAT.load_state_dict(torch.load(f"{model_path}/gat.pth", map_location="cpu", weights_only=True))
+    actor_critic.load_state_dict(torch.load(f"{model_path}/actor_critic.pth", map_location="cpu", weights_only=True))
 
-    training_state = torch.load(
-        f"{model_path}/training_state.pth", map_location="cpu", weights_only=False
-    )
+    training_state = torch.load(f"{model_path}/training_state.pth", map_location="cpu", weights_only=False)
 
     # Load optimizer states
     transformer_optimizer.load_state_dict(training_state["transformer_optimizer"])

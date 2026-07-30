@@ -1,24 +1,20 @@
 import os
-import torch
 from datetime import datetime
 
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
+import torch
+import traci
 from agents import ActorCritic
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
 from config import config
 from environment import Environment
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
 
-import traci
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 
 def evaluate_models(model_dir, steps=500):
     print("Initializing environment...")
-    traci_config = TraciConfig(config_path="sumo/osm.sumocfg")
+    traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
 
     traci_service = TraciService(traci_config)
     traci_service.start_simulation()
@@ -42,13 +38,9 @@ def evaluate_models(model_dir, steps=500):
     GAT = GATLayer(feature_dim=64)
     actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
 
-    transformer_encoder_config = TransformerEncoderConfig(
-        d_model=128, nhead=8, num_layers=6
-    )
+    transformer_encoder_config = TransformerEncoderConfig(d_model=128, nhead=8, num_layers=6)
     transformer_encoder = TransformerEncoder(transformer_encoder_config)
-    subgoal_generator = SubGoalGenerator(
-        d_reg=128, d_hidden=128, M=m, d_g=2 * len(tls_set)
-    )
+    subgoal_generator = SubGoalGenerator(d_reg=128, d_hidden=128, M=m, d_g=2 * len(tls_set))
 
     # Load models
     print(f"Loading weights from {model_dir}...")
@@ -60,23 +52,11 @@ def evaluate_models(model_dir, steps=500):
         )
     )
     subgoal_generator.load_state_dict(
-        torch.load(
-            f"{model_dir}/subgoal_generator.pth", map_location="cpu", weights_only=True
-        )
+        torch.load(f"{model_dir}/subgoal_generator.pth", map_location="cpu", weights_only=True)
     )
-    local_encoder.load_state_dict(
-        torch.load(
-            f"{model_dir}/local_encoder.pth", map_location="cpu", weights_only=True
-        )
-    )
-    GAT.load_state_dict(
-        torch.load(f"{model_dir}/gat.pth", map_location="cpu", weights_only=True)
-    )
-    actor_critic.load_state_dict(
-        torch.load(
-            f"{model_dir}/actor_critic.pth", map_location="cpu", weights_only=True
-        )
-    )
+    local_encoder.load_state_dict(torch.load(f"{model_dir}/local_encoder.pth", map_location="cpu", weights_only=True))
+    GAT.load_state_dict(torch.load(f"{model_dir}/gat.pth", map_location="cpu", weights_only=True))
+    actor_critic.load_state_dict(torch.load(f"{model_dir}/actor_critic.pth", map_location="cpu", weights_only=True))
 
     transformer_encoder.eval()
     subgoal_generator.eval()
@@ -87,9 +67,7 @@ def evaluate_models(model_dir, steps=500):
     def __normalize_states(states):
         batch_mean = states.mean(dim=0)
         batch_var = states.var(dim=0, unbiased=False)
-        return torch.clamp(
-            (states - batch_mean) / (torch.sqrt(batch_var) + 1e-8), -5, 5
-        )
+        return torch.clamp((states - batch_mean) / (torch.sqrt(batch_var) + 1e-8), -5, 5)
 
     def _find_local_observations():
         observations = traci_service.get_observations()
@@ -99,16 +77,12 @@ def evaluate_models(model_dir, steps=500):
         final_state = []
         for i in range(len(local_features)):
             z_i = local_features[i]
-            final_state.append(
-                torch.cat([z_i, torch.mean(local_features, dim=0)], dim=-1)
-            )
+            final_state.append(torch.cat([z_i, torch.mean(local_features, dim=0)], dim=-1))
         return torch.stack(final_state, dim=0)
 
     def _find_global_observation():
         cluster_states = traci_service.get_cluster_states(clusters)
-        global_encoding, local_encoding = transformer_encoder(
-            cluster_states.unsqueeze(0)
-        )
+        global_encoding, local_encoding = transformer_encoder(cluster_states.unsqueeze(0))
         return subgoal_generator(local_encoding, global_encoding)
 
     total_queue_length = []
@@ -135,14 +109,10 @@ def evaluate_models(model_dir, steps=500):
             if vehicle_id not in vehicle_metrics:
                 vehicle_metrics[vehicle_id] = {
                     "entry_time": current_time,
-                    "free_flow_time": get_free_flow_travel_time(
-                        traci.vehicle.getRoute(vehicle_id)
-                    ),
+                    "free_flow_time": get_free_flow_travel_time(traci.vehicle.getRoute(vehicle_id)),
                     "waiting_time": 0.0,
                 }
-            vehicle_metrics[vehicle_id]["waiting_time"] = (
-                traci.vehicle.getAccumulatedWaitingTime(vehicle_id)
-            )
+            vehicle_metrics[vehicle_id]["waiting_time"] = traci.vehicle.getAccumulatedWaitingTime(vehicle_id)
 
     print(f"Starting evaluation for {steps} steps...")
 
@@ -190,15 +160,9 @@ def evaluate_models(model_dir, steps=500):
     avg_queue = sum(total_queue_length) / len(total_queue_length)
     peak_queue = max(total_queue_length)
     completed_vehicles = len(vehicle_travel_times)
-    avg_wait = (
-        sum(vehicle_waiting_times) / completed_vehicles if completed_vehicles else 0.0
-    )
-    avg_travel_time = (
-        sum(vehicle_travel_times) / completed_vehicles if completed_vehicles else 0.0
-    )
-    avg_delay_time = (
-        sum(vehicle_delay_times) / completed_vehicles if completed_vehicles else 0.0
-    )
+    avg_wait = sum(vehicle_waiting_times) / completed_vehicles if completed_vehicles else 0.0
+    avg_travel_time = sum(vehicle_travel_times) / completed_vehicles if completed_vehicles else 0.0
+    avg_delay_time = sum(vehicle_delay_times) / completed_vehicles if completed_vehicles else 0.0
 
     print("\n" + "=" * 50)
     print("EVALUATION METRICS SUMMARY")
@@ -238,28 +202,20 @@ if __name__ == "__main__":
         type=str,
         help="Directory containing the saved model parts e.g. ../models/run_XX",
     )
-    parser.add_argument(
-        "--steps", type=int, default=500, help="Number of steps to evaluate"
-    )
+    parser.add_argument("--steps", type=int, default=500, help="Number of steps to evaluate")
     args = parser.parse_args()
 
     target_dir = args.model_dir
     if not target_dir:
         models_base = "../models"
         if os.path.exists(models_base):
-            runs = [
-                os.path.join(models_base, d)
-                for d in os.listdir(models_base)
-                if d.startswith("run_")
-            ]
+            runs = [os.path.join(models_base, d) for d in os.listdir(models_base) if d.startswith("run_")]
             if runs:
                 target_dir = max(runs, key=os.path.getmtime)
                 print(f"Auto-selected latest model directory: {target_dir}")
 
     if not target_dir or not os.path.exists(target_dir):
-        print(
-            "Error: Could not find any saved models in ../models/ and no valid --model-dir was provided."
-        )
+        print("Error: Could not find any saved models in ../models/ and no valid --model-dir was provided.")
         print("Make sure you have trained and saved models before evaluating.")
         exit(1)
 

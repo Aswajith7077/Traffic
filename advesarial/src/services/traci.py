@@ -8,12 +8,12 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
+from collections import defaultdict, deque
+
 import torch
 import traci
-from sumolib import checkBinary
 from schema import TraciConfig
-from collections import defaultdict
-from collections import deque
+from sumolib import checkBinary
 from utils.compute_phase_history import compute_phase_entropy
 
 
@@ -22,9 +22,7 @@ class TraciService:
         self.config = config
         self.__set_config_path(config.config_path)
         self.tls_ids = []
-        self.phase_history = self.phase_histories = defaultdict(
-            lambda: deque(maxlen=20)
-        )
+        self.phase_history = self.phase_histories = defaultdict(lambda: deque(maxlen=20))
         self.edge_ids = set()
         self.tl_ids = set()
 
@@ -139,9 +137,7 @@ class TraciService:
         self.in_transition = {tls: False for tls in intersections}
         self.pending_phase = {tls: None for tls in intersections}
         self.yellow_timer = {tls: 0 for tls in intersections}
-        self.yellow_phases = {
-            tls: self.__get_yellow_phases(tls) for tls in intersections
-        }
+        self.yellow_phases = {tls: self.__get_yellow_phases(tls) for tls in intersections}
 
     def __get_yellow_phases(self, tls_id):
         logic = traci.trafficlight.getAllProgramLogics(tls_id)[0]
@@ -182,9 +178,7 @@ class TraciService:
             return current_phase
 
         if current_phase == safe_phase:
-            self.time_since_last_switch[tls_id] = min(
-                self.time_since_last_switch[tls_id] + 1, self.min_green_time
-            )
+            self.time_since_last_switch[tls_id] = min(self.time_since_last_switch[tls_id] + 1, self.min_green_time)
             return current_phase
 
         if self.time_since_last_switch[tls_id] < self.min_green_time:
@@ -225,9 +219,7 @@ class TraciService:
                 for v in veh_ids:
                     waiting_time += traci.vehicle.getWaitingTime(v)
 
-                queue_length += sum(
-                    1 for v in veh_ids if traci.vehicle.getSpeed(v) < 0.3
-                )
+                queue_length += sum(1 for v in veh_ids if traci.vehicle.getSpeed(v) < 0.3)
 
             W.append(waiting_time)
             Q.append(queue_length)
@@ -348,16 +340,10 @@ class TraciService:
         return final
 
     def total_waiting_time(self, tls):
-        return sum(
-            traci.lane.getWaitingTime(lane)
-            for lane in traci.trafficlight.getControlledLanes(tls)
-        )
+        return sum(traci.lane.getWaitingTime(lane) for lane in traci.trafficlight.getControlledLanes(tls))
 
     def total_queue_length(self, tls):
-        return sum(
-            traci.lane.getLastStepVehicleNumber(lane)
-            for lane in traci.trafficlight.getControlledLanes(tls)
-        )
+        return sum(traci.lane.getLastStepVehicleNumber(lane) for lane in traci.trafficlight.getControlledLanes(tls))
 
     def _get_incoming_lanes(self, tls_id):
         incoming_lanes = set()
@@ -441,7 +427,7 @@ class TraciService:
 
         for lane in incoming_lanes:
             # Get pedestrians on this lane
-            edge_id = traci.lane.getEdgeID(lane) 
+            edge_id = traci.lane.getEdgeID(lane)
             person_ids = traci.edge.getLastStepPersonIDs(edge_id)
 
             for person_id in person_ids:
@@ -477,7 +463,6 @@ class TraciService:
 
             # We only care about vehicle <-> pedestrian collisions
             if (collider_is_vehicle and victim_is_person) or (collider_is_person and victim_is_vehicle):
-
                 # Get lane of the vehicle (person may not have lane always)
                 if collider_is_vehicle:
                     lane_id = traci.vehicle.getLaneID(collider)
@@ -488,10 +473,7 @@ class TraciService:
                 if lane_id in incoming_lanes:
                     conflict_count += 1
 
-                    print(
-                        f"[Conflict @ {tls_id}] time={traci.simulation.getTime()} | "
-                        f"{collider} hit {victim}"
-                    )
+                    print(f"[Conflict @ {tls_id}] time={traci.simulation.getTime()} | {collider} hit {victim}")
 
         return conflict_count
 

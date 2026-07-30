@@ -17,9 +17,7 @@ class SubGoalGenerator(nn.Module):
             batch_first=True,
         )
 
-        self.ffn = nn.Sequential(
-            nn.Linear(M * d_hidden + d_reg, d_g), nn.ReLU(), nn.Linear(d_g, d_g)
-        )
+        self.ffn = nn.Sequential(nn.Linear(M * d_hidden + d_reg, d_g), nn.ReLU(), nn.Linear(d_g, d_g))
 
     def forward(self, locals, global_encoding):
         # locals: (batch_size, M, d_reg)
@@ -30,9 +28,7 @@ class SubGoalGenerator(nn.Module):
         batch_size = locals.size(0)
         out_flat = out.reshape(batch_size, -1)  # (batch_size, M * d_hidden)
 
-        combined = torch.cat(
-            [out_flat, global_encoding], dim=-1
-        )  # (batch_size, M * d_hidden + d_reg)
+        combined = torch.cat([out_flat, global_encoding], dim=-1)  # (batch_size, M * d_hidden + d_reg)
 
         subgoal_vector = self.ffn(combined)  # (batch_size, d_g)
         return subgoal_vector

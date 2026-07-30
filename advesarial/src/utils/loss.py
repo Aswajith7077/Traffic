@@ -65,16 +65,12 @@ def compute_goal_alignment_loss(W_global, Q_global, G_t, beta_q, beta_w):
     return loss_q + loss_w
 
 
-def compute_sub_loss(
-    actor_critic, batch, G_t, W_global, Q_global, gamma, eta2, beta_q, beta_w
-):
+def compute_sub_loss(actor_critic, batch, G_t, W_global, Q_global, gamma, eta2, beta_q, beta_w):
 
     states, actions, rewards, next_states, dones = batch
 
     # Actor-Critic loss
-    ac_loss, _ = compute_ac_loss(
-        actor_critic, states, actions, rewards, next_states, dones, gamma
-    )
+    ac_loss, _ = compute_ac_loss(actor_critic, states, actions, rewards, next_states, dones, gamma)
 
     # Alignment loss
     align_loss = compute_goal_alignment_loss(W_global, Q_global, G_t, beta_q, beta_w)

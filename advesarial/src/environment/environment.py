@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 """
 
@@ -73,14 +73,14 @@ class Environment:
 
         return reward
 
-    def compute_jain_index(self,wait_times):
+    def compute_jain_index(self, wait_times):
         n = len(wait_times)
 
         if n == 0:
             return 0.0
 
         numerator = sum(wait_times) ** 2
-        denominator = n * sum(w ** 2 for w in wait_times)
+        denominator = n * sum(w**2 for w in wait_times)
 
         if denominator == 0:
             return 0.0  # or 1.0 depending on your interpretation
@@ -105,7 +105,6 @@ class Environment:
         my_utility = 0.0
         ped_conflicts = 0
 
-
         for intersection in self.intersections:
             local_reward += self.traci_service.get_intersection_reward(intersection)
             total_queue_length += self.traci_service.total_queue_length(intersection)
@@ -114,17 +113,19 @@ class Environment:
             emergency_delay += self.traci_service.get_emergency_waiting_time(intersection)
             q = self.traci_service.total_queue_length(intersection)
 
-            util_i = - (self.traci_service.total_waiting_time(intersection) + 
-                       0.5 * self.traci_service.total_queue_length(intersection))
+            util_i = -(
+                self.traci_service.total_waiting_time(intersection)
+                + 0.5 * self.traci_service.total_queue_length(intersection)
+            )
             local_utilities.append(util_i)
 
             # if intersection == self.current_intersection:   # or average over batch
             my_utility = util_i
 
-            non_emv_waits = self.traci_service.get_non_emv_waiting_times(intersection)   # list of floats
+            non_emv_waits = self.traci_service.get_non_emv_waiting_times(intersection)  # list of floats
             non_emv_wait_times.extend(non_emv_waits)
 
-            ped_waits = self.traci_service.get_pedestrian_waiting_times(intersection)     # list of floats
+            ped_waits = self.traci_service.get_pedestrian_waiting_times(intersection)  # list of floats
             ped_wait_times.extend(ped_waits)
             ped_conflicts += self.traci_service.get_pedestrian_conflict_count(intersection)
 
@@ -132,7 +133,6 @@ class Environment:
 
         num = len(self.intersections) + 1e-6
         local_reward = local_reward / num
-
 
         delta_queue = self.prev_queue - total_queue_length
         delta_wait = self.prev_wait - total_waiting_time
@@ -148,38 +148,33 @@ class Environment:
         jain = self.compute_jain_index(non_emv_wait_times)
 
         max_other_utility = max(local_utilities) if local_utilities else 0.0
-        envy = max(max_other_utility - my_utility, 0.0)   # classic envy measure
+        envy = max(max_other_utility - my_utility, 0.0)  # classic envy measure
 
         max_ped_wait = max(ped_wait_times) if ped_wait_times else 0.0
-        
-
 
         R_eff = -(self.beta1 * delta_queue + self.beta2 * delta_wait) + local_reward
         R_fair = (
             -0.3 * var_wait
-            -0.25 * max_wait_penalty
-            -0.15 * (1.0 - jain)
-            -0.5 * envy                     # ← Envy-free penalty (forces interaction)
-            -0.5 * max_ped_wait
-            -1.2 * ped_conflicts
+            - 0.25 * max_wait_penalty
+            - 0.15 * (1.0 - jain)
+            - 0.5 * envy  # ← Envy-free penalty (forces interaction)
+            - 0.5 * max_ped_wait
+            - 1.2 * ped_conflicts
         )
         R_emergency = -emergency_delay
         R_emission = -emission_penalty
 
-        total_reward = (
-            0.4 * R_eff +
-            0.2 * R_fair +
-            0.3 * R_emergency +
-            0.1 * R_emission
-        )
+        total_reward = 0.4 * R_eff + 0.2 * R_fair + 0.3 * R_emergency + 0.1 * R_emission
 
         normalized_reward = self._normalize_reward(total_reward)
 
         return float(normalized_reward)
 
-    def _normalize_reward(self,reward):
+    def _normalize_reward(self, reward):
         self.reward_mean = (1 - self.reward_alpha) * self.reward_mean + self.reward_alpha * reward
-        self.reward_var = (1 - self.reward_alpha) * self.reward_var + self.reward_alpha * (reward - self.reward_mean)**2
+        self.reward_var = (1 - self.reward_alpha) * self.reward_var + self.reward_alpha * (
+            reward - self.reward_mean
+        ) ** 2
         normalized_reward = (reward - self.reward_mean) / (torch.sqrt(torch.tensor(self.reward_var)) + 1e-8)
 
         return normalized_reward

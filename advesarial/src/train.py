@@ -1,15 +1,14 @@
+from agents import Actor
 from config import Config
 from environment import Environment
 from memory import ReplayBuffer
-from schema import ReplayBufferItem
-from agents import Actor
-from schema import TraciConfig
+from schema import ReplayBufferItem, TraciConfig
 
 
 def train(T: int = 100):
 
-    environment = Environment(config=TraciConfig(config_path="sumo/osm.sumocfg"))
-    config = Config("clusters/louvian/osm_clusters.json")
+    environment = Environment(config=TraciConfig(config_path="sumo/manhattan.sumocfg"))
+    config = Config("clusters/louvian/manhattan_clusters.json")
     replay_buffer = ReplayBuffer(max_size=1000)
     environment.reset()
 
@@ -18,9 +17,7 @@ def train(T: int = 100):
         action = Actor(state)
         next_state, reward, done = environment.step(action=action)
 
-        buffer_item = ReplayBufferItem(
-            state=state, action=action, reward=reward, next_state=next_state, done=done
-        )
+        buffer_item = ReplayBufferItem(state=state, action=action, reward=reward, next_state=next_state, done=done)
         replay_buffer.add(buffer_item)
 
         pass
@@ -31,9 +28,9 @@ def train(T: int = 100):
 
 def modules():
 
-    environment = Environment(config=TraciConfig(config_path="sumo/osm.sumocfg"))
+    environment = Environment(config=TraciConfig(config_path="sumo/manhattan.sumocfg"))
 
-    # traci_config = TraciConfig(config_path="sumo/osm.sumocfg")
+    # traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
     # traci_service = TraciService(traci_config)
 
     # # Initialize models
@@ -42,10 +39,10 @@ def modules():
     # sub_policy = SubPolicy()
 
 
-config = Config("clusters/louvian/osm_clusters.json")
+config = Config("clusters/louvian/manhattan_clusters.json")
 environment = Environment(
     config=config,
-    traci_config=TraciConfig(config_path="sumo/osm.sumocfg"),
+    traci_config=TraciConfig(config_path="sumo/manhattan.sumocfg"),
 )
 state = environment.get_state()
 

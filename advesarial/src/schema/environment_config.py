@@ -8,4 +8,4 @@ class EnvironmentConfig(BaseModel):
     step_length: float = 1.0
     delay: float = 1.0
     min_green_steps: int = 5
-    config_path: str = "sumo/osm.sumocfg"
+    config_path: str = "sumo/manhattan.sumocfg"

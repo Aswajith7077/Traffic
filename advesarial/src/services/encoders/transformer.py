@@ -1,6 +1,7 @@
-from .positional import PositionalEncoding
 import torch.nn as nn
 from schema import TransformerEncoderConfig
+
+from .positional import PositionalEncoding
 
 
 class TransformerEncoding(nn.Module):
@@ -17,9 +18,7 @@ class TransformerEncoding(nn.Module):
             batch_first=True,
         )
 
-        self.encoder = nn.TransformerEncoder(
-            encoder_layer=encoder_layer, num_layers=config.num_layers
-        )
+        self.encoder = nn.TransformerEncoder(encoder_layer=encoder_layer, num_layers=config.num_layers)
 
     def forward(self, x):
         """

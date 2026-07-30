@@ -8,11 +8,11 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
-import traci
-import numpy as np
-from sumolib import checkBinary
-from schema import TraciConfig
 import json
+
+import traci
+from schema import TraciConfig
+from sumolib import checkBinary
 
 
 class TraciService:
@@ -74,9 +74,7 @@ class TraciService:
         tls_config = {}
 
         for tls_id in tls_ids:
-            tls_config[tls_id] = [
-                lane for lane in traci.trafficlight.getControlledLanes(tls_id)
-            ]
+            tls_config[tls_id] = [lane for lane in traci.trafficlight.getControlledLanes(tls_id)]
 
         with open("tls_config.json", "w") as f:
             json.dump(tls_config, f, indent=4)

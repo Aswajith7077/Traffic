@@ -1,7 +1,8 @@
-from abc import ABC
-from abc import abstractmethod
-from .traci import TraciService
+from abc import ABC, abstractmethod
+
 import sumolib
+
+from .traci import TraciService
 
 
 class BaseClusteringService(ABC):

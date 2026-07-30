@@ -1,10 +1,11 @@
-import networkx as nx
-import community as community_louvain
 from collections import defaultdict
 
-from .traci import TraciService
-from .base import BaseClusteringService
+import community as community_louvain
 import matplotlib.pyplot as plt
+import networkx as nx
+
+from .base import BaseClusteringService
+from .traci import TraciService
 
 
 class LouvianService(BaseClusteringService):
@@ -29,9 +30,7 @@ class LouvianService(BaseClusteringService):
             source = edge.getFromNode().getID()
             destination = edge.getToNode().getID()
 
-            self.graph.add_edge(
-                source, destination, id=edge.getID(), static_weight=edge.getLaneNumber()
-            )
+            self.graph.add_edge(source, destination, id=edge.getID(), static_weight=edge.getLaneNumber())
 
         return self.graph
 
@@ -81,9 +80,7 @@ class LouvianService(BaseClusteringService):
 
         # Step 2: run Louvain
         partition = community_louvain.best_partition(undirected_graph, weight="weight")
-        modularity = community_louvain.modularity(
-            partition, undirected_graph, weight="weight"
-        )
+        modularity = community_louvain.modularity(partition, undirected_graph, weight="weight")
 
         # Step 3: group nodes by community
         clusters = {}

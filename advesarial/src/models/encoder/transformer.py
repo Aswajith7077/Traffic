@@ -1,7 +1,8 @@
-from torch import nn
-from .positional import PositionalEncoder
-from schema import TransformerEncoderConfig
 import torch
+from schema import TransformerEncoderConfig
+from torch import nn
+
+from .positional import PositionalEncoder
 
 
 class TransformerEncoder(nn.Module):
@@ -26,7 +27,8 @@ class TransformerEncoder(nn.Module):
         )
 
         self.transformer_encoder = nn.TransformerEncoder(
-            encoder_layer, num_layers=config.num_layers,
+            encoder_layer,
+            num_layers=config.num_layers,
             norm=nn.LayerNorm(config.d_model),
         )
 
