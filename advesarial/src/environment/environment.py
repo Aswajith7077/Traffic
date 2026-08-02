@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 """
 
@@ -42,7 +42,7 @@ class Environment:
             act = action[i].item()
             self.traci_service.set_phase(intersection, act)
 
-    def step(self, action):
+    def step(self, action, needs_obs=True):
 
         # get observation
         # get reward
@@ -53,7 +53,7 @@ class Environment:
 
         self.traci_service.step()
 
-        next_state = self.traci_service.get_observations()
+        next_state = self.traci_service.get_observations() if needs_obs else None
         reward = self._compute_reward()
         done = self.t >= self.max_t
 
@@ -114,7 +114,7 @@ class Environment:
             emergency_delay += self.traci_service.get_emergency_waiting_time(intersection)
             q = self.traci_service.total_queue_length(intersection)
 
-            util_i = - (self.traci_service.total_waiting_time(intersection) + 
+            util_i = - (self.traci_service.total_waiting_time(intersection) +
                        0.5 * self.traci_service.total_queue_length(intersection))
             local_utilities.append(util_i)
 
@@ -151,7 +151,7 @@ class Environment:
         envy = max(max_other_utility - my_utility, 0.0)   # classic envy measure
 
         max_ped_wait = max(ped_wait_times) if ped_wait_times else 0.0
-        
+
 
 
         R_eff = -(self.beta1 * delta_queue + self.beta2 * delta_wait) + local_reward

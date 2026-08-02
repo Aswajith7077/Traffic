@@ -1,24 +1,20 @@
 import os
-import torch
 from datetime import datetime
 
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
+import torch
+import traci
 from agents import ActorCritic
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
 from config import config
 from environment import Environment
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
 
-import traci
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 
-def evaluate_models(model_dir, steps=500):
+def evaluate_models(model_dir, steps=3600):
     print("Initializing environment...")
-    traci_config = TraciConfig(config_path="sumo/osm.sumocfg")
+    traci_config = TraciConfig(config_path="../scenarios/cologne8/cologne8.sumocfg")
 
     traci_service = TraciService(traci_config)
     traci_service.start_simulation()
@@ -84,12 +80,22 @@ def evaluate_models(model_dir, steps=500):
     GAT.eval()
     actor_critic.eval()
 
+    running_mean = torch.zeros(10)
+    running_var = torch.ones(10)
+    norm_alpha = 0.01
+
     def __normalize_states(states):
+        nonlocal running_mean, running_var
+
         batch_mean = states.mean(dim=0)
         batch_var = states.var(dim=0, unbiased=False)
-        return torch.clamp(
-            (states - batch_mean) / (torch.sqrt(batch_var) + 1e-8), -5, 5
-        )
+
+        running_mean = (1 - norm_alpha) * running_mean + norm_alpha * batch_mean
+        running_var = (1 - norm_alpha) * running_var + norm_alpha * batch_var
+
+        states = (states - running_mean) / (torch.sqrt(running_var) + 1e-8)
+
+        return torch.clamp(states, -5, 5)
 
     def _find_local_observations():
         observations = traci_service.get_observations()
@@ -104,14 +110,8 @@ def evaluate_models(model_dir, steps=500):
             )
         return torch.stack(final_state, dim=0)
 
-    def _find_global_observation():
-        cluster_states = traci_service.get_cluster_states(clusters)
-        global_encoding, local_encoding = transformer_encoder(
-            cluster_states.unsqueeze(0)
-        )
-        return subgoal_generator(local_encoding, global_encoding)
-
     total_queue_length = []
+    total_vehicle_count = []
     vehicle_metrics = {}
     vehicle_travel_times = []
     vehicle_delay_times = []
@@ -122,8 +122,11 @@ def evaluate_models(model_dir, steps=500):
         free_flow_time = 0.0
         for edge in route:
             lane_id = f"{edge}_0"
-            length = traci.lane.getLength(lane_id)
-            max_speed = traci.lane.getMaxSpeed(lane_id)
+            try:
+                length = traci.lane.getLength(lane_id)
+                max_speed = traci.lane.getMaxSpeed(lane_id)
+            except traci.exceptions.TraCIException:
+                continue
             if max_speed > 0:
                 free_flow_time += length / max_speed
         return free_flow_time
@@ -144,12 +147,19 @@ def evaluate_models(model_dir, steps=500):
                 traci.vehicle.getAccumulatedWaitingTime(vehicle_id)
             )
 
-    print(f"Starting evaluation for {steps} steps...")
+    sim_begin = traci.simulation.getTime()
+
+    def total_halted_queue(i):
+        return sum(
+            traci.lane.getLastStepHaltingNumber(lane)
+            for lane in traci.trafficlight.getControlledLanes(i)
+        )
+
+    print(f"Starting evaluation for {steps} steps (sim time {sim_begin:.0f}s)...")
 
     with torch.no_grad():
+        intersections = traci_service.get_all_intersections()
         for t in range(steps):
-            # Unused explicitly in greedy greedy execution loop but compute global token to keep RNN states moving if any
-            _ = _find_global_observation()
             final_state = _find_local_observations()
 
             action_prob, state_values = actor_critic(final_state)
@@ -158,7 +168,7 @@ def evaluate_models(model_dir, steps=500):
             # Store vehicle data before stepping because arrived vehicles can no
             # longer be queried from TraCI after the simulation advances.
             update_active_vehicle_metrics()
-            _, reward, done = environment.step(action)
+            _, reward, done = environment.step(action, needs_obs=False)
 
             current_time = traci.simulation.getTime()
             for vehicle_id in traci.simulation.getArrivedIDList():
@@ -171,14 +181,16 @@ def evaluate_models(model_dir, steps=500):
                 vehicle_waiting_times.append(metrics["waiting_time"])
 
             # Fetch unnormalized raw values across the intersections
-            intersections = traci_service.get_all_intersections()
-            raw_queue = sum(traci_service.total_queue_length(i) for i in intersections)
+            raw_queue = sum(total_halted_queue(i) for i in intersections)
+            raw_vehicles = sum(traci_service.total_queue_length(i) for i in intersections)
 
             total_queue_length.append(raw_queue)
+            total_vehicle_count.append(raw_vehicles)
 
-            if (t + 1) % 50 == 0:
+            if (t + 1) % 300 == 0:
                 print(
-                    f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, "
+                    f"Eval Step {t + 1}/{steps} (sim {current_time:.0f}s) - "
+                    f"Queue (halted): {raw_queue:.2f}, Vehicles on TL lanes: {raw_vehicles:.2f}, "
                     f"Completed Vehicles: {len(vehicle_travel_times)}"
                 )
 
@@ -189,6 +201,11 @@ def evaluate_models(model_dir, steps=500):
     # Summarize results
     avg_queue = sum(total_queue_length) / len(total_queue_length)
     peak_queue = max(total_queue_length)
+    avg_vehicles = (
+        sum(total_vehicle_count) / len(total_vehicle_count)
+        if total_vehicle_count
+        else 0.0
+    )
     completed_vehicles = len(vehicle_travel_times)
     avg_wait = (
         sum(vehicle_waiting_times) / completed_vehicles if completed_vehicles else 0.0
@@ -203,12 +220,14 @@ def evaluate_models(model_dir, steps=500):
     print("\n" + "=" * 50)
     print("EVALUATION METRICS SUMMARY")
     print("=" * 50)
+    print(f"Simulation Window         : {sim_begin:.0f}s - {current_time:.0f}s")
     print(f"Total Steps Evaluated      : {len(total_queue_length)}")
     print(f"Completed Vehicles         : {completed_vehicles}")
-    print(f"Average Queue Length       : {avg_queue:.2f} vehicles")
+    print(f"Average Queue Length       : {avg_queue:.2f} vehicles (halted)")
+    print(f"Avg Vehicles on TL lanes   : {avg_vehicles:.2f} vehicles")
     print(f"Average Waiting Time       : {avg_wait:.2f} seconds")
-    print(f"Average Travel Time        : {avg_travel_time:.2f} seconds")
-    print(f"Average Delay Time         : {avg_delay_time:.2f} seconds")
+    print(f"Average Travel Time (ATT)  : {avg_travel_time:.2f} seconds")
+    print(f"Average Delay Time (ADT)   : {avg_delay_time:.2f} seconds")
     print(f"Peak Total Queue Length    : {peak_queue:.2f} vehicles")
     print("=" * 50)
 
@@ -217,12 +236,13 @@ def evaluate_models(model_dir, steps=500):
     with open("../metrics.txt", "a") as f:
         f.write(f"--- Evaluation Snapshot: {timestamp} ---\n")
         f.write(f"Evaluating Model: {model_dir}\n")
+        f.write(f"Simulation Window: {sim_begin:.0f}s - {current_time:.0f}s\n")
         f.write(f"Total Steps Evaluated: {len(total_queue_length)}\n")
         f.write(f"Completed Vehicles: {completed_vehicles}\n")
-        f.write(f"Average Queue Length: {avg_queue:.2f} vehicles\n")
+        f.write(f"Average Queue Length: {avg_queue:.2f} vehicles (halted)\n")
         f.write(f"Average Waiting Time: {avg_wait:.2f} seconds\n")
-        f.write(f"Average Travel Time: {avg_travel_time:.2f} seconds\n")
-        f.write(f"Average Delay Time: {avg_delay_time:.2f} seconds\n")
+        f.write(f"Average Travel Time (ATT): {avg_travel_time:.2f} seconds\n")
+        f.write(f"Average Delay Time (ADT): {avg_delay_time:.2f} seconds\n")
         f.write(f"Peak Total Queue Length: {peak_queue:.2f} vehicles\n")
         f.write("\n")
 
@@ -239,7 +259,10 @@ if __name__ == "__main__":
         help="Directory containing the saved model parts e.g. ../models/run_XX",
     )
     parser.add_argument(
-        "--steps", type=int, default=500, help="Number of steps to evaluate"
+        "--steps",
+        type=int,
+        default=3600,
+        help="Number of steps to evaluate (default 3600 = full episode, matching HiLight protocol)",
     )
     args = parser.parse_args()
 

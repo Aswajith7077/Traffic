@@ -1,30 +1,24 @@
-from memory import ReplayBuffer
-from models import GATLayer
-from models import LocalEncoder
-from models import TransformerEncoder
-from models import SubGoalGenerator
-from agents import ActorCritic
-
-from services import TraciService
-from schema import TraciConfig
-from schema import TransformerEncoderConfig
-from config import config
-from environment import Environment
-
-import torch
-import torch.nn.functional as F
 import os
 from datetime import datetime
-import matplotlib.pyplot as plt
 
-from utils import compute_meta_loss, compute_ac_loss, compute_goal_alignment_loss
+import matplotlib.pyplot as plt
+import torch
+from agents import ActorCritic
+from config import config
+from environment import Environment
+from memory import ReplayBuffer
+from schema import TraciConfig, TransformerEncoderConfig
+from services import TraciService
+from utils import compute_ac_loss, compute_goal_alignment_loss, compute_meta_loss
+
+from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 # Sub Policy
 local_encoder = LocalEncoder()
 GAT = GATLayer(feature_dim=64)
 actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
 
-traci_config = TraciConfig(config_path="sumo/osm.sumocfg")
+traci_config = TraciConfig(config_path="../scenarios/cologne8/cologne8.sumocfg")
 traci_service = TraciService(traci_config)
 traci_service.start_simulation()
 
@@ -52,6 +46,11 @@ rewards_history = []
 
 raw_clusters = config.clusters
 tls_set = set(traci_service.get_all_intersections())
+
+global_w_mean = torch.zeros(len(tls_set))
+global_w_var = torch.ones(len(tls_set))
+global_q_mean = torch.zeros(len(tls_set))
+global_q_var = torch.ones(len(tls_set))
 
 buffer = ReplayBuffer()
 
@@ -128,14 +127,15 @@ def execute():
     action_prob, state_values = actor_critic(final_state)
     action = torch.multinomial(action_prob, 1)
 
-    _, reward, done = environment.step(action)
+    _, reward, done = environment.step(action, needs_obs=False)
 
     next_final_state = _find_local_observations()
     next_final_state = torch.stack(next_final_state, dim=0)
 
-    # Ensure tensors are detached correctly for storage to prevent graph leakage
+    # Do NOT detach states: the AC loss must backprop through the local
+    # encoder and GAT so the whole sub-policy (encoder -> GAT -> actor) learns.
     buffer.add(
-        final_state.detach(), action.detach(), reward, next_final_state.detach(), done
+        final_state, action.detach(), reward, next_final_state, done
     )
 
 
@@ -155,13 +155,25 @@ def sample():
     print("Q_global: ", q_global)
     print(rg)
 
-    meta_loss = compute_meta_loss(sub_goal_vector, w_global, q_global, rg, eta1)
+    # Normalize raw W/Q targets with running statistics so the meta/alignment
+    # MSE losses stay O(1) instead of exploding on raw counts/thousands.
+    global global_w_mean, global_w_var, global_q_mean, global_q_var
+
+    w_norm = (w_global - global_w_mean) / (torch.sqrt(global_w_var) + 1e-6)
+    q_norm = (q_global - global_q_mean) / (torch.sqrt(global_q_var) + 1e-6)
+
+    global_w_mean = (1 - alpha) * global_w_mean + alpha * w_global
+    global_w_var = (1 - alpha) * global_w_var + alpha * (w_global - global_w_mean) ** 2
+    global_q_mean = (1 - alpha) * global_q_mean + alpha * q_global
+    global_q_var = (1 - alpha) * global_q_var + alpha * (q_global - global_q_mean) ** 2
+
+    meta_loss = compute_meta_loss(sub_goal_vector, w_norm, q_norm, rg, eta1)
 
     transformer_optimizer.zero_grad()
     subgoal_optimizer.zero_grad()
 
     meta_loss.backward()
-    
+
     torch.nn.utils.clip_grad_norm_(transformer_encoder.parameters(), max_norm=0.5)
     torch.nn.utils.clip_grad_norm_(subgoal_generator.parameters(), max_norm=0.5)
 
@@ -171,15 +183,20 @@ def sample():
     ac_loss, _ = compute_ac_loss(
         actor_critic, states, actions, rewards, next_states, dones, gamma
     )
+    # Fresh forward pass: meta_loss.backward() already freed the graph of
+    # sub_goal_vector, so backprop through it again would raise a
+    # "backward through the graph a second time" error.
+    sub_goal_vector_2 = _find_global_observation()
     sub_loss = compute_goal_alignment_loss(
-        w_global,
-        q_global,
-        sub_goal_vector.detach(),
+        w_norm,
+        q_norm,
+        sub_goal_vector_2,
         environment.beta1,
         environment.beta2,
     )
     total_loss = ac_loss + eta2 * sub_loss
 
+    actor_optimizer.zero_grad()
     local_optimizer.zero_grad()
     gat_optimizer.zero_grad()
 
@@ -189,6 +206,7 @@ def sample():
     torch.nn.utils.clip_grad_norm_(local_encoder.parameters(), max_norm=0.5)
     torch.nn.utils.clip_grad_norm_(GAT.parameters(), max_norm=0.5)
 
+    actor_optimizer.step()
     local_optimizer.step()
     gat_optimizer.step()
 
@@ -263,6 +281,7 @@ subgoal_optimizer = torch.optim.Adam(
 
 local_optimizer = torch.optim.Adam(local_encoder.parameters(), lr=5e-5)
 gat_optimizer = torch.optim.Adam(GAT.parameters(), lr=5e-5)
+actor_optimizer = torch.optim.Adam(actor_critic.parameters(), lr=5e-5)
 
 
 def save_models():
@@ -290,6 +309,7 @@ def save_models():
             "subgoal_optimizer": subgoal_optimizer.state_dict(),
             "local_optimizer": local_optimizer.state_dict(),
             "gat_optimizer": gat_optimizer.state_dict(),
+            "actor_optimizer": actor_optimizer.state_dict(),
             "timestamp": timestamp,
             "beta1": environment.beta1,
             "beta2": environment.beta2,
@@ -385,6 +405,8 @@ def load_models(model_path):
     subgoal_optimizer.load_state_dict(training_state["subgoal_optimizer"])
     local_optimizer.load_state_dict(training_state["local_optimizer"])
     gat_optimizer.load_state_dict(training_state["gat_optimizer"])
+    if "actor_optimizer" in training_state:
+        actor_optimizer.load_state_dict(training_state["actor_optimizer"])
 
     # Load hyperparameters
     environment.beta1 = training_state["beta1"]

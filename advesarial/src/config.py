@@ -19,4 +19,4 @@ class Config:
         self.metrics = self.cluster_config["metrics"]
 
 
-config = Config("clusters/louvian/osm_clusters.json")
+config = Config("clusters/leiden/cologne8_clusters.json")
