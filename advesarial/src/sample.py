@@ -4,7 +4,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import torch
 from agents import ActorCritic
-from config import config
+from config import SCENARIO, config
 from environment import Environment
 from memory import ReplayBuffer
 from schema import TraciConfig, TransformerEncoderConfig
@@ -18,7 +18,7 @@ local_encoder = LocalEncoder()
 GAT = GATLayer(feature_dim=64)
 actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
 
-traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
+traci_config = TraciConfig(config_path=f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg")
 traci_service = TraciService(traci_config)
 traci_service.start_simulation()
 
@@ -86,8 +86,6 @@ def _find_local_observations():
     observations = traci_service.get_observations()
     observations = __normalize_states(observations)
 
-    print(observations.shape)
-
     hidden_state = local_encoder(observations)
     local_features = GAT(hidden_state, adjacency_list)
 
@@ -131,7 +129,6 @@ def execute():
 
 def sample():
 
-    print(len(buffer))
     if len(buffer) < batch_size:
         return
 
@@ -141,9 +138,6 @@ def sample():
 
     w_global, q_global = traci_service.compute_global_state_now()
     rg = environment.compute_global_reward()
-    print("W_global: ", w_global)
-    print("Q_global: ", q_global)
-    print(rg)
 
     meta_loss = compute_meta_loss(sub_goal_vector, w_global, q_global, rg, eta1)
 

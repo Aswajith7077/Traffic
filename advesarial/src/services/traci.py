@@ -46,7 +46,6 @@ class TraciService:
         if not os.path.isabs(config_path):
             config_path = os.path.abspath(config_path)
 
-        print("config_path: ", config_path)
         self.config_path = config_path
 
     def _build_sumo_command(self) -> list:
@@ -64,7 +63,19 @@ class TraciService:
         ]
         if self.config.use_gui:
             cmd += ["--delay", str(self.config.delay)]
+        cmd += self.__route_file_override()
         return cmd
+
+    def __route_file_override(self) -> list:
+        """Prefer a specific demand route file (e.g. arterial4x4_42.rou.xml) over the sumocfg default."""
+        route = os.environ.get("TRAFFIC_ROUTE")
+        scenario = os.environ.get("TRAFFIC_SCENARIO", "manhattan")
+        if route is None:
+            return []
+        route_file = os.path.abspath(f"../scenarios/{scenario}/{scenario}_{route}.rou.xml")
+        if not os.path.exists(route_file):
+            raise FileNotFoundError(f"Route file not found: {route_file}")
+        return ["--route-files", route_file]
 
     def start_simulation(self):
         cmd = self._build_sumo_command()
@@ -451,8 +462,12 @@ class TraciService:
         collisions = traci.simulation.getCollisions()
 
         for col in collisions:
-            collider = col.colliderID
-            victim = col.victimID
+            # SUMO >= 1.20 uses "collider"/"victim"; older versions used "colliderID"/"victimID"
+            collider = getattr(col, "collider", None) or getattr(col, "colliderID", None)
+            victim = getattr(col, "victim", None) or getattr(col, "victimID", None)
+
+            if collider is None or victim is None:
+                continue
 
             # Determine types
             collider_is_vehicle = collider in traci.vehicle.getIDList()

@@ -1,0 +1,35 @@
+--- Baseline (actuated) [arterial4x4] ---
+Vehicles: 1150
+Avg travel time: 830.22s
+Avg waiting time: 589.41s
+
+--- Baseline (actuated) [arterial4x4] ---
+Vehicles: 1150
+Avg travel time: 830.22s
+Avg waiting time: 589.41s
+
+--- Baseline (actuated) [cologne8] ---
+Vehicles: 1995
+Avg travel time: 114.39s
+Avg waiting time: 29.27s
+
+--- Baseline (actuated) [ingolstadt21] ---
+Vehicles: 3997
+Avg travel time: 295.31s
+Avg waiting time: 103.01s
+
+--- Baseline (actuated) [arterial4x4] ---
+Vehicles: 1150
+Avg travel time: 830.22s
+Avg waiting time: 589.41s
+
+--- Baseline (actuated) [cologne8] ---
+Vehicles: 1995
+Avg travel time: 114.39s
+Avg waiting time: 29.27s
+
+--- Baseline (actuated) [ingolstadt21] ---
+Vehicles: 3997
+Avg travel time: 295.31s
+Avg waiting time: 103.01s
+

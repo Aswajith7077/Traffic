@@ -4,7 +4,7 @@ from datetime import datetime
 import torch
 import traci
 from agents import ActorCritic
-from config import config
+from config import SCENARIO, config
 from environment import Environment
 from schema import TraciConfig, TransformerEncoderConfig
 from services import TraciService
@@ -14,7 +14,7 @@ from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 def evaluate_models(model_dir, steps=500):
     print("Initializing environment...")
-    traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
+    traci_config = TraciConfig(config_path=f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg")
 
     traci_service = TraciService(traci_config)
     traci_service.start_simulation()

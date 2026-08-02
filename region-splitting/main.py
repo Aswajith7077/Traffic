@@ -1,4 +1,6 @@
+import argparse
 import json
+import os
 
 from schema import TraciConfig
 from services import LeidenService, LouvianService, TraciService
@@ -6,7 +8,7 @@ from services import LeidenService, LouvianService, TraciService
 
 def perform_louvian(traci_service: TraciService, module_name: str):
 
-    louvian_service = LouvianService(f"sumo/{module_name}/{module_name}.net.xml", traci_service)
+    louvian_service = LouvianService(f"../scenarios/{module_name}/{module_name}.net.xml", traci_service)
     louvian_service.build_graph()
     clusters = louvian_service.get_clusters()
     louvian_service.generate_visualization(clusters["clusters"], f"visualizations/louvian/{module_name}.png")
@@ -16,7 +18,7 @@ def perform_louvian(traci_service: TraciService, module_name: str):
 
 
 def perform_leiden(traci_service: TraciService, module_name: str):
-    leiden_service = LeidenService(f"sumo/{module_name}/{module_name}.net.xml", traci_service)
+    leiden_service = LeidenService(f"../scenarios/{module_name}/{module_name}.net.xml", traci_service)
     leiden_service.build_graph()
     clusters = leiden_service.get_clusters()
     leiden_service.generate_visualization(clusters["clusters"], f"visualizations/leiden/{module_name}.png")
@@ -26,7 +28,7 @@ def perform_leiden(traci_service: TraciService, module_name: str):
 
 
 def main(module_name: str):
-    config = TraciConfig(config_path=f"sumo/{module_name}/{module_name}.sumocfg")
+    config = TraciConfig(config_path=f"../scenarios/{module_name}/{module_name}.sumocfg")
     traci_service = TraciService(config)
 
     traci_service.start_simulation()
@@ -36,5 +38,11 @@ def main(module_name: str):
 
 
 if __name__ == "__main__":
-    # Only two options either "simple" or "osm"
-    main("manhattan")
+    parser = argparse.ArgumentParser(description="Region splitting (Leiden clustering)")
+    parser.add_argument(
+        "--scenario",
+        default=os.environ.get("TRAFFIC_SCENARIO", "manhattan"),
+        help="Scenario dataset to cluster (default: manhattan)",
+    )
+    args = parser.parse_args()
+    main(args.scenario)

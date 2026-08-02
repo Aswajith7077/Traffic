@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-07-30T14:59:01.222634+05:30 by Eclipse SUMO sumo 1.25.0
+<!-- generated on 2026-07-30T14:53:11.490164+05:30 by Eclipse SUMO sumo 1.25.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="/home/aswajiths/Documents/Traffic/advesarial/sumo/manhattan.net.xml"/>
-        <route-files value="/home/aswajiths/Documents/Traffic/advesarial/sumo/manhattan.passenger.trips.xml"/>
+        <net-file value="/home/aswajiths/Documents/Traffic/region-splitting/sumo/manhattan/manhattan.net.xml"/>
+        <route-files value="/home/aswajiths/Documents/Traffic/region-splitting/sumo/manhattan/manhattan.passenger.trips.xml"/>
+        <junction-taz value="true"/>
     </input>
 
     <output>
-        <tripinfo-output value="/home/aswajiths/Documents/Traffic/advesarial/sumo/tripinfos.xml"/>
-        <statistic-output value="/home/aswajiths/Documents/Traffic/advesarial/sumo/stats.xml"/>
+        <tripinfo-output value="/home/aswajiths/Documents/Traffic/region-splitting/sumo/manhattan/tripinfos.xml"/>
+        <statistic-output value="/home/aswajiths/Documents/Traffic/region-splitting/sumo/manhattan/stats.xml"/>
     </output>
 
     <time>
@@ -34,7 +35,7 @@
     </report>
 
     <traci_server>
-        <remote-port value="34201"/>
+        <remote-port value="38735"/>
     </traci_server>
 
     <gui_only>
@@ -42,3 +43,7 @@
     </gui_only>
 
 </sumoConfiguration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+</statistics>

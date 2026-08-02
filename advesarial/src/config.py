@@ -1,4 +1,7 @@
 import json
+import os
+
+SCENARIO = os.environ.get("TRAFFIC_SCENARIO", "manhattan")
 
 
 class Config:
@@ -19,4 +22,4 @@ class Config:
         self.metrics = self.cluster_config["metrics"]
 
 
-config = Config("clusters/louvian/manhattan_clusters.json")
+config = Config(f"clusters/leiden/{SCENARIO}_clusters.json")

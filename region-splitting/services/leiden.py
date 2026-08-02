@@ -15,8 +15,10 @@ class LeidenService(BaseClusteringService):
         self.graph = ig.Graph(directed=True)
 
     def build_graph(self):
+        print("  Building edge weight profile (may take a while on large networks)...")
         self.compute_weights()
 
+        print("  Constructing graph from network edges...")
         vertices = set()
         edges_to_add = []
 
@@ -40,6 +42,8 @@ class LeidenService(BaseClusteringService):
         for source, destination, weight in edges_to_add:
             self.graph.add_edge(source, destination, weight=weight)
 
+        print(f"  Graph built: {len(self.graph.vs)} nodes, {len(self.graph.es)} edges")
+
         # for v in self.graph.vs:
         #     print(v["name"], self.graph.degree(v.index))
 
@@ -50,7 +54,8 @@ class LeidenService(BaseClusteringService):
     def compute_weights(self, max_iter=1000):
 
         edge_weights = {}
-        for _ in range(max_iter):
+        log_interval = max(1, max_iter // 10)
+        for i in range(max_iter):
             self.traci_service.step()
 
             for edge in self.net.getEdges():
@@ -60,10 +65,14 @@ class LeidenService(BaseClusteringService):
                 weight = self.traci_service.get_edge_weight(edge)
                 edge_weights[edge.getID()] = edge_weights.get(edge.getID(), 0) + weight
 
+            if (i + 1) % log_interval == 0:
+                print(f"  compute_weights: {i + 1}/{max_iter} steps completed")
+
         for key in edge_weights:
             edge_weights[key] /= max_iter
 
         self.edge_weights = edge_weights
+        print(f"  compute_weights: finished ({max_iter} steps averaged)")
 
     def get_clusters(self):
         partition = leidenalg.find_partition(
