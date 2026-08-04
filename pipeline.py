@@ -55,11 +55,17 @@ def run(cmd, cwd, env):
     return result.returncode == 0
 
 
-def pipeline_env(scenario, route):
+def pipeline_env(scenario, route=None, episodes=None, episode_steps=None, save_every=None):
     env = dict(os.environ)
     env["TRAFFIC_SCENARIO"] = scenario
     if route is not None:
         env["TRAFFIC_ROUTE"] = str(route)
+    if episodes is not None:
+        env["TRAFFIC_EPISODES"] = str(episodes)
+    if episode_steps is not None:
+        env["TRAFFIC_EPISODE_STEPS"] = str(episode_steps)
+    if save_every is not None:
+        env["TRAFFIC_SAVE_EVERY"] = str(save_every)
     return env
 
 
@@ -168,18 +174,18 @@ def step_copy(scenario, route):
     return True
 
 
-def step_train(scenario, route):
-    banner(f"Step 4/5: Training RL agent (1000 episodes) — {scenario}")
+def step_train(scenario, route, episodes, episode_steps, save_every):
+    banner(f"Step 4/5: Training RL agent ({episodes} episodes of {episode_steps}s) — {scenario}")
 
     return run(
         [VENV_PYTHON, "src/sample.py"],
         cwd=ADVESARIAL,
-        env=pipeline_env(scenario, route),
+        env=pipeline_env(scenario, route, episodes, episode_steps, save_every),
     )
 
 
 def step_eval(scenario, route):
-    banner(f"Step 5/5: Evaluating trained model — {scenario}")
+    banner(f"Step 5/5: Evaluating trained model ({scenario}) — latest checkpoint in newest run folder")
 
     return run(
         [VENV_PYTHON, "src/evaluate.py", "--steps", "500"],
@@ -213,10 +219,31 @@ def main():
         help="Demand route file index for scenarios with multiple route files "
         "e.g. arterial4x4_N.rou.xml (default: the sumocfg's default route)",
     )
+    parser.add_argument(
+        "--episodes",
+        type=int,
+        default=10,
+        help="Number of episodes to train (default: 10)",
+    )
+    parser.add_argument(
+        "--episode-steps",
+        type=int,
+        default=1000,
+        help="Sim-seconds per training episode (default: 1000)",
+    )
+    parser.add_argument(
+        "--save-every",
+        type=int,
+        default=10,
+        help="Save a checkpoint every N episodes (default: 10)",
+    )
     args = parser.parse_args()
 
     scenario = args.scenario
     route = args.route
+    episodes = args.episodes
+    episode_steps = args.episode_steps
+    save_every = args.save_every
 
     if route is not None and not (scenario_dir(scenario) / f"{scenario}_{route}.rou.xml").exists():
         print(f"  ERROR: route file not found: {scenario_dir(scenario) / f'{scenario}_{route}.rou.xml'}")
@@ -227,13 +254,13 @@ def main():
             lambda: step_baseline(scenario, route),
             lambda: step_cluster(scenario, route),
             lambda: step_copy(scenario, route),
-            lambda: step_train(scenario, route),
+            lambda: step_train(scenario, route, episodes, episode_steps, save_every),
             lambda: step_eval(scenario, route),
         ],
         "baseline": [lambda: step_baseline(scenario, route)],
         "cluster": [lambda: step_cluster(scenario, route)],
         "copy": [lambda: step_copy(scenario, route)],
-        "train": [lambda: step_train(scenario, route)],
+        "train": [lambda: step_train(scenario, route, episodes, episode_steps, save_every)],
         "eval": [lambda: step_eval(scenario, route)],
     }
 

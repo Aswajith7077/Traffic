@@ -33,3 +33,8 @@ Vehicles: 3997
 Avg travel time: 295.31s
 Avg waiting time: 103.01s
 
+--- Baseline (actuated) [manhattan] ---
+Vehicles: 1800
+Avg travel time: 223.41s
+Avg waiting time: 103.23s
+

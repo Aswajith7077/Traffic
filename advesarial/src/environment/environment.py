@@ -181,4 +181,9 @@ class Environment:
 
     def reset(self):
         self.t = 0
-        return self.get_observations()
+        self.reward_mean = 0.0
+        self.reward_var = 1.0
+        self.reward_count = 1e-4
+        self.prev_queue = 0
+        self.prev_wait = 0
+        return self.traci_service.get_observations()

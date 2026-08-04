@@ -24,5 +24,8 @@ class ReplayBuffer:
             torch.tensor(dones, dtype=torch.float32).unsqueeze(1),
         )
 
+    def clear(self):
+        self.buffer.clear()
+
     def __len__(self):
         return len(self.buffer)

@@ -11,7 +11,7 @@ Current training in `advesarial/src/sample.py` is **not episodic**:
   eval step count).
 
 Goal: train each **episode = 1000 sim-seconds of fresh demand**, restarting SUMO per episode,
-and store trained models in a **new dedicated folder**.
+and store all checkpoints of a training session in **one dedicated folder**.
 
 ## Findings That Shape the Plan
 
@@ -21,7 +21,7 @@ and store trained models in a **new dedicated folder**.
 | 2 | `Environment.reset()` is broken — returns `self.get_observations()` which does not exist; only zeroes `t`; does not reset reward stats | `environment.py:182-184` |
 | 3 | `traci_service.reset_simulation()` exists and is correct (close + restart SUMO, re-inits phase state) | `services/traci.py:83-85` |
 | 4 | `ReplayBuffer` samples across the whole accumulated history (off-policy for REINFORCE); no `clear()` | `memory/replay_buffer.py` |
-| 5 | Models saved flat to `../models/run_<timestamp>/`; `evaluate.py` auto-select only scans `models/run_*` (non-recursive) | `sample.py:262`, `evaluate.py:212-215` |
+| 5 | `save_models()` stamps a new `run_<timestamp>` folder on **every** save → a session fragments into one folder per checkpoint (plus per-save plots) and seconds-collisions are possible; `evaluate.py` auto-select only scans flat `models/run_*` (non-recursive) | `sample.py:262-264`, `evaluate.py:212-215` |
 | 6 | All model components are stateless across calls (Transformer + positional, GAT, LocalEncoder; LSTM gets fresh hidden each `_find_global_observation`) | `models/`, `services/encoders/` |
 
 ## Changes
@@ -36,6 +36,7 @@ TOTAL_EPISODES = int(os.environ.get("TRAFFIC_EPISODES", "10"))
 SAVE_EVERY = int(os.environ.get("TRAFFIC_SAVE_EVERY", "10"))
 
 def main():
+    run_dir = create_run_dir()              # ONE session folder, created once
     try:
         for ep in range(TOTAL_EPISODES):
             reset_episode()
@@ -43,16 +44,16 @@ def main():
                 execute()
                 sample()
             if (ep + 1) % SAVE_EVERY == 0 or ep == TOTAL_EPISODES - 1:
-                save_models()
+                save_models(run_dir, ep + 1)
     except KeyboardInterrupt:
         print("\nTraining interrupted. Saving models...")
-        save_models()
+        save_models(run_dir, current_ep)
     except Exception as e:
         print(f"\nTraining error: {e}. Saving models...")
-        save_models()
+        save_models(run_dir, current_ep)
         raise
     finally:
-        save_models()
+        save_models(run_dir, TOTAL_EPISODES)
         print("Training completed. Final models saved.")
 ```
 
@@ -86,19 +87,44 @@ def clear(self):
 
 So each 1000s episode starts with an empty on-policy buffer.
 
-### 4. Models → new folder (`sample.py` + `evaluate.py` + `pipeline.py`)
+### 4. Models → one folder per training session (`sample.py` + `evaluate.py`)
 
-- `save_models()` writes to `../models/<scenario>/run_<YYYYMMDD_HHMMSS>/`
-  (uses `config.SCENARIO`, defaults to `manhattan`).
-  → Models from this new episodic training land in a fresh, clearly-named folder.
-- `load_models(model_path)` unchanged (path passed in).
-- `evaluate.py` auto-select: when no `--model-dir`, scan `../models/<scenario>/run_*/`
-  recursively and pick the newest `run_*` folder.
-- Visualizations + `metrics.txt` snapshots unchanged (timestamped per run).
+**Problem with per-save timestamps:** the current `save_models()` stamps a *new*
+`run_<YYYYMMDD_HHMMSS>` folder on **every** call (sample.py:262-264). A single training
+session therefore fragments into one `run_*` folder *per checkpoint*, plus per-save plot
+timestamps, and seconds-collisions are possible. `evaluate.py` auto-select (newest folder)
+then only ever sees the final checkpoint.
+
+**Revised scheme — session folder created ONCE, episode-indexed checkpoints inside:**
+
+```
+models/<scenario>/run_<sessionts>/        # created once at training start (config.SCENARIO)
+  checkpoint_ep010.pth                     # ALL model states + optimizer states + beta1/beta2
+  checkpoint_ep020.pth
+  ...
+  checkpoint_ep100.pth                    # final
+  plots/
+    meta_loss_ep010.png
+    subpolicy_loss_ep010.png
+    rewards_ep010.png
+  metrics.txt                           # appended snapshots (unchanged)
+```
+
+- `save_models(run_dir, ep)` → writes a single `checkpoint_ep<ep:03d>.pth` containing every model
+  state dict **and** the optimizer states + `beta1`/`beta2`, inside the **existing** session
+  folder (no timestamp regeneration).
+- `create_run_dir()` → `../models/<scenario>/run_<YYYYMMDD_HHMMSS>/`, created exactly once in
+  `main()`. Scenario from `config.SCENARIO` (defaults `manhattan`).
+- `load_models(model_dir, ep=None)` → loads the given checkpoint, or the highest episode index
+  in that run folder by default (for eval/resume).
+- `evaluate.py` auto-select: when no `--model-dir`, scan `../models/<scenario>/run_*/` (the
+  newest), then load its latest `checkpoint_ep*.pth`.
 
 ### 5. Evaluation stays at 500s (side reference)
 
 - No change to eval step count. `pipeline.py eval` keeps passing `--steps 500`.
+- The 500s run is a quick side-reference; the checkpoint chosen is the latest one in the
+  newest session folder.
 
 ### 6. Pipeline wiring (`pipeline.py`)
 
@@ -111,8 +137,8 @@ So each 1000s episode starts with an empty on-policy buffer.
 ## Defaults (open for confirmation)
 
 - `TOTAL_EPISODES = 10` (each 1000s episode ≈ 2-3 min wall on arterial4x4 → ~30 min/run).
-- Model folder layout: `models/<scenario>/run_<ts>/` (override if a different layout wanted).
-- `SAVE_EVERY = 10` → one checkpoint per 10 episodes + final save.
+- One session folder `models/<scenario>/run_<sessionts>/`, no per-checkpoint timestamps.
+- `SAVE_EVERY = 10` → one checkpoint per 10 episodes + final save per run folder.
 
 ## Out of scope
 

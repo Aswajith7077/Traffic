@@ -1,3 +1,4 @@
+import glob
 import os
 from datetime import datetime
 
@@ -38,6 +39,10 @@ gamma = 0.99
 
 eta1 = 0.1
 eta2 = 0.1
+
+EPISODE_STEPS = int(os.environ.get("TRAFFIC_EPISODE_STEPS", "1000"))
+TOTAL_EPISODES = int(os.environ.get("TRAFFIC_EPISODES", "10"))
+SAVE_EVERY = int(os.environ.get("TRAFFIC_SAVE_EVERY", "10"))
 
 meta_losses = []
 ac_losses = []
@@ -247,43 +252,44 @@ local_optimizer = torch.optim.Adam(local_encoder.parameters(), lr=5e-5)
 gat_optimizer = torch.optim.Adam(GAT.parameters(), lr=5e-5)
 
 
-def save_models():
-    """Save all trained models with timestamp"""
-    # Create models directory if it doesn't exist
-    models_dir = "../models"
-    os.makedirs(models_dir, exist_ok=True)
-
-    # Generate timestamp for model directories
+def create_run_dir():
+    """Create ONE session folder for this training run (no per-checkpoint timestamps)."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = f"{models_dir}/run_{timestamp}"
+    run_dir = f"../models/{SCENARIO}/run_{timestamp}"
+    os.makedirs(run_dir, exist_ok=True)
+    return run_dir
+
+
+def save_models(run_dir, episode):
+    """Save all trained models as a session checkpoint inside the run folder."""
     os.makedirs(run_dir, exist_ok=True)
 
-    # Save all model components
-    torch.save(transformer_encoder.state_dict(), f"{run_dir}/transformer_encoder.pth")
-    torch.save(subgoal_generator.state_dict(), f"{run_dir}/subgoal_generator.pth")
-    torch.save(local_encoder.state_dict(), f"{run_dir}/local_encoder.pth")
-    torch.save(GAT.state_dict(), f"{run_dir}/gat.pth")
-    torch.save(actor_critic.state_dict(), f"{run_dir}/actor_critic.pth")
+    checkpoint_path = f"{run_dir}/checkpoint_ep{episode:03d}.pth"
 
-    # Save optimizers and env configs
     torch.save(
         {
+            "transformer_encoder": transformer_encoder.state_dict(),
+            "subgoal_generator": subgoal_generator.state_dict(),
+            "local_encoder": local_encoder.state_dict(),
+            "GAT": GAT.state_dict(),
+            "actor_critic": actor_critic.state_dict(),
             "transformer_optimizer": transformer_optimizer.state_dict(),
             "subgoal_optimizer": subgoal_optimizer.state_dict(),
             "local_optimizer": local_optimizer.state_dict(),
             "gat_optimizer": gat_optimizer.state_dict(),
-            "timestamp": timestamp,
+            "episode": episode,
+            "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
             "beta1": environment.beta1,
             "beta2": environment.beta2,
         },
-        f"{run_dir}/training_state.pth",
+        checkpoint_path,
     )
 
-    print(f"Models saved successfully to {run_dir}/")
+    print(f"Checkpoint saved to {checkpoint_path}")
 
-    # Generate visual training plots
-    viz_dir = "../visualizations"
-    os.makedirs(viz_dir, exist_ok=True)
+    # Generate visual training plots per checkpoint
+    plots_dir = f"{run_dir}/plots"
+    os.makedirs(plots_dir, exist_ok=True)
 
     plt.figure()
     plt.plot(meta_losses, label="Meta Loss")
@@ -291,7 +297,7 @@ def save_models():
     plt.ylabel("Loss")
     plt.title("Meta Policy Loss Curve")
     plt.legend()
-    plt.savefig(f"{viz_dir}/meta_loss_{timestamp}.png")
+    plt.savefig(f"{plots_dir}/meta_loss_ep{episode:03d}.png")
     plt.close()
 
     plt.figure()
@@ -301,7 +307,7 @@ def save_models():
     plt.ylabel("Loss")
     plt.title("Sub-Policy Loss Curves")
     plt.legend()
-    plt.savefig(f"{viz_dir}/subpolicy_loss_{timestamp}.png")
+    plt.savefig(f"{plots_dir}/subpolicy_loss_ep{episode:03d}.png")
     plt.close()
 
     plt.figure()
@@ -310,13 +316,14 @@ def save_models():
     plt.ylabel("Reward")
     plt.title("Training Global Reward Curve")
     plt.legend()
-    plt.savefig(f"{viz_dir}/rewards_{timestamp}.png")
+    plt.savefig(f"{plots_dir}/rewards_ep{episode:03d}.png")
     plt.close()
 
-    print(f"Training charts saved to {viz_dir}/")
+    print(f"Training charts saved to {plots_dir}/")
 
     with open("../metrics.txt", "a") as f:
-        f.write(f"--- Training Snapshot: {timestamp} ---\n")
+        f.write(f"--- Training Snapshot: {SCENARIO} run_{episode} ---\n")
+        f.write(f"Episode: {episode}\n")
         f.write(f"Steps taken: {len(meta_losses)}\n")
         if meta_losses:
             f.write(f"Latest Meta Loss: {meta_losses[-1]:.4f}\n")
@@ -326,65 +333,79 @@ def save_models():
         f.write("\n")
 
 
-def load_models(model_path):
-    """Load trained models from file"""
+def latest_checkpoint(model_dir):
+    """Return the path of the highest-indexed checkpoint in a run folder."""
+    checkpoints = sorted(glob.glob(f"{model_dir}/checkpoint_ep*.pth"))
+    return checkpoints[-1] if checkpoints else None
+
+
+def load_models(model_path, episode=None):
+    """Load trained models, optionally at a specific episode checkpoint."""
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model directory not found: {model_path}")
 
-    # Load model states
-    transformer_encoder.load_state_dict(
-        torch.load(
-            f"{model_path}/transformer_encoder.pth",
-            map_location="cpu",
-            weights_only=True,
-        )
-    )
-    subgoal_generator.load_state_dict(
-        torch.load(f"{model_path}/subgoal_generator.pth", map_location="cpu", weights_only=True)
-    )
-    local_encoder.load_state_dict(torch.load(f"{model_path}/local_encoder.pth", map_location="cpu", weights_only=True))
-    GAT.load_state_dict(torch.load(f"{model_path}/gat.pth", map_location="cpu", weights_only=True))
-    actor_critic.load_state_dict(torch.load(f"{model_path}/actor_critic.pth", map_location="cpu", weights_only=True))
+    if episode is not None:
+        checkpoint_path = f"{model_path}/checkpoint_ep{episode:03d}.pth"
+    else:
+        checkpoint_path = latest_checkpoint(model_path)
 
-    training_state = torch.load(f"{model_path}/training_state.pth", map_location="cpu", weights_only=False)
+    if not checkpoint_path or not os.path.exists(checkpoint_path):
+        raise FileNotFoundError(f"No checkpoint found in {model_path}")
 
-    # Load optimizer states
-    transformer_optimizer.load_state_dict(training_state["transformer_optimizer"])
-    subgoal_optimizer.load_state_dict(training_state["subgoal_optimizer"])
-    local_optimizer.load_state_dict(training_state["local_optimizer"])
-    gat_optimizer.load_state_dict(training_state["gat_optimizer"])
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
 
-    # Load hyperparameters
-    environment.beta1 = training_state["beta1"]
-    environment.beta2 = training_state["beta2"]
+    transformer_encoder.load_state_dict(checkpoint["transformer_encoder"])
+    subgoal_generator.load_state_dict(checkpoint["subgoal_generator"])
+    local_encoder.load_state_dict(checkpoint["local_encoder"])
+    GAT.load_state_dict(checkpoint["GAT"])
+    actor_critic.load_state_dict(checkpoint["actor_critic"])
 
-    print(f"Models loaded successfully from {model_path}/")
-    print(f"Model timestamp: {training_state.get('timestamp', 'unknown')}")
+    transformer_optimizer.load_state_dict(checkpoint["transformer_optimizer"])
+    subgoal_optimizer.load_state_dict(checkpoint["subgoal_optimizer"])
+    local_optimizer.load_state_dict(checkpoint["local_optimizer"])
+    gat_optimizer.load_state_dict(checkpoint["gat_optimizer"])
 
-    return training_state
+    environment.beta1 = checkpoint["beta1"]
+    environment.beta2 = checkpoint["beta2"]
+
+    print(f"Models loaded successfully from {checkpoint_path}")
+    print(f"Checkpoint episode: {checkpoint.get('episode', 'unknown')}")
+
+    return checkpoint
+
+
+def reset_episode():
+    """Start a fresh 1000s episode: restart SUMO, reset env state, clear buffer."""
+    traci_service.reset_simulation()
+    environment.reset()
+    buffer.clear()
 
 
 def main():
+    run_dir = create_run_dir()
+    current_ep = 0
     try:
-        for t in range(1000):
-            execute()
-            sample()
+        for ep in range(TOTAL_EPISODES):
+            current_ep = ep + 1
+            reset_episode()
+            print(f"Episode {current_ep}/{TOTAL_EPISODES}")
 
-            # Save models every 100 episodes
-            if (t + 1) % 100 == 0:
-                save_models()
-                print(f"Episode {t + 1}: Models saved")
+            for t in range(EPISODE_STEPS):
+                execute()
+                sample()
+
+            if current_ep % SAVE_EVERY == 0 or current_ep == TOTAL_EPISODES:
+                save_models(run_dir, current_ep)
 
     except KeyboardInterrupt:
         print("\nTraining interrupted. Saving models...")
-        save_models()
+        save_models(run_dir, current_ep)
     except Exception as e:
         print(f"\nTraining error: {e}. Saving models...")
-        save_models()
+        save_models(run_dir, current_ep)
         raise
     finally:
-        # Final save
-        save_models()
+        save_models(run_dir, current_ep)
         print("Training completed. Final models saved.")
 
 

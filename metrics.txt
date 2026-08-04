@@ -898,3 +898,39 @@ Average Travel Time: 187.06 seconds
 Average Delay Time: 144.22 seconds
 Peak Total Queue Length: 345.00 vehicles
 
+--- Training Snapshot: manhattan run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: -0.3858
+Latest AC Loss: 0.6031
+Latest Sub Loss: 0.0008
+Latest Reward: -3.9000
+
+--- Training Snapshot: manhattan run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: -0.3858
+Latest AC Loss: 0.6031
+Latest Sub Loss: 0.0008
+Latest Reward: -3.9000
+
+--- Evaluation Snapshot: 20260416_010707 ---
+Evaluating Model: ../models/manhattan/run_20260802_173126
+Total Steps Evaluated: 1000
+Completed Vehicles: 98
+Average Queue Length: 128.94 vehicles
+Average Waiting Time: 37.24 seconds
+Average Travel Time: 258.82 seconds
+Average Delay Time: 225.57 seconds
+Peak Total Queue Length: 284.00 vehicles
+
+--- Evaluation Snapshot: 20260803_171240 ---
+Evaluating Model: ../models/manhattan/run_20260802_173126
+Total Steps Evaluated: 20
+Completed Vehicles: 0
+Average Queue Length: 4.40 vehicles
+Average Waiting Time: 0.00 seconds
+Average Travel Time: 0.00 seconds
+Average Delay Time: 0.00 seconds
+Peak Total Queue Length: 9.00 vehicles
+

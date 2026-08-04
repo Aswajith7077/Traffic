@@ -1,3 +1,4 @@
+import glob
 import os
 from datetime import datetime
 
@@ -12,9 +13,26 @@ from services import TraciService
 from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 
-def evaluate_models(model_dir, steps=500):
+def find_latest_model_dir(model_dir=None):
+    """Resolve the model directory from --model-dir, or auto-select the latest run."""
+    target_dir = model_dir
+    if not target_dir:
+        models_base = "../models"
+        if os.path.exists(models_base):
+            runs = sorted(glob.glob(os.path.join(models_base, SCENARIO, "run_*")))
+            if not runs:
+                runs = sorted(glob.glob(os.path.join(models_base, "run_*")))
+            if runs:
+                target_dir = max(runs, key=os.path.getmtime)
+                print(f"Auto-selected latest model directory: {target_dir}")
+    return target_dir
+
+
+def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=None):
     print("Initializing environment...")
-    traci_config = TraciConfig(config_path=f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg")
+    if config_path is None:
+        config_path = f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg"
+    traci_config = TraciConfig(config_path=config_path, use_gui=use_gui, delay=delay)
 
     traci_service = TraciService(traci_config)
     traci_service.start_simulation()
@@ -44,19 +62,31 @@ def evaluate_models(model_dir, steps=500):
 
     # Load models
     print(f"Loading weights from {model_dir}...")
-    transformer_encoder.load_state_dict(
-        torch.load(
-            f"{model_dir}/transformer_encoder.pth",
-            map_location="cpu",
-            weights_only=True,
+    latest = sorted(glob.glob(os.path.join(model_dir, "checkpoint_ep*.pth")))
+    if latest:
+        checkpoint = torch.load(latest[-1], map_location="cpu", weights_only=False)
+        transformer_encoder.load_state_dict(checkpoint["transformer_encoder"])
+        subgoal_generator.load_state_dict(checkpoint["subgoal_generator"])
+        local_encoder.load_state_dict(checkpoint["local_encoder"])
+        GAT.load_state_dict(checkpoint["GAT"])
+        actor_critic.load_state_dict(checkpoint["actor_critic"])
+        print(f"Loaded checkpoint: {latest[-1]}")
+    else:
+        transformer_encoder.load_state_dict(
+            torch.load(
+                f"{model_dir}/transformer_encoder.pth",
+                map_location="cpu",
+                weights_only=True,
+            )
         )
-    )
-    subgoal_generator.load_state_dict(
-        torch.load(f"{model_dir}/subgoal_generator.pth", map_location="cpu", weights_only=True)
-    )
-    local_encoder.load_state_dict(torch.load(f"{model_dir}/local_encoder.pth", map_location="cpu", weights_only=True))
-    GAT.load_state_dict(torch.load(f"{model_dir}/gat.pth", map_location="cpu", weights_only=True))
-    actor_critic.load_state_dict(torch.load(f"{model_dir}/actor_critic.pth", map_location="cpu", weights_only=True))
+        subgoal_generator.load_state_dict(
+            torch.load(f"{model_dir}/subgoal_generator.pth", map_location="cpu", weights_only=True)
+        )
+        local_encoder.load_state_dict(
+            torch.load(f"{model_dir}/local_encoder.pth", map_location="cpu", weights_only=True)
+        )
+        GAT.load_state_dict(torch.load(f"{model_dir}/gat.pth", map_location="cpu", weights_only=True))
+        actor_critic.load_state_dict(torch.load(f"{model_dir}/actor_critic.pth", map_location="cpu", weights_only=True))
 
     transformer_encoder.eval()
     subgoal_generator.eval()
@@ -116,45 +146,51 @@ def evaluate_models(model_dir, steps=500):
 
     print(f"Starting evaluation for {steps} steps...")
 
-    with torch.no_grad():
-        for t in range(steps):
-            # Unused explicitly in greedy greedy execution loop but compute global token to keep RNN states moving if any
-            _ = _find_global_observation()
-            final_state = _find_local_observations()
+    try:
+        with torch.no_grad():
+            for t in range(steps):
+                # Compute global token each step to keep RNN states moving
+                # (unused for the greedy action selection).
+                _ = _find_global_observation()
+                final_state = _find_local_observations()
 
-            action_prob, state_values = actor_critic(final_state)
-            action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
+                action_prob, state_values = actor_critic(final_state)
+                action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
 
-            # Store vehicle data before stepping because arrived vehicles can no
-            # longer be queried from TraCI after the simulation advances.
-            update_active_vehicle_metrics()
-            _, reward, done = environment.step(action)
+                # Store vehicle data before stepping because arrived vehicles can no
+                # longer be queried from TraCI after the simulation advances.
+                update_active_vehicle_metrics()
+                _, reward, done = environment.step(action)
 
-            current_time = traci.simulation.getTime()
-            for vehicle_id in traci.simulation.getArrivedIDList():
-                metrics = vehicle_metrics.pop(vehicle_id, None)
-                if metrics is None:
-                    continue
-                travel_time = current_time - metrics["entry_time"]
-                vehicle_travel_times.append(travel_time)
-                vehicle_delay_times.append(travel_time - metrics["free_flow_time"])
-                vehicle_waiting_times.append(metrics["waiting_time"])
+                current_time = traci.simulation.getTime()
+                for vehicle_id in traci.simulation.getArrivedIDList():
+                    metrics = vehicle_metrics.pop(vehicle_id, None)
+                    if metrics is None:
+                        continue
+                    travel_time = current_time - metrics["entry_time"]
+                    vehicle_travel_times.append(travel_time)
+                    vehicle_delay_times.append(travel_time - metrics["free_flow_time"])
+                    vehicle_waiting_times.append(metrics["waiting_time"])
 
-            # Fetch unnormalized raw values across the intersections
-            intersections = traci_service.get_all_intersections()
-            raw_queue = sum(traci_service.total_queue_length(i) for i in intersections)
+                # Fetch unnormalized raw values across the intersections
+                intersections = traci_service.get_all_intersections()
+                raw_queue = sum(traci_service.total_queue_length(i) for i in intersections)
 
-            total_queue_length.append(raw_queue)
+                total_queue_length.append(raw_queue)
 
-            if (t + 1) % 50 == 0:
-                print(
-                    f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, "
-                    f"Completed Vehicles: {len(vehicle_travel_times)}"
-                )
+                if (t + 1) % 50 == 0:
+                    print(
+                        f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, "
+                        f"Completed Vehicles: {len(vehicle_travel_times)}"
+                    )
 
-            if done:
-                print(f"Environment finished early at step {t}")
-                break
+                if done:
+                    print(f"Environment finished early at step {t}")
+                    break
+    except KeyboardInterrupt, traci.exceptions.FatalTraCIError:
+        print("\nSimulation interrupted (GUI closed). Exiting.")
+        traci_service.close_simulation()
+        return
 
     # Summarize results
     avg_queue = sum(total_queue_length) / len(total_queue_length)
@@ -205,14 +241,7 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=500, help="Number of steps to evaluate")
     args = parser.parse_args()
 
-    target_dir = args.model_dir
-    if not target_dir:
-        models_base = "../models"
-        if os.path.exists(models_base):
-            runs = [os.path.join(models_base, d) for d in os.listdir(models_base) if d.startswith("run_")]
-            if runs:
-                target_dir = max(runs, key=os.path.getmtime)
-                print(f"Auto-selected latest model directory: {target_dir}")
+    target_dir = find_latest_model_dir(args.model_dir)
 
     if not target_dir or not os.path.exists(target_dir):
         print("Error: Could not find any saved models in ../models/ and no valid --model-dir was provided.")
