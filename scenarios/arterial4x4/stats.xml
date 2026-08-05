@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-08-02T13:55:48.768452+05:30 by Eclipse SUMO sumo 1.25.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="arterial4x4.net.xml"/>
+        <route-files value="/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/arterial4x4_5.rou.xml"/>
+    </input>
+
+    <output>
+        <tripinfo-output value="/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/tripinfos.xml"/>
+        <statistic-output value="/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/stats.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+
+    <report>
+        <no-step-log value="true"/>
+    </report>
+
+</sumoConfiguration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+    <performance clockBegin="1785659148.78" clockEnd="1785659155.69" clockDuration="6.91" traciDuration="2.36" realTimeFactor="520.68" vehicleUpdatesPerSecond="187270.75" personUpdatesPerSecond="0.00" begin="0.00" end="3600.00" duration="3600.00"/>
+    <vehicles loaded="2484" inserted="1589" running="439" waiting="895"/>
+    <teleports total="0" jam="0" yield="0" wrongLane="0"/>
+    <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
+    <persons loaded="0" running="0" jammed="0"/>
+    <personTeleports total="0" abortWait="0" wrongDest="0"/>
+    <vehicleTripStatistics count="1150" routeLength="1154.45" speed="1.87" duration="830.22" waitingTime="589.41" timeLoss="742.91" departDelay="233.78" departDelayWaiting="-1.00" totalTravelTime="954748.00" totalDepartDelay="268845.40"/>
+    <pedestrianStatistics number="0" routeLength="0.00" duration="0.00" timeLoss="0.00"/>
+    <rideStatistics number="0"/>
+    <transportStatistics number="0"/>
+</statistics>

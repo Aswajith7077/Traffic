@@ -36,7 +36,7 @@ Each full run executes: baseline SUMO simulation → Leiden region splitting →
 python pipeline.py --scenario cologne8 baseline
 python pipeline.py --scenario cologne8 cluster
 python pipeline.py --scenario cologne8 copy
-python pipeline.py --scenario cologne8 train --episodes 10 --episode-steps 1000
+python pipeline.py --scenario cologne8 train --episodes 10 --episode-steps 3000
 python pipeline.py --scenario cologne8 eval
 
 # === manhattan ===

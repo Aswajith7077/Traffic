@@ -36,5 +36,5 @@ if __name__ == "__main__":
         steps=args.steps,
         use_gui=True,
         delay=args.delay,
-        config_path=f"sumo/{SCENARIO}.sumocfg",
+        config_path=f"../scenarios/cologne8/cologne8.sumocfg"
     )

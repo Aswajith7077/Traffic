@@ -934,3 +934,55 @@ Average Travel Time: 0.00 seconds
 Average Delay Time: 0.00 seconds
 Peak Total Queue Length: 9.00 vehicles
 
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 5621.5786
+Latest AC Loss: 1.0351
+Latest Sub Loss: 1128.6698
+Latest Reward: -217.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 5621.5786
+Latest AC Loss: 1.0351
+Latest Sub Loss: 1128.6698
+Latest Reward: -217.7000
+
+--- Evaluation Snapshot: 20260804_184319 ---
+Evaluating Model: ../models/cologne8/run_20260804_181646
+Total Steps Evaluated: 500
+Completed Vehicles: 113
+Average Queue Length: 252.75 vehicles
+Average Waiting Time: 24.50 seconds
+Average Travel Time: 147.27 seconds
+Average Delay Time: 104.07 seconds
+Peak Total Queue Length: 360.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 29850
+Latest Meta Loss: 43820.1680
+Latest AC Loss: 1.3206
+Latest Sub Loss: 8777.4297
+Latest Reward: -669.8000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 29850
+Latest Meta Loss: 43820.1680
+Latest AC Loss: 1.3206
+Latest Sub Loss: 8777.4297
+Latest Reward: -669.8000
+
+--- Evaluation Snapshot: 20260804_203649 ---
+Evaluating Model: ../models/cologne8/run_20260804_191558
+Total Steps Evaluated: 500
+Completed Vehicles: 115
+Average Queue Length: 193.51 vehicles
+Average Waiting Time: 13.96 seconds
+Average Travel Time: 85.57 seconds
+Average Delay Time: 45.36 seconds
+Peak Total Queue Length: 289.00 vehicles
+
