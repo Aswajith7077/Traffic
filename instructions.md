@@ -150,3 +150,9 @@ Notes:
 - Run everything from the repo root. Do NOT `cd advesarial/src` — relative paths break.
 - `grid4x4` is excluded (no traffic lights in the network).
 - Use `python pipeline.py train` for training — `advesarial/src/train.py` is broken.
+
+
+
+# Full pipeline (cluster + copy + train + eval)
+uv run python pipeline.py --scenario cologne8 train --episodes 20 --episode-steps 3600 --save-every 10
+

@@ -986,3 +986,19 @@ Average Travel Time: 85.57 seconds
 Average Delay Time: 45.36 seconds
 Peak Total Queue Length: 289.00 vehicles
 
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 144.8194
+Latest AC Loss: 1.7208
+Latest Sub Loss: 29.6479
+Latest Reward: -34.2000
+
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 144.8194
+Latest AC Loss: 1.7208
+Latest Sub Loss: 29.6479
+Latest Reward: -34.2000
+
