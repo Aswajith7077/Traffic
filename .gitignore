@@ -9,5 +9,3 @@ ai-models/
 /models/
 visualizations/
 graphify-out/
-
-cd advesarial && TRAFFIC_SCENARIO=cologne8 python run_gui.py --model-dir models/cologne8/run_20260804_191459 --steps 500

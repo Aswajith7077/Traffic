@@ -28,7 +28,7 @@ def find_latest_model_dir(model_dir=None):
     return target_dir
 
 
-def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=None):
+def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=None, verbose=False):
     print("Initializing environment...")
     if config_path is None:
         config_path = f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg"
@@ -50,6 +50,33 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
 
     m = len(clusters)
 
+    # Inspect the checkpoint first so the SubGoalGenerator is built with the exact
+    # architecture used during training (M clusters, d_g = 2 * num traffic lights).
+    # Building from the live cluster file alone can silently produce a mismatched
+    # model and fail with an opaque tensor-size error.
+    checkpoint_path = None
+    checkpoint = None
+    checkpoint_M = m
+    subgoal_dg = 2 * len(tls_set)
+    latest = sorted(glob.glob(os.path.join(model_dir, "checkpoint_ep*.pth")))
+    if latest:
+        checkpoint_path = latest[-1]
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+        ffn0 = checkpoint["subgoal_generator"]["ffn.0.weight"]
+        subgoal_dg = ffn0.shape[0]
+        checkpoint_M = (ffn0.shape[1] - 128) // 128
+
+    print(
+        f"Architecture: detected m={m} clusters, {len(tls_set)} traffic lights; "
+        f"checkpoint trained with M={checkpoint_M}, d_g={subgoal_dg}."
+    )
+    if checkpoint_M != m:
+        print(
+            f"WARNING: checkpoint was trained with M={checkpoint_M} clusters but the "
+            f"current run detected m={m}. Re-run region-splitting and copy the cluster "
+            "file, or the meta-policy forward pass will not match training."
+        )
+
     # Initialize models
     print("Initializing architecture...")
     local_encoder = LocalEncoder()
@@ -58,19 +85,17 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
 
     transformer_encoder_config = TransformerEncoderConfig(d_model=128, nhead=8, num_layers=6)
     transformer_encoder = TransformerEncoder(transformer_encoder_config)
-    subgoal_generator = SubGoalGenerator(d_reg=128, d_hidden=128, M=m, d_g=2 * len(tls_set))
+    subgoal_generator = SubGoalGenerator(d_reg=128, d_hidden=128, M=checkpoint_M, d_g=subgoal_dg)
 
     # Load models
     print(f"Loading weights from {model_dir}...")
-    latest = sorted(glob.glob(os.path.join(model_dir, "checkpoint_ep*.pth")))
     if latest:
-        checkpoint = torch.load(latest[-1], map_location="cpu", weights_only=False)
         transformer_encoder.load_state_dict(checkpoint["transformer_encoder"])
         subgoal_generator.load_state_dict(checkpoint["subgoal_generator"])
         local_encoder.load_state_dict(checkpoint["local_encoder"])
         GAT.load_state_dict(checkpoint["GAT"])
         actor_critic.load_state_dict(checkpoint["actor_critic"])
-        print(f"Loaded checkpoint: {latest[-1]}")
+        print(f"Loaded checkpoint: {checkpoint_path}")
     else:
         transformer_encoder.load_state_dict(
             torch.load(
@@ -156,6 +181,12 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
 
                 action_prob, state_values = actor_critic(final_state)
                 action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
+
+                if verbose:
+                    phases = {
+                        tl: int(p) for tl, p in zip(traci_service.get_all_intersections(), action.squeeze(-1).tolist())
+                    }
+                    print(f"[t={traci.simulation.getTime():.0f}] chosen phases: {phases}")
 
                 # Store vehicle data before stepping because arrived vehicles can no
                 # longer be queried from TraCI after the simulation advances.
