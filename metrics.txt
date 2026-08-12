@@ -1002,3 +1002,191 @@ Latest AC Loss: 1.7208
 Latest Sub Loss: 29.6479
 Latest Reward: -34.2000
 
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 3585
+Latest Meta Loss: 5686.6504
+Latest AC Loss: 1.1663
+Latest Sub Loss: 1146.3522
+Latest Reward: -451.1000
+
+--- Training Snapshot: cologne8 run_2 ---
+Episode: 2
+Steps taken: 7170
+Latest Meta Loss: 1135.9077
+Latest AC Loss: 0.8582
+Latest Sub Loss: 229.2236
+Latest Reward: -102.1000
+
+--- Training Snapshot: cologne8 run_3 ---
+Episode: 3
+Steps taken: 10755
+Latest Meta Loss: 207.7682
+Latest AC Loss: 0.9663
+Latest Sub Loss: 42.5096
+Latest Reward: -47.8000
+
+--- Training Snapshot: cologne8 run_4 ---
+Episode: 4
+Steps taken: 14340
+Latest Meta Loss: 225.2844
+Latest AC Loss: 0.5468
+Latest Sub Loss: 48.4969
+Latest Reward: -172.0000
+
+--- Training Snapshot: cologne8 run_5 ---
+Episode: 5
+Steps taken: 17925
+Latest Meta Loss: 43127.9648
+Latest AC Loss: 0.9548
+Latest Sub Loss: 8635.6152
+Latest Reward: -501.1000
+
+--- Training Snapshot: cologne8 run_6 ---
+Episode: 6
+Steps taken: 21510
+Latest Meta Loss: 268.4859
+Latest AC Loss: 1.1431
+Latest Sub Loss: 56.5592
+Latest Reward: -143.1000
+
+--- Training Snapshot: cologne8 run_7 ---
+Episode: 7
+Steps taken: 25095
+Latest Meta Loss: 3290.3196
+Latest AC Loss: 0.8673
+Latest Sub Loss: 665.7979
+Latest Reward: -386.7000
+
+--- Training Snapshot: cologne8 run_8 ---
+Episode: 8
+Steps taken: 28680
+Latest Meta Loss: 333.6863
+Latest AC Loss: 1.0526
+Latest Sub Loss: 69.7853
+Latest Reward: -152.4000
+
+--- Training Snapshot: cologne8 run_9 ---
+Episode: 9
+Steps taken: 32265
+Latest Meta Loss: 2736.0225
+Latest AC Loss: 2.3744
+Latest Sub Loss: 551.0746
+Latest Reward: -193.5000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 35850
+Latest Meta Loss: 4528.7280
+Latest AC Loss: 0.4745
+Latest Sub Loss: 910.6515
+Latest Reward: -245.3000
+
+--- Training Snapshot: cologne8 run_11 ---
+Episode: 11
+Steps taken: 39435
+Latest Meta Loss: 2617.8469
+Latest AC Loss: 1.4200
+Latest Sub Loss: 527.8394
+Latest Reward: -213.5000
+
+--- Training Snapshot: cologne8 run_12 ---
+Episode: 12
+Steps taken: 43020
+Latest Meta Loss: 4535.5972
+Latest AC Loss: 1.1853
+Latest Sub Loss: 911.8696
+Latest Reward: -237.5000
+
+--- Training Snapshot: cologne8 run_13 ---
+Episode: 13
+Steps taken: 46605
+Latest Meta Loss: 855.1725
+Latest AC Loss: 1.3639
+Latest Sub Loss: 174.9605
+Latest Reward: -196.3000
+
+--- Training Snapshot: cologne8 run_14 ---
+Episode: 14
+Steps taken: 50190
+Latest Meta Loss: 20330.2031
+Latest AC Loss: 0.8979
+Latest Sub Loss: 4074.3567
+Latest Reward: -415.8000
+
+--- Training Snapshot: cologne8 run_15 ---
+Episode: 15
+Steps taken: 53775
+Latest Meta Loss: 9611.9248
+Latest AC Loss: 0.7006
+Latest Sub Loss: 1930.5430
+Latest Reward: -407.9000
+
+--- Training Snapshot: cologne8 run_16 ---
+Episode: 16
+Steps taken: 57360
+Latest Meta Loss: 288.6515
+Latest AC Loss: 1.5151
+Latest Sub Loss: 58.6523
+Latest Reward: -46.1000
+
+--- Training Snapshot: cologne8 run_17 ---
+Episode: 17
+Steps taken: 60945
+Latest Meta Loss: 153.9940
+Latest AC Loss: 0.6619
+Latest Sub Loss: 32.5948
+Latest Reward: -89.8000
+
+--- Training Snapshot: cologne8 run_18 ---
+Episode: 18
+Steps taken: 64530
+Latest Meta Loss: 3464.7146
+Latest AC Loss: 0.3094
+Latest Sub Loss: 693.9509
+Latest Reward: -50.4000
+
+--- Training Snapshot: cologne8 run_19 ---
+Episode: 19
+Steps taken: 68115
+Latest Meta Loss: 4674.9678
+Latest AC Loss: 0.6006
+Latest Sub Loss: 943.9655
+Latest Reward: -448.6000
+
+--- Training Snapshot: cologne8 run_20 ---
+Episode: 20
+Steps taken: 71700
+Latest Meta Loss: 4417.7153
+Latest AC Loss: 0.6780
+Latest Sub Loss: 888.5132
+Latest Reward: -248.5000
+
+--- Training Snapshot: cologne8 run_20 ---
+Episode: 20
+Steps taken: 71700
+Latest Meta Loss: 4417.7153
+Latest AC Loss: 0.6780
+Latest Sub Loss: 888.5132
+Latest Reward: -248.5000
+
+--- Evaluation Snapshot: 20260806_072758 ---
+Evaluating Model: ../models/cologne8/run_20260805_230156
+Total Steps Evaluated: 3600
+Completed Vehicles: 641
+Average Queue Length: 1073.41 vehicles
+Average Waiting Time: 27.36 seconds
+Average Travel Time: 486.26 seconds
+Average Delay Time: 437.85 seconds
+Peak Total Queue Length: 1650.00 vehicles
+
+--- Evaluation Snapshot: 20260806_073607 ---
+Evaluating Model: ../models/cologne8/run_20260805_230156
+Total Steps Evaluated: 3601
+Completed Vehicles: 641
+Average Queue Length: 1073.57 vehicles
+Average Waiting Time: 27.36 seconds
+Average Travel Time: 486.26 seconds
+Average Delay Time: 437.85 seconds
+Peak Total Queue Length: 1650.00 vehicles
+

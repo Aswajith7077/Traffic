@@ -156,3 +156,5 @@ Notes:
 # Full pipeline (cluster + copy + train + eval)
 uv run python pipeline.py --scenario cologne8 train --episodes 20 --episode-steps 3600 --save-every 10
 
+# Run Evaluation
+cd advesarial && TRAFFIC_SCENARIO=cologne8 uv run python src/evaluate.py --steps 3600
