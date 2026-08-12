@@ -32,7 +32,9 @@ Defaults to `"osm"` network. Edit `main()` for `"simple"`. Produces `clusters/le
 cd advesarial && python src/sample.py
 ```
 
-**Do NOT `cd advesarial/src`.** The scripts must run from `advesarial/` so file paths resolve (e.g. `sumo/osm.sumocfg` → `advesarial/sumo/osm.sumocfg`). Python adds `src/` to `sys.path` automatically since the script lives there, making bare imports (`from memory import ReplayBuffer`) work.
+**Do NOT `cd advesarial/src`.** The scripts must run from `advesarial/` so file paths resolve (e.g. `../scenarios/manhattan/manhattan.sumocfg` → `advesarial/../scenarios/manhattan/manhattan.sumocfg`). Python adds `src/` to `sys.path` automatically since the script lives there, making bare imports (`from memory import ReplayBuffer`) work.
+
+The scenario is selected by the `TRAFFIC_SCENARIO` env var (`src/config.py`, default `manhattan`; others: `cologne8`, `ingolstadt21`, `arterial4x4`, `grid4x4`). Training/eval nets live under `../scenarios/<scenario>/`; the `advesarial/sumo/osm.sumocfg` files are **not** used by `sample.py`.
 
 Saves models to `advesarial/models/run_<timestamp>/`.
 
@@ -55,7 +57,8 @@ Config in `pyproject.toml`: line-length=120, rules E/F/I/W.
 ## Critical Working Directory Convention
 
 All scripts use **relative paths from the module root**:
-- `sumo/osm.sumocfg` — relative to module root (`advesarial/` or `region-splitting/`)
+- `../scenarios/<TRAFFIC_SCENARIO>/<TRAFFIC_SCENARIO>.sumocfg` — the net loaded by `advesarial/src/sample.py` (default `manhattan`)
+- `advesarial/sumo/osm.sumocfg` and `region-splitting/sumo/osm/osm.sumocfg` — relative to module root; osm is used by region-splitting, not by `sample.py`
 - `clusters/louvian/osm_clusters.json` — relative to module root
 - `../models/` — relative to `advesarial/src/` (resolves to `advesarial/models/`)
 
@@ -75,6 +78,12 @@ Entry point: `advesarial/src/sample.py` (has `main()`)
 
 - `"osm"` — real-world OSM-derived network (both modules)
 - `"simple"` — synthetic small network (region-splitting only)
+
+## Traffic Light Timings
+
+All net files have been normalized to fixed phase durations (green ≤ 5s, yellow ≤ 3s; `minDur`/`maxDur` removed, osm tlLogics converted from `actuated` to `static`). This removes the previous `maxDur="50"` cap (and up to 82s manhattan greens) that forced ~50s waits.
+
+`TraciService.__normalize_phase_durations()` re-applies the same clamp at startup as defense-in-depth, so an unpatched net cannot reintroduce long greens. Timing is configurable via `TraciConfig` (`green_duration`, `yellow_duration`, `min_green_steps`).
 
 ## Known Issues
 

@@ -1046,196 +1046,196 @@
     </edge>
 
     <tlLogic id="nt1" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt11" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt12" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt13" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt14" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt16" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt5" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt10" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt15" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt2" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt3" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt4" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt6" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt7" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt8" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
     <tlLogic id="nt9" type="static" programID="0" offset="0">
-        <phase duration="10" state="GGgsrrGGgsrr"/>
-        <phase duration="3"  state="yyysrryyysrr"/>
-        <phase duration="10" state="srrsrGsrrsrG"/>
-        <phase duration="3"  state="srrsryrrrsry"/>
-        <phase duration="10" state="srrGGrsrrGGr"/>
-        <phase duration="3"  state="srrGGrrrryyr"/>
-        <phase duration="10" state="srrGGGsrrsrr"/>
-        <phase duration="3"  state="srryyyrrrsrr"/>
-        <phase duration="10" state="srrsrrsrrGGG"/>
-        <phase duration="3"  state="srrsrrrrryyy"/>
+        <phase duration="5" state="GGgsrrGGgsrr"/>
+        <phase duration="3" state="yyysrryyysrr"/>
+        <phase duration="5" state="srrsrGsrrsrG"/>
+        <phase duration="3" state="srrsryrrrsry"/>
+        <phase duration="5" state="srrGGrsrrGGr"/>
+        <phase duration="3" state="srrGGrrrryyr"/>
+        <phase duration="5" state="srrGGGsrrsrr"/>
+        <phase duration="3" state="srryyyrrrsrr"/>
+        <phase duration="5" state="srrsrrsrrGGG"/>
+        <phase duration="3" state="srrsrrrrryyy"/>
     </tlLogic>
 
     <junction id="np1" type="priority" x="75.00" y="0.00" incLanes="nt1_np1_0" intLanes=":np1_0_0" shape="75.00,0.00 71.80,0.00 75.00,0.00">

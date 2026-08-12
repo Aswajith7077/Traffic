@@ -27,8 +27,9 @@ class TraciService:
         self.tl_ids = set()
 
         self.valid_phases = {}
-        self.min_green_time = 5
-        self.yellow_time = 3
+        self.min_green_time = config.min_green_steps
+        self.green_duration = config.green_duration
+        self.yellow_time = config.yellow_duration
 
         self.time_since_last_switch = {}
         self.in_transition = {}
@@ -84,6 +85,7 @@ class TraciService:
         self.tl_ids = set(traci.trafficlight.getIDList())
         self.tls_ids = sorted(list(self.tl_ids))
         self.__initialize_traci_state()
+        self.__normalize_phase_durations()
 
     def close_simulation(self):
         try:
@@ -160,6 +162,33 @@ class TraciService:
                 yellow.append(i)
 
         return yellow
+
+    def __normalize_phase_durations(self):
+        from sumolib.net import Phase
+
+        for tls_id in self.tls_ids:
+            logic = traci.trafficlight.getAllProgramLogics(tls_id)[0]
+            phases = []
+            for phase in logic.phases:
+                dur = phase.duration
+                state = phase.state
+                if "y" in state:
+                    dur = min(dur, self.yellow_time)
+                elif "G" in state or "g" in state:
+                    dur = min(dur, self.green_duration)
+                phases.append(Phase(dur, state, minDur=dur, maxDur=dur))
+
+            new_logic = traci.trafficlight.Logic(
+                logic.programID,
+                logic.type,
+                0,
+                phases,
+                logic.subParameter,
+            )
+            traci.trafficlight.setProgramLogic(tls_id, new_logic)
+
+        self.__build_valid_phases()
+        self.yellow_phases = {tls: self.__get_yellow_phases(tls) for tls in self.tls_ids}
 
     def set_phase(self, tls_id, action: int) -> int:
         """

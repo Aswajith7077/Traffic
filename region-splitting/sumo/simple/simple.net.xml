@@ -1087,117 +1087,117 @@
     </edge>
 
     <tlLogic id="clusterJ0_J103" type="static" programID="0" offset="0">
-        <phase duration="82" state="GGGG"/>
-        <phase duration="3"  state="yyyy"/>
-        <phase duration="5"  state="rrrr"/>
+        <phase duration="5" state="GGGG"/>
+        <phase duration="3" state="yyyy"/>
+        <phase duration="5" state="rrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ102_J89_J92" type="static" programID="0" offset="0">
-        <phase duration="42" state="GGr"/>
-        <phase duration="3"  state="yGr"/>
-        <phase duration="42" state="rGG"/>
-        <phase duration="3"  state="rGy"/>
+        <phase duration="5" state="GGr"/>
+        <phase duration="3" state="yGr"/>
+        <phase duration="5" state="rGG"/>
+        <phase duration="3" state="rGy"/>
     </tlLogic>
     <tlLogic id="clusterJ104_J105_J107_J109_#2more" type="static" programID="0" offset="0">
-        <phase duration="40" state="GGGggrrrrGGGGrrr"/>
-        <phase duration="3"  state="yyyyyrrrryyyyrrr"/>
-        <phase duration="2"  state="rrrrrrrrrrrrrrrr"/>
-        <phase duration="35" state="rrrrrgGGGGrrrGrr"/>
-        <phase duration="5"  state="rrrrrgGGGGrrrrrr"/>
-        <phase duration="3"  state="rrrrryyyyyrrrrrr"/>
-        <phase duration="2"  state="rrrrrrrrrrrrrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrGGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="GGGggrrrrGGGGrrr"/>
+        <phase duration="3" state="yyyyyrrrryyyyrrr"/>
+        <phase duration="2" state="rrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrgGGGGrrrGrr"/>
+        <phase duration="5" state="rrrrrgGGGGrrrrrr"/>
+        <phase duration="3" state="rrrrryyyyyrrrrrr"/>
+        <phase duration="2" state="rrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrrrrGGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ106_J79" type="static" programID="0" offset="0">
-        <phase duration="82" state="GGGG"/>
-        <phase duration="3"  state="yyyy"/>
-        <phase duration="5"  state="rrrr"/>
+        <phase duration="5" state="GGGG"/>
+        <phase duration="3" state="yyyy"/>
+        <phase duration="5" state="rrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ17_J2_J52_J58_#1more" type="static" programID="0" offset="0">
-        <phase duration="82" state="GGGGgGGGGgrr"/>
-        <phase duration="3"  state="yyyyyyyyyyrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrr"/>
+        <phase duration="5" state="GGGGgGGGGgrr"/>
+        <phase duration="3" state="yyyyyyyyyyrr"/>
+        <phase duration="5" state="rrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrGG"/>
+        <phase duration="5" state="rrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ1_J15_J18_clusterJ14_J20" type="static" programID="0" offset="0">
-        <phase duration="37" state="rrrrrgGGGgrrrrrgGGGgGrGr"/>
-        <phase duration="5"  state="rrrrrgGGGgrrrrrgGGGgrrrr"/>
-        <phase duration="3"  state="rrrrryyyyyrrrrryyyyyrrrr"/>
-        <phase duration="37" state="gGGGgrrrrrgGGGgrrrrrrGrG"/>
-        <phase duration="5"  state="gGGGgrrrrrgGGGgrrrrrrrrr"/>
-        <phase duration="3"  state="yyyyyrrrrryyyyyrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrgGGGgrrrrrgGGGgGrGr"/>
+        <phase duration="5" state="rrrrrgGGGgrrrrrgGGGgrrrr"/>
+        <phase duration="3" state="rrrrryyyyyrrrrryyyyyrrrr"/>
+        <phase duration="5" state="gGGGgrrrrrgGGGgrrrrrrGrG"/>
+        <phase duration="5" state="gGGGgrrrrrgGGGgrrrrrrrrr"/>
+        <phase duration="3" state="yyyyyrrrrryyyyyrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ32_clusterJ23_clusterJ16_J21_J22_J4" type="static" programID="0" offset="0">
-        <phase duration="38" state="GGGgGGGGgGrrrrr"/>
-        <phase duration="3"  state="yyygyyyygyrrrrr"/>
-        <phase duration="6"  state="rrrGrrrrGrrrrrr"/>
-        <phase duration="3"  state="rrryrrrryrrrrrr"/>
-        <phase duration="32" state="GrrrrrrrrgGGGrG"/>
-        <phase duration="5"  state="GrrrrrrrrgGGGrr"/>
-        <phase duration="3"  state="GrrrrrrrrGyyyrr"/>
-        <phase duration="3"  state="yrrrrrrrryyyyrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="GGGgGGGGgGrrrrr"/>
+        <phase duration="3" state="yyygyyyygyrrrrr"/>
+        <phase duration="5" state="rrrGrrrrGrrrrrr"/>
+        <phase duration="3" state="rrryrrrryrrrrrr"/>
+        <phase duration="5" state="GrrrrrrrrgGGGrG"/>
+        <phase duration="5" state="GrrrrrrrrgGGGrr"/>
+        <phase duration="3" state="GrrrrrrrrGyyyrr"/>
+        <phase duration="3" state="yrrrrrrrryyyyrr"/>
+        <phase duration="5" state="rrrrrrrrrrrrrGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ41_J43_clusterJ13_J28_J33_clusterJ26_J7" type="static" programID="0" offset="0">
-        <phase duration="38" state="rrrGGGGrrrrGGggrr"/>
-        <phase duration="3"  state="rrryyyyrrrrGGggrr"/>
-        <phase duration="6"  state="rrrrrrrrrrrGGGGrr"/>
-        <phase duration="3"  state="rrrrrrrrrrryyyyrr"/>
-        <phase duration="32" state="GGgrrrrgGggrrrrGr"/>
-        <phase duration="5"  state="GGgrrrrgGggrrrrrr"/>
-        <phase duration="3"  state="yyyrrrryyyyrrrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrGGGGrrrrGGggrr"/>
+        <phase duration="3" state="rrryyyyrrrrGGggrr"/>
+        <phase duration="5" state="rrrrrrrrrrrGGGGrr"/>
+        <phase duration="3" state="rrrrrrrrrrryyyyrr"/>
+        <phase duration="5" state="GGgrrrrgGggrrrrGr"/>
+        <phase duration="5" state="GGgrrrrgGggrrrrrr"/>
+        <phase duration="3" state="yyyrrrryyyyrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ57_J59_J63_J65_#2more" type="static" programID="0" offset="0">
-        <phase duration="32" state="gGGGGGggrrrrrG"/>
-        <phase duration="5"  state="gGGGGGggrrrrrr"/>
-        <phase duration="3"  state="yyyyGGggrrrrrr"/>
-        <phase duration="6"  state="rrrrGGGGrrrrrr"/>
-        <phase duration="3"  state="rrrryyyyrrrrrr"/>
-        <phase duration="1"  state="rrrrrrrrrrrrrr"/>
-        <phase duration="31" state="GrrrrrrrgGGrGr"/>
-        <phase duration="5"  state="GrrrrrrrgGGrrr"/>
-        <phase duration="3"  state="yrrrrrrryyyrrr"/>
-        <phase duration="1"  state="rrrrrrrrrrrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrGGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrr"/>
+        <phase duration="5" state="gGGGGGggrrrrrG"/>
+        <phase duration="5" state="gGGGGGggrrrrrr"/>
+        <phase duration="3" state="yyyyGGggrrrrrr"/>
+        <phase duration="5" state="rrrrGGGGrrrrrr"/>
+        <phase duration="3" state="rrrryyyyrrrrrr"/>
+        <phase duration="1" state="rrrrrrrrrrrrrr"/>
+        <phase duration="5" state="GrrrrrrrgGGrGr"/>
+        <phase duration="5" state="GrrrrrrrgGGrrr"/>
+        <phase duration="3" state="yrrrrrrryyyrrr"/>
+        <phase duration="1" state="rrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrrGGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ61_J62_J69_J70" type="static" programID="0" offset="0">
-        <phase duration="42" state="GGrrr"/>
-        <phase duration="3"  state="yGrrr"/>
-        <phase duration="42" state="rGGGG"/>
-        <phase duration="3"  state="rGyyy"/>
+        <phase duration="5" state="GGrrr"/>
+        <phase duration="3" state="yGrrr"/>
+        <phase duration="5" state="rGGGG"/>
+        <phase duration="3" state="rGyyy"/>
     </tlLogic>
     <tlLogic id="clusterJ67_J71_J77_J78_#3more" type="static" programID="0" offset="0">
-        <phase duration="20" state="rrgGGGGGGgrrrGrrG"/>
-        <phase duration="5"  state="rrgGGGGGGgrrrrrrr"/>
-        <phase duration="3"  state="rryyyyyyyyrrrrrrr"/>
-        <phase duration="1"  state="rrrrrrrrrrrrrrrrr"/>
-        <phase duration="22" state="rrrrrrrrrrgGgGrGr"/>
-        <phase duration="5"  state="rrrrrrrrrrgGgrrrr"/>
-        <phase duration="3"  state="rrrrrrrrrryyyrrrr"/>
-        <phase duration="22" state="gGGrrrrrrrrrrrrGG"/>
-        <phase duration="5"  state="gGGrrrrrrrrrrrrrr"/>
-        <phase duration="3"  state="yyyrrrrrrrrrrrrrr"/>
-        <phase duration="1"  state="rrrrrrrrrrrrrrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrGGGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrgGGGGGGgrrrGrrG"/>
+        <phase duration="5" state="rrgGGGGGGgrrrrrrr"/>
+        <phase duration="3" state="rryyyyyyyyrrrrrrr"/>
+        <phase duration="1" state="rrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrgGgGrGr"/>
+        <phase duration="5" state="rrrrrrrrrrgGgrrrr"/>
+        <phase duration="3" state="rrrrrrrrrryyyrrrr"/>
+        <phase duration="5" state="gGGrrrrrrrrrrrrGG"/>
+        <phase duration="5" state="gGGrrrrrrrrrrrrrr"/>
+        <phase duration="3" state="yyyrrrrrrrrrrrrrr"/>
+        <phase duration="1" state="rrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrrrrGGGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrrr"/>
     </tlLogic>
     <tlLogic id="clusterJ99_clusterJ19_J45_J46_J48_#4more" type="static" programID="0" offset="0">
-        <phase duration="32" state="gGGGgrrrgGGGgrrrrrGrG"/>
-        <phase duration="5"  state="gGGGgrrrgGGGgrrrrrrrr"/>
-        <phase duration="3"  state="yyyyyrrryyyyyrrrrrrrr"/>
-        <phase duration="1"  state="rrrrrrrrrrrrrrrrrrrrr"/>
-        <phase duration="32" state="rrrrrgGgGrrrrGGggGrrr"/>
-        <phase duration="5"  state="rrrrrgGgGrrrrGGggrrrr"/>
-        <phase duration="3"  state="rrrrryygyrrrryyggrrrr"/>
-        <phase duration="6"  state="rrrrrrrGrrrrrrrGGrrrr"/>
-        <phase duration="3"  state="rrrrrrryrrrrrrryyrrrr"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrrrGGGG"/>
-        <phase duration="5"  state="rrrrrrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="gGGGgrrrgGGGgrrrrrGrG"/>
+        <phase duration="5" state="gGGGgrrrgGGGgrrrrrrrr"/>
+        <phase duration="3" state="yyyyyrrryyyyyrrrrrrrr"/>
+        <phase duration="1" state="rrrrrrrrrrrrrrrrrrrrr"/>
+        <phase duration="5" state="rrrrrgGgGrrrrGGggGrrr"/>
+        <phase duration="5" state="rrrrrgGgGrrrrGGggrrrr"/>
+        <phase duration="3" state="rrrrryygyrrrryyggrrrr"/>
+        <phase duration="5" state="rrrrrrrGrrrrrrrGGrrrr"/>
+        <phase duration="3" state="rrrrrrryrrrrrrryyrrrr"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrrrGGGG"/>
+        <phase duration="5" state="rrrrrrrrrrrrrrrrrrrrr"/>
     </tlLogic>
 
     <junction id="J10" type="dead_end" x="289.54" y="47.70" incLanes="E10_0" intLanes="" shape="286.38,48.19 289.54,47.70"/>
