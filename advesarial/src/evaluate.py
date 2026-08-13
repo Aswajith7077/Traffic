@@ -8,13 +8,24 @@ from config import config
 from environment import Environment
 from schema import TraciConfig, TransformerEncoderConfig
 from services import TraciService
+from utils.tripinfo_metrics import parse_tripinfo, print_tripinfo_summary
 
 from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
 
 
-def evaluate_models(model_dir, steps=3600):
+def evaluate_models(
+    model_dir,
+    steps=360,
+    scenario_cfg="../scenarios/cologne8/cologne8.sumocfg",
+    min_green=1,
+    drain_budget=3600,
+):
     print("Initializing environment...")
-    traci_config = TraciConfig(config_path="../scenarios/cologne8/cologne8.sumocfg")
+    traci_config = TraciConfig(
+        config_path=scenario_cfg,
+        tripinfo_output="visualizations/tripinfo_eval.xml",
+        min_green_time=min_green,
+    )
 
     traci_service = TraciService(traci_config)
     traci_service.start_simulation()
@@ -36,7 +47,7 @@ def evaluate_models(model_dir, steps=3600):
     print("Initializing architecture...")
     local_encoder = LocalEncoder()
     GAT = GATLayer(feature_dim=64)
-    actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
+    actor_critic = ActorCritic(state_dimension=144, action_dimension=7)
 
     transformer_encoder_config = TransformerEncoderConfig(
         d_model=128, nhead=8, num_layers=6
@@ -97,16 +108,24 @@ def evaluate_models(model_dir, steps=3600):
 
         return torch.clamp(states, -5, 5)
 
-    def _find_local_observations():
+    def _find_global_observation():
+        cluster_states = traci_service.get_cluster_states(clusters)
+        global_encoding, local_encoding = transformer_encoder(
+            cluster_states.unsqueeze(0)
+        )
+        subgoal_vector = subgoal_generator(local_encoding, global_encoding)
+        return subgoal_vector
+
+    def _find_local_observations(sub_goal_vector):
         observations = traci_service.get_observations()
         observations = __normalize_states(observations)
         hidden_state = local_encoder(observations)
         local_features = GAT(hidden_state, adjacency_list)
+        mean_feat = torch.mean(local_features, dim=0)
         final_state = []
-        for i in range(len(local_features)):
-            z_i = local_features[i]
+        for z_i in local_features:
             final_state.append(
-                torch.cat([z_i, torch.mean(local_features, dim=0)], dim=-1)
+                torch.cat([z_i, mean_feat, sub_goal_vector[0]], dim=-1)
             )
         return torch.stack(final_state, dim=0)
 
@@ -160,7 +179,8 @@ def evaluate_models(model_dir, steps=3600):
     with torch.no_grad():
         intersections = traci_service.get_all_intersections()
         for t in range(steps):
-            final_state = _find_local_observations()
+            sub_goal_vector = _find_global_observation()
+            final_state = _find_local_observations(sub_goal_vector)
 
             action_prob, state_values = actor_critic(final_state)
             action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
@@ -187,7 +207,7 @@ def evaluate_models(model_dir, steps=3600):
             total_queue_length.append(raw_queue)
             total_vehicle_count.append(raw_vehicles)
 
-            if (t + 1) % 300 == 0:
+            if (t + 1) % 30 == 0:
                 print(
                     f"Eval Step {t + 1}/{steps} (sim {current_time:.0f}s) - "
                     f"Queue (halted): {raw_queue:.2f}, Vehicles on TL lanes: {raw_vehicles:.2f}, "
@@ -197,6 +217,32 @@ def evaluate_models(model_dir, steps=3600):
             if done:
                 print(f"Environment finished early at step {t}")
                 break
+
+    # Drain phase: keep stepping (no new control decisions) until every vehicle
+    # has arrived, so tripinfo covers all trips (paper protocol). Capped by a
+    # budget in case a vehicle deadlocks.
+    control_interval = 10
+    drain_steps = 0
+    remaining = traci.simulation.getMinExpectedNumber()
+    while remaining > 0 and drain_steps * control_interval < drain_budget:
+        drain_steps += 1
+        update_active_vehicle_metrics()
+        traci_service.step(control_interval)
+        current_time = traci.simulation.getTime()
+        for vehicle_id in traci.simulation.getArrivedIDList():
+            metrics = vehicle_metrics.pop(vehicle_id, None)
+            if metrics is None:
+                continue
+            travel_time = current_time - metrics["entry_time"]
+            vehicle_travel_times.append(travel_time)
+            vehicle_delay_times.append(travel_time - metrics["free_flow_time"])
+            vehicle_waiting_times.append(metrics["waiting_time"])
+        remaining = traci.simulation.getMinExpectedNumber()
+        if drain_steps % 60 == 0:
+            print(f"Drain: sim {current_time:.0f}s - {remaining} vehicles remaining")
+
+    if remaining > 0:
+        print(f"WARNING: drain budget ({drain_budget}s) exhausted, {remaining} vehicles still running")
 
     # Summarize results
     avg_queue = sum(total_queue_length) / len(total_queue_length)
@@ -248,6 +294,23 @@ def evaluate_models(model_dir, steps=3600):
 
     traci_service.close_simulation()
 
+    # Paper-style metrics from tripinfo output
+    tripinfo_path = "visualizations/tripinfo_eval.xml"
+    if os.path.exists(tripinfo_path):
+        trip_metrics = parse_tripinfo(tripinfo_path)
+        print_tripinfo_summary(trip_metrics)
+        f = open("../metrics.txt", "a")
+        f.write(f"--- Tripinfo Metrics: {datetime.now().strftime('%Y%m%d_%H%M%S')} ---\n")
+        f.write(f"Evaluating Model: {model_dir}\n")
+        f.write(f"ATT: {trip_metrics['att']:.2f} seconds\n")
+        f.write(f"ADT: {trip_metrics['adt']:.2f} seconds\n")
+        f.write(f"Completed: {trip_metrics['vehicles_ended']}\n")
+        f.write(f"Teleports: {trip_metrics['teleports']}\n")
+        f.write("\n")
+        f.close()
+    else:
+        print(f"WARNING: tripinfo output not found at {tripinfo_path}")
+
 
 if __name__ == "__main__":
     import argparse
@@ -261,8 +324,29 @@ if __name__ == "__main__":
     parser.add_argument(
         "--steps",
         type=int,
+        default=360,
+        help=(
+            "Number of control steps to evaluate (default 360 = full 3600s "
+            "episode at a 10s control interval, matching HiLight protocol)"
+        ),
+    )
+    parser.add_argument(
+        "--min-green",
+        type=int,
+        default=1,
+        help="Minimum green duration in control calls (1 call = 10s sim)",
+    )
+    parser.add_argument(
+        "--scenario",
+        type=str,
+        default="../scenarios/cologne8/cologne8.sumocfg",
+        help="SUMO config for the scenario to evaluate on",
+    )
+    parser.add_argument(
+        "--drain-budget",
+        type=int,
         default=3600,
-        help="Number of steps to evaluate (default 3600 = full episode, matching HiLight protocol)",
+        help="Max additional sim-seconds to drain vehicles after the control steps",
     )
     args = parser.parse_args()
 
@@ -286,4 +370,10 @@ if __name__ == "__main__":
         print("Make sure you have trained and saved models before evaluating.")
         exit(1)
 
-    evaluate_models(target_dir, args.steps)
+    evaluate_models(
+        target_dir,
+        args.steps,
+        scenario_cfg=args.scenario,
+        min_green=args.min_green,
+        drain_budget=args.drain_budget,
+    )

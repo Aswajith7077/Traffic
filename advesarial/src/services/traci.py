@@ -8,12 +8,12 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
+from collections import defaultdict, deque
+
 import torch
 import traci
-from sumolib import checkBinary
 from schema import TraciConfig
-from collections import defaultdict
-from collections import deque
+from sumolib import checkBinary
 from utils.compute_phase_history import compute_phase_entropy
 
 
@@ -29,13 +29,15 @@ class TraciService:
         self.tl_ids = set()
 
         self.valid_phases = {}
-        self.min_green_time = 5
-        self.yellow_time = 3
+        # Minimum green duration counts TraCI decision calls, which happen
+        # every `control_interval` (10s) sim-seconds; 1 call = 10s of traffic.
+        self.min_green_time = config.min_green_time
+        self.yellow_seconds = config.yellow_seconds
 
         self.time_since_last_switch = {}
         self.in_transition = {}
         self.pending_phase = {}
-        self.yellow_timer = {}
+        self.transition_end = {}
         self.yellow_phases = {}
 
     def __set_config_path(self, config_path):
@@ -66,6 +68,8 @@ class TraciService:
         ]
         if self.config.use_gui:
             cmd += ["--delay", str(self.config.delay)]
+        if self.config.tripinfo_output:
+            cmd += ["--tripinfo-output", self.config.tripinfo_output]
         return cmd
 
     def start_simulation(self):
@@ -86,8 +90,27 @@ class TraciService:
         self.close_simulation()
         self.start_simulation()
 
-    def step(self):
-        traci.simulationStep()
+    def step(self, delta=1):
+        """Advance the simulation `delta` seconds at 1s granularity so phase
+        transitions (yellow lights, paper protocol: 5s) complete within a
+        control window."""
+        end = traci.simulation.getTime() + delta
+        while traci.simulation.getTime() < end:
+            self._apply_due_transitions()
+            traci.simulationStep(traci.simulation.getTime() + 1)
+
+    def _apply_due_transitions(self):
+        """Flip any pending yellow -> green transitions whose yellow window
+        has elapsed (evaluated at 1s granularity)."""
+        now = traci.simulation.getTime()
+        for tls_id in self.in_transition:
+            if not self.in_transition[tls_id]:
+                continue
+            if self.transition_end[tls_id] <= now:
+                traci.trafficlight.setPhase(tls_id, self.pending_phase[tls_id])
+                self.in_transition[tls_id] = False
+                self.pending_phase[tls_id] = None
+                self.time_since_last_switch[tls_id] = 0
 
     def compute_intersection_pressure(self, tl_id):
         pressure = 0.0
@@ -138,7 +161,7 @@ class TraciService:
         self.time_since_last_switch = {tls_id: 0 for tls_id in intersections}
         self.in_transition = {tls: False for tls in intersections}
         self.pending_phase = {tls: None for tls in intersections}
-        self.yellow_timer = {tls: 0 for tls in intersections}
+        self.transition_end = {tls: 0.0 for tls in intersections}
         self.yellow_phases = {
             tls: self.__get_yellow_phases(tls) for tls in intersections
         }
@@ -154,6 +177,20 @@ class TraciService:
 
         return yellow
 
+    def __transition_phase_for(self, tls_id, current_phase):
+        """Return the yellow phase that follows `current_phase` in the signal
+        program (the directional transition for the active green), falling
+        back to the first yellow phase of the program."""
+        logic = traci.trafficlight.getAllProgramLogics(tls_id)[0]
+        phases = logic.phases
+        n = len(phases)
+        if n > 0 and "y" in phases[(current_phase + 1) % n].state:
+            return (current_phase + 1) % n
+        yellow_list = self.yellow_phases[tls_id]
+        if yellow_list:
+            return yellow_list[0]
+        return None
+
     def set_phase(self, tls_id, action: int) -> int:
         """
         Returns:
@@ -166,19 +203,8 @@ class TraciService:
         current_phase = traci.trafficlight.getPhase(tls_id)
 
         if self.in_transition[tls_id]:
-            self.yellow_timer[tls_id] += 1
-
-            if self.yellow_timer[tls_id] >= self.yellow_time:
-                # move to target green phase
-                traci.trafficlight.setPhase(tls_id, self.pending_phase[tls_id])
-
-                next_phase = self.pending_phase[tls_id]
-                self.in_transition[tls_id] = False
-                self.pending_phase[tls_id] = None
-                self.time_since_last_switch[tls_id] = 0
-
-                return next_phase
-
+            # Yellow light in progress; the pending green is applied by
+            # `_apply_due_transitions` once `yellow_seconds` (paper: 5s) elapse.
             return current_phase
 
         if current_phase == safe_phase:
@@ -191,22 +217,18 @@ class TraciService:
             self.time_since_last_switch[tls_id] += 1
             return current_phase
 
-        yellow_list = self.yellow_phases[tls_id]
-        if len(yellow_list) > 0:
-            yellow_phase = yellow_list[0]  # simple strategy
+        yellow_phase = self.__transition_phase_for(tls_id, current_phase)
+        if yellow_phase is None:
+            traci.trafficlight.setPhase(tls_id, safe_phase)
+            self.time_since_last_switch[tls_id] = 0
+            return safe_phase
 
-            traci.trafficlight.setPhase(tls_id, yellow_phase)
+        traci.trafficlight.setPhase(tls_id, yellow_phase)
+        self.in_transition[tls_id] = True
+        self.pending_phase[tls_id] = safe_phase
+        self.transition_end[tls_id] = traci.simulation.getTime() + self.yellow_seconds
 
-            self.in_transition[tls_id] = True
-            self.pending_phase[tls_id] = safe_phase
-            self.yellow_timer[tls_id] = 0
-
-            return yellow_phase
-
-        traci.trafficlight.setPhase(tls_id, safe_phase)
-        self.time_since_last_switch[tls_id] = 0
-
-        return safe_phase
+        return yellow_phase
 
     def compute_global_state_now(self):
         W, Q = [], []
@@ -441,7 +463,7 @@ class TraciService:
 
         for lane in incoming_lanes:
             # Get pedestrians on this lane
-            edge_id = traci.lane.getEdgeID(lane) 
+            edge_id = traci.lane.getEdgeID(lane)
             person_ids = traci.edge.getLastStepPersonIDs(edge_id)
 
             for person_id in person_ids:
