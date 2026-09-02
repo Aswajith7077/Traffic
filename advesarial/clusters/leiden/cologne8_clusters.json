@@ -187,6 +187,8 @@
                 "external": 0.0,
                 "ratio": 0.0
             }
-        }
+        },
+        "n_clusters": 15,
+        "coverage": 1.0
     }
 }

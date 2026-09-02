@@ -10,6 +10,7 @@ else:
 
 from collections import defaultdict, deque
 
+import sumolib.net
 import torch
 import traci
 from schema import TraciConfig
@@ -25,6 +26,7 @@ class TraciService:
         self.phase_history = self.phase_histories = defaultdict(lambda: deque(maxlen=20))
         self.edge_ids = set()
         self.tl_ids = set()
+        self.node_to_edges = defaultdict(list)
 
         self.valid_phases = {}
         self.min_green_time = config.min_green_steps
@@ -86,6 +88,29 @@ class TraciService:
         self.tls_ids = sorted(list(self.tl_ids))
         self.__initialize_traci_state()
         self.__normalize_phase_durations()
+        self._build_node_to_edges()
+
+    def _build_node_to_edges(self):
+        """Map each network junction to its incident (non-internal) edge IDs.
+
+        Loaded once from the net file so cluster states can aggregate real
+        edge-level traffic features (queue, wait, count, speed) per region
+        instead of falling back to pressure-only tokens.
+        """
+        net_path = os.path.abspath(self.config_path.replace(".sumocfg", ".net.xml"))
+        if not os.path.exists(net_path):
+            return
+
+        try:
+            net = sumolib.net.readNet(net_path)
+        except Exception:
+            return
+
+        for edge in net.getEdges():
+            if edge.isSpecial():
+                continue
+            self.node_to_edges[edge.getFromNode().getID()].append(edge.getID())
+            self.node_to_edges[edge.getToNode().getID()].append(edge.getID())
 
     def close_simulation(self):
         try:
@@ -543,12 +568,17 @@ class TraciService:
 
             valid_nodes = 0
             for node in cluster_nodes:
-                if node in self.edge_ids:
+                # Aggregate traffic on the edges incident to this junction, so
+                # region tokens carry queue/wait/count/speed/flow information
+                # rather than pressure alone.
+                for edge_id in self.node_to_edges.get(node, ()):
+                    if edge_id not in self.edge_ids:
+                        continue
                     try:
-                        occupancy = traci.edge.getLastStepOccupancy(node)
-                        waiting_time = traci.edge.getWaitingTime(node)
-                        vehicle_count = traci.edge.getLastStepVehicleNumber(node)
-                        mean_speed = traci.edge.getLastStepMeanSpeed(node)
+                        occupancy = traci.edge.getLastStepOccupancy(edge_id)
+                        waiting_time = traci.edge.getWaitingTime(edge_id)
+                        vehicle_count = traci.edge.getLastStepVehicleNumber(edge_id)
+                        mean_speed = traci.edge.getLastStepMeanSpeed(edge_id)
 
                         total_queue_length += occupancy
                         total_waiting_time += waiting_time

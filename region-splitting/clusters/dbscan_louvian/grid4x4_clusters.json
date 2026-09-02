@@ -1,0 +1,71 @@
+{
+    "clusters": {
+        "0": [
+            "A0",
+            "A1",
+            "B0",
+            "bottom0",
+            "left0",
+            "A2",
+            "B1",
+            "left1",
+            "A3",
+            "B2",
+            "left2",
+            "B3",
+            "left3",
+            "top0",
+            "C0",
+            "bottom1",
+            "C1",
+            "C2",
+            "C3",
+            "top1",
+            "D0",
+            "bottom2",
+            "D1",
+            "D2",
+            "D3",
+            "top2",
+            "bottom3",
+            "right0",
+            "right1",
+            "right2",
+            "right3",
+            "top3"
+        ]
+    },
+    "metrics": {
+        "order": "dbscan_then_louvian",
+        "first_stage": "dbscan",
+        "second_stage": "louvian",
+        "dbscan_stage": {
+            "n_clusters": 1,
+            "n_noise_before_reassign": 0,
+            "noise_fraction_before_reassign": 0.0,
+            "eps": 331.5885423378064,
+            "min_samples": 3,
+            "target_mean_size": "4-10",
+            "silhouette": null,
+            "davies_bouldin": null,
+            "calinski_harabasz": null
+        },
+        "cd_stage": {
+            "modularity": null,
+            "n_communities": 1,
+            "cd_method": "louvian"
+        },
+        "n_clusters": 1,
+        "coverage": 1.0,
+        "cluster_size_statistics": {
+            "min": 32,
+            "max": 32,
+            "mean": 32.0,
+            "median": 32.0,
+            "gini": 0.0
+        },
+        "silhouette": null,
+        "davies_bouldin": null,
+        "calinski_harabasz": null
+    }
+}

@@ -4,7 +4,7 @@
 
 Hierarchical reinforcement learning for adaptive traffic signal control using SUMO. Two independent modules — no shared package manager or monorepo tooling:
 
-- **`region-splitting/`** — Partitions a traffic network into clusters via Louvain/Leiden community detection. Run first; produces cluster JSON files.
+- **`region-splitting/`** — Partitions a traffic network into regions via community detection (Louvain/Leiden), density clustering (DBSCAN), or their combinations. Run first; produces cluster JSON files.
 - **`advesarial/`** — RL training and evaluation (intentional misspelling). Consumes cluster output from `region-splitting`.
 
 ## Setup
@@ -21,10 +21,24 @@ Hierarchical reinforcement learning for adaptive traffic signal control using SU
 ### Region Splitting (run first)
 
 ```bash
-cd region-splitting && python main.py
+cd region-splitting && python main.py --scenario manhattan --method dbscan
 ```
 
-Defaults to `"osm"` network. Edit `main()` for `"simple"`. Produces `clusters/leiden/osm_clusters.json` (Louvain is commented out).
+**Partitioning is pluggable.** `--method` (via `services/registry.py`) accepts
+`leiden`, `louvian`, `dbscan`, and the four hybrid community-detection +
+clustering combinations `dbscan_louvian`, `dbscan_leiden`, `louvian_dbscan`,
+`leiden_dbscan`. `dbscan` auto-tunes `eps`/`min_samples` when not supplied.
+
+To generate every method × scenario in one shot (also copies into
+`advesarial/clusters/<method>/`):
+
+```bash
+cd region-splitting && python generate_clusters.py            # all methods × 5 scenarios
+cd region-splitting && python generate_clusters.py --method dbscan_leiden --scenario cologne8
+```
+
+The production DBSCAN partitions can be regenerated with
+`python generate_dbscan_clusters.py` (same auto-tuned pipeline).
 
 ### Training (Adversarial)
 
@@ -46,6 +60,15 @@ cd advesarial && python src/evaluate.py --model-dir ../models/run_YYYYMMDD_HHMMS
 
 Omit `--model-dir` to auto-select the latest run.
 
+### Single-scenario pipeline (cologne8)
+
+```bash
+python train_eval_cologne8.py --cluster-method louvian_dbscan --episodes 10 --episode-steps 1000 --steps 500
+```
+
+Runs cluster → copy → train → evaluate for cologne8 only, then reports average
+travel time and average delay time in `advesarial/metrics.txt`.
+
 ### Lint
 
 ```bash
@@ -62,7 +85,7 @@ All scripts use **relative paths from the module root**:
 - `clusters/louvian/osm_clusters.json` — relative to module root
 - `../models/` — relative to `advesarial/src/` (resolves to `advesarial/models/`)
 
-**Cluster JSON transfer is manual.** After running region-splitting, copy cluster files from `region-splitting/clusters/` to `advesarial/clusters/`.
+**Cluster JSON transfer is manual.** After running region-splitting, copy cluster files from `region-splitting/clusters/` to `advesarial/clusters/`. `generate_clusters.py` / `generate_dbscan_clusters.py` do this automatically; the pipeline's `copy` step is a safety net.
 
 ## Architecture (Adversarial Module)
 
@@ -72,7 +95,7 @@ Entry point: `advesarial/src/sample.py` (has `main()`)
 - **Sub Policy**: LocalEncoder (MLP) → GATLayer (graph attention) → ActorCritic (MLP). Produces per-intersection signal actions.
 - **Environment**: Wraps SUMO via TraCI. Observations are 10-dim per intersection.
 - **Training**: REINFORCE-style with 4 Adam optimizers (transformer, subgoal, local encoder, GAT). Gradient clipping at 0.5. Models saved every 100 episodes.
-- **`config.py` singleton**: Module-level `config = Config("clusters/louvian/osm_clusters.json")` runs at import time. Changing cluster source requires editing this line.
+- **`config.py` singleton**: Module-level `config = Config(_resolve_cluster_path())` runs at import time. The cluster method is selected by `CLUSTER_METHOD` env var (default `dbscan`). `_resolve_cluster_path()` loads `clusters/<method>/{SCENARIO}_clusters.json`, honoring the explicit method verbatim (so hybrid partitions like `leiden_dbscan` can be forced) and falling back to `dbscan` → `leiden` when the file is missing. DBSCAN is the production partition — it produces coarse, spatially compact regions (manhattan: 72 regions, M≈66) that the meta-policy was designed for, unlike Leiden's ~1974 singletons.
 
 ## Two SUMO Network Variants
 

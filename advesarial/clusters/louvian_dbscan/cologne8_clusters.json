@@ -1,0 +1,277 @@
+{
+    "clusters": {
+        "0": [
+            "252016278",
+            "247380550",
+            "252016277",
+            "256189976",
+            "252016270",
+            "252016274",
+            "252016273",
+            "247380547",
+            "315372838",
+            "252016275",
+            "315373118",
+            "247380551",
+            "252041405"
+        ],
+        "1": [
+            "252016282",
+            "26716586",
+            "252016281",
+            "26715772",
+            "252016280",
+            "32319828",
+            "256490868",
+            "32319829"
+        ],
+        "2": [
+            "252016271",
+            "cluster_26718385_738066527_738066531_738066575",
+            "476189",
+            "26718384",
+            "252016108",
+            "268197981"
+        ],
+        "3": [
+            "252017285",
+            "cluster_252046467_252046470",
+            "252046468"
+        ],
+        "4": [
+            "252017289",
+            "252046469",
+            "252015689",
+            "762399659"
+        ],
+        "5": [
+            "796761043",
+            "cluster_1098574052_1098574061_247379905",
+            "3329935579",
+            "294223020",
+            "258346770",
+            "cluster_258346775_2665408833",
+            "258348535",
+            "258348534"
+        ],
+        "6": [
+            "26110729",
+            "258585973",
+            "247379907",
+            "247379910",
+            "266570009",
+            "268061678"
+        ],
+        "7": [
+            "258347996",
+            "274333875",
+            "280120513",
+            "274331914",
+            "1679948681",
+            "256190139",
+            "258348232",
+            "258348233",
+            "62426694",
+            "3008854750",
+            "256189978",
+            "256190118",
+            "256190156",
+            "256189977"
+        ],
+        "8": [
+            "2340562483",
+            "1679948677",
+            "274353299"
+        ],
+        "9": [
+            "3588475451",
+            "256201389",
+            "652791048",
+            "3302156369",
+            "3302422976",
+            "266574870",
+            "3302422984"
+        ],
+        "10": [
+            "258346773",
+            "258346772",
+            "258347997",
+            "258346776",
+            "258348002",
+            "258347999"
+        ]
+    },
+    "metrics": {
+        "order": "louvian_then_dbscan",
+        "first_stage": "louvian",
+        "second_stage": "dbscan",
+        "cd_stage": {
+            "modularity": 0.7136842105263157,
+            "n_communities": 9,
+            "cd_method": "louvian",
+            "cluster_quality": {
+                "0": {
+                    "internal": 16.0,
+                    "external": 7.0,
+                    "ratio": 2.29
+                },
+                "1": {
+                    "internal": 8.0,
+                    "external": 2.0,
+                    "ratio": 4.0
+                },
+                "3": {
+                    "internal": 14.0,
+                    "external": 4.0,
+                    "ratio": 3.5
+                },
+                "4": {
+                    "internal": 7.0,
+                    "external": 4.0,
+                    "ratio": 1.75
+                },
+                "6": {
+                    "internal": 8.0,
+                    "external": 2.0,
+                    "ratio": 4.0
+                },
+                "5": {
+                    "internal": 14.0,
+                    "external": 5.0,
+                    "ratio": 2.8
+                },
+                "8": {
+                    "internal": 2.0,
+                    "external": 0.0,
+                    "ratio": 2000000.0
+                },
+                "2": {
+                    "internal": 6.0,
+                    "external": 1.0,
+                    "ratio": 6.0
+                },
+                "7": {
+                    "internal": 6.0,
+                    "external": 3.0,
+                    "ratio": 2.0
+                }
+            }
+        },
+        "dbscan_stage": {
+            "per_community": {
+                "0": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 104.96638100312896,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "1": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 119.12586311891643,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "3": {
+                    "n_clusters": 3,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 90.23821846584279,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": 0.5030399077929217,
+                    "davies_bouldin": 0.5701048780738386,
+                    "calinski_harabasz": 33.08589755015997
+                },
+                "4": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 1,
+                    "noise_fraction_before_reassign": 0.125,
+                    "eps": 220.02079294131082,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "6": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 1,
+                    "noise_fraction_before_reassign": 0.16666666666666666,
+                    "eps": 181.6634061464467,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "5": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 104.01764145565173,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "8": {
+                    "n_clusters": 0,
+                    "n_noise_before_reassign": 3,
+                    "noise_fraction_before_reassign": 1.0,
+                    "eps": 1.1052951411260215,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "2": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 203.4778356530052,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "7": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 76.27598674036167,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                }
+            },
+            "n_communities": 9
+        },
+        "n_clusters": 11,
+        "coverage": 1.0,
+        "cluster_size_statistics": {
+            "min": 3,
+            "max": 14,
+            "mean": 7.090909090909091,
+            "median": 6.0,
+            "gini": 0.2610722610722611
+        },
+        "silhouette": 0.1927126745444839,
+        "davies_bouldin": 0.971120233944033,
+        "calinski_harabasz": 55.154864970939855
+    }
+}

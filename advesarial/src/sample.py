@@ -253,9 +253,15 @@ gat_optimizer = torch.optim.Adam(GAT.parameters(), lr=5e-5)
 
 
 def create_run_dir():
-    """Create ONE session folder for this training run (no per-checkpoint timestamps)."""
+    """Create ONE session folder for this training run (no per-checkpoint timestamps).
+
+    Microsecond + random suffix prevents collisions when several training runs
+    (e.g. different CLUSTER_METHODs) are launched in the same second.
+    """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_dir = f"../models/{SCENARIO}/run_{timestamp}"
+    import random
+
+    run_dir = f"../models/{SCENARIO}/run_{timestamp}_{random.randint(1000, 9999)}"
     os.makedirs(run_dir, exist_ok=True)
     return run_dir
 
@@ -323,6 +329,7 @@ def save_models(run_dir, episode):
 
     with open("../metrics.txt", "a") as f:
         f.write(f"--- Training Snapshot: {SCENARIO} run_{episode} ---\n")
+        f.write(f"Cluster Method: {os.environ.get('CLUSTER_METHOD', 'dbscan')}\n")
         f.write(f"Episode: {episode}\n")
         f.write(f"Steps taken: {len(meta_losses)}\n")
         if meta_losses:

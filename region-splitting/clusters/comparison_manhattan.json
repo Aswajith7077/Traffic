@@ -1,0 +1,64 @@
+{
+  "scenario": "manhattan",
+  "results": {
+    "leiden": {
+      "n_clusters": 1974,
+      "covered_nodes": 2626,
+      "noise_unassigned": 148,
+      "coverage": 0.946647440519106,
+      "min_size": 1,
+      "max_size": 23,
+      "mean_size": 1.3302938196555218,
+      "median_size": 1.0,
+      "std_size": 1.3388907288428953,
+      "modularity": 0.1680952869513325
+    },
+    "louvian": {
+      "n_clusters": 39,
+      "covered_nodes": 2586,
+      "noise_unassigned": 188,
+      "coverage": 0.9322278298485941,
+      "min_size": 5,
+      "max_size": 162,
+      "mean_size": 66.3076923076923,
+      "median_size": 63.0,
+      "std_size": 39.12186997140054,
+      "modularity": 0.8735611981075133
+    },
+    "dbscan": {
+      "n_clusters": 70,
+      "covered_nodes": 2453,
+      "noise_unassigned": 321,
+      "coverage": 0.8842826243691421,
+      "min_size": 8,
+      "max_size": 300,
+      "mean_size": 35.042857142857144,
+      "median_size": 14.0,
+      "std_size": 60.00796035629315,
+      "modularity": 0.6855817880154137,
+      "silhouette": 0.3680242151667376,
+      "davies_bouldin": 0.5049308698672536,
+      "calinski_harabasz": 1782.9519860156188,
+      "mean_nearest_neighbor_distance": 5.448855214787471,
+      "core_point_ratio": 0.9633102323685283,
+      "gini": 0.6013336439345408
+    }
+  },
+  "pairwise_agreement": {
+    "dbscan_vs_leiden": {
+      "shared_nodes": 2312,
+      "nmi": 0.6164185884879451,
+      "ari": 0.01165807471293351
+    },
+    "dbscan_vs_louvian": {
+      "shared_nodes": 2286,
+      "nmi": 0.6556601976470114,
+      "ari": 0.2808832768370166
+    },
+    "leiden_vs_louvian": {
+      "shared_nodes": 2586,
+      "nmi": 0.6256795107048458,
+      "ari": 0.024785379507645627
+    }
+  }
+}

@@ -56,16 +56,21 @@ Traffic/
 │   │   ├── base.py                    # BaseClusteringService ABC
 │   │   ├── traci.py                   # SUMO wrapper for clustering
 │   │   ├── louvian.py                 # Louvain community detection
-│   │   └── leiden.py                  # Leiden community detection
+│   │   ├── leiden.py                  # Leiden community detection
+│   │   └── dbscan.py                  # DBSCAN density clustering + metrics/diagnostics
+│   ├── tests/
+│   │   └── test_dbscan.py             # DBSCAN clustering tests
 │   ├── clusters/                      # Generated cluster JSON outputs
 │   │   ├── louvian/                   # Louvain clusters (osm + simple)
-│   │   └── leiden/                    # Leiden clusters (osm + simple)
+│   │   ├── leiden/                    # Leiden clusters (osm + simple)
+│   │   └── dbscan/                    # DBSCAN clusters
 │   ├── sumo/                          # SUMO simulation files
 │   │   ├── osm/                       # Real-world OSM network (~1200+ intersections)
 │   │   └── simple/                    # Synthetic small network
 │   └── visualizations/                # Generated clustering PNGs
 │       ├── louvian/
-│       └── leiden/
+│       ├── leiden/
+│       └── dbscan/
 │
 ├── advesarial/                        # MODULE 2: RL training (intentional misspelling)
 │   ├── requirements.txt               # torch, numpy, traci, pydantic, ruff, matplotlib
@@ -180,7 +185,22 @@ python main.py  # defaults to "osm" network
 | **Visualization** | Matplotlib + igraph, color-coded by community |
 | **Status** | Fully implemented and active (Louvain is commented out in main.py) |
 
-#### 3.3 SUMO Wrapper for Clustering (`services/traci.py`)
+#### 3.3 DBSCAN Density Clustering (`services/dbscan.py`)
+
+| Aspect | Details |
+|--------|---------|
+| **Library** | `scikit-learn` (`sklearn.cluster.DBSCAN`) |
+| **Algorithm** | Density-based spatial clustering — clusters points connected by dense neighborhoods, marks isolated points as noise |
+| **Input** | Road-network node coordinates (networkx graph of nodes with x/y positions) |
+| **Key Parameters** | `eps` (neighborhood radius, must be tuned per network), `min_samples` (minimum neighborhood size for a core point) |
+| **Noise Handling** | Noise points (label `-1`) stored under the `"-1"` cluster key; explicitly excluded from all internal metric calculations |
+| **Metrics** | Silhouette, Davies-Bouldin, Calinski-Harabasz, noise fraction, cluster-size statistics (incl. Gini), density metrics; external metrics (ARI/NMI/AMI/FM/purity/V-measure) when ground truth is available |
+| **Diagnostics** | `k_distance_plot_data`, `suggest_eps` (kneedle elbow), `eps_sensitivity_analysis`, `min_samples_sensitivity_analysis`, `cluster_stability_score`, `dbscan_grid_search` |
+| **CLI** | `python main.py --method dbscan --eps <radius> --min-samples <n>` |
+| **Visualization** | Matplotlib + NetworkX, color-coded by cluster, noise in the default color |
+| **Status** | Fully implemented, tested (see `tests/test_dbscan.py`) |
+
+#### 3.4 SUMO Wrapper for Clustering (`services/traci.py`)
 
 - Starts/steps/resets SUMO simulation
 - Computes dynamic edge weights from live traffic data
@@ -307,16 +327,17 @@ python evaluate.py --model-dir ../models/run_YYYYMMDD_HHMMSS --steps 500
 |---|-----------|----------|---------|--------|
 | 1 | **Louvain Community Detection** | `region-splitting/services/louvian.py` | Graph partitioning into clusters | Implemented (has bugs, commented out) |
 | 2 | **Leiden Community Detection** | `region-splitting/services/leiden.py` | Improved graph partitioning | Fully implemented, active |
-| 3 | **Transformer Encoder** | `advesarial/src/models/encoder/transformer.py` | Cluster-level state encoding with learnable global token | Fully implemented |
-| 4 | **LSTM Subgoal Generation** | `advesarial/src/models/lstm.py` | Produce goal vector from cluster encodings | Fully implemented |
-| 5 | **Graph Attention Network (GAT)** | `advesarial/src/models/gat.py` | Per-intersection neighbor aggregation | Implemented (single-head, single-layer) |
-| 6 | **Actor-Critic (REINFORCE)** | `advesarial/src/agents/actor.py` | Policy gradient with value baseline | Fully implemented |
-| 7 | **Multi-Objective Reward** | `advesarial/src/environment/environment.py` | Weighted efficiency + fairness + emergency + emission | Fully implemented |
-| 8 | **Safe Phase Switching** | `advesarial/src/services/traci.py` | Yellow-light transitions, min green time | Fully implemented |
-| 9 | **Shannon Entropy** | `advesarial/src/utils/compute_phase_history.py` | Phase switching pattern characterization | Fully implemented |
-| 10 | **Running Mean/Variance Normalization** | `sample.py`, `environment.py` | State and reward normalization | Fully implemented |
-| 11 | **Jain's Fairness Index** | `advesarial/src/environment/environment.py` | Intersection-level fairness metric | Fully implemented |
-| 12 | **Dynamic Edge Weighting** | `region-splitting/services/traci.py` | Traffic-responsive graph weights | Fully implemented |
+| 3 | **DBSCAN Density Clustering** | `region-splitting/services/dbscan.py` | Density-based spatial clustering (node coordinates) | Fully implemented, tested |
+| 4 | **Transformer Encoder** | `advesarial/src/models/encoder/transformer.py` | Cluster-level state encoding with learnable global token | Fully implemented |
+| 5 | **LSTM Subgoal Generation** | `advesarial/src/models/lstm.py` | Produce goal vector from cluster encodings | Fully implemented |
+| 6 | **Graph Attention Network (GAT)** | `advesarial/src/models/gat.py` | Per-intersection neighbor aggregation | Implemented (single-head, single-layer) |
+| 7 | **Actor-Critic (REINFORCE)** | `advesarial/src/agents/actor.py` | Policy gradient with value baseline | Fully implemented |
+| 8 | **Multi-Objective Reward** | `advesarial/src/environment/environment.py` | Weighted efficiency + fairness + emergency + emission | Fully implemented |
+| 9 | **Safe Phase Switching** | `advesarial/src/services/traci.py` | Yellow-light transitions, min green time | Fully implemented |
+| 10 | **Shannon Entropy** | `advesarial/src/utils/compute_phase_history.py` | Phase switching pattern characterization | Fully implemented |
+| 11 | **Running Mean/Variance Normalization** | `sample.py`, `environment.py` | State and reward normalization | Fully implemented |
+| 12 | **Jain's Fairness Index** | `advesarial/src/environment/environment.py` | Intersection-level fairness metric | Fully implemented |
+| 13 | **Dynamic Edge Weighting** | `region-splitting/services/traci.py` | Traffic-responsive graph weights | Fully implemented |
 
 ---
 

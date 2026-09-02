@@ -20,7 +20,7 @@ uv sync
 source .venv/bin/activate
 
 # Or using pip
-pip install torch numpy traci pydantic ruff matplotlib networkx python-louvain sumolib leidenalg python-igraph
+pip install torch numpy traci pydantic ruff matplotlib networkx python-louvain sumolib leidenalg python-igraph scikit-learn kneed pandas pytest
 ```
 
 ## Usage
@@ -33,11 +33,27 @@ cd region-splitting && python main.py
 
 Partitions the SUMO network into communities using the Leiden algorithm. Produces cluster JSON files in `clusters/leiden/`.
 
+Three clustering algorithms are available via `--method` (default `leiden`):
+
+| Method   | Description                                                    | Output dir              |
+|----------|----------------------------------------------------------------|-------------------------|
+| `leiden` | Leiden community detection on the edge-weight graph            | `clusters/leiden/`      |
+| `louvian`| Louvain community detection on the edge-weight graph           | `clusters/louvian/`     |
+| `dbscan` | Density-based clustering over network-node coordinates         | `clusters/dbscan/`      |
+
+```bash
+python main.py --method dbscan --eps 300 --min-samples 5
+```
+
+DBSCAN clusters road-network node coordinates by density; noise points (label `-1`) are stored under the `"-1"` cluster key in the output JSON. `--eps` is the neighborhood radius (must be tuned per network — use `k_distance_plot_data`/`suggest_eps` in `services/dbscan.py`) and `--min-samples` is the minimum neighborhood size for a core point.
+
 ### 2. Copy Clusters to RL Module
 
 ```bash
-cp region-splitting/clusters/leiden/osm_clusters.json advesarial/clusters/leiden/
+cp region-splitting/clusters/dbscan/osm_clusters.json advesarial/clusters/dbscan/
 ```
+
+The RL module loads **DBSCAN** partitions by default (`advesarial/src/config.py`, `CLUSTER_METHOD` env var; falls back to Leiden when a DBSCAN partition has <2 regions). DBSCAN yields coarse, spatially compact regions — the regime the meta-policy was designed for — unlike the fragmented Leiden output.
 
 ### 3. Train
 
@@ -70,7 +86,7 @@ region-splitting/                advesarial/
 ┌─────────────────────┐         ┌──────────────────────────────────────┐
 │ SUMO Network        │         │ Meta Policy                          │
 │   ↓                 │         │   TransformerEncoder (clusters)      │
-│ Leiden/Louvain      │──JSON──→│     ↓                               │
+│ Leiden/Louvain/DBSCAN │──JSON──→│     ↓                               │
 │   ↓                 │         │   SubGoalGenerator (LSTM) → G_t     │
 │ Cluster JSON        │         │     ↓                               │
 └─────────────────────┘         │ Sub Policy                          │
@@ -95,8 +111,9 @@ region-splitting/                advesarial/
 ```
 Traffic/
 ├── region-splitting/       # Network clustering module
-│   ├── main.py             # Entry point
-│   ├── services/           # TraciService, LouvianService, LeidenService
+│   ├── main.py             # Entry point (--method leiden|louvian|dbscan)
+│   ├── services/           # TraciService, LouvianService, LeidenService, DBSCANService
+│   ├── tests/              # DBSCAN clustering tests
 │   ├── clusters/           # Generated cluster JSON outputs
 │   └── sumo/               # SUMO network files (osm, simple)
 │

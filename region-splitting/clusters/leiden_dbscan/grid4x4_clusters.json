@@ -1,0 +1,155 @@
+{
+    "clusters": {
+        "0": [
+            "B0",
+            "C0",
+            "bottom1",
+            "D0",
+            "bottom2",
+            "bottom3",
+            "right0"
+        ],
+        "1": [
+            "D1",
+            "D2",
+            "D3",
+            "right1",
+            "right2",
+            "right3",
+            "top3"
+        ],
+        "2": [
+            "A0",
+            "A1",
+            "bottom0",
+            "left0",
+            "A2",
+            "left1",
+            "left2"
+        ],
+        "3": [
+            "A3",
+            "B3",
+            "left3",
+            "top0",
+            "C3",
+            "top1",
+            "top2"
+        ],
+        "4": [
+            "B1",
+            "B2",
+            "C1",
+            "C2"
+        ]
+    },
+    "metrics": {
+        "order": "leiden_then_dbscan",
+        "first_stage": "leiden",
+        "second_stage": "dbscan",
+        "cd_stage": {
+            "modularity": 0.4999999999999998,
+            "n_communities": 5,
+            "cd_method": "leiden",
+            "cluster_quality": {
+                "0": {
+                    "internal": 18.0,
+                    "external": 12.0,
+                    "ratio": 1.5
+                },
+                "1": {
+                    "internal": 18.0,
+                    "external": 12.0,
+                    "ratio": 1.5
+                },
+                "2": {
+                    "internal": 18.0,
+                    "external": 12.0,
+                    "ratio": 1.5
+                },
+                "3": {
+                    "internal": 18.0,
+                    "external": 12.0,
+                    "ratio": 1.5
+                },
+                "4": {
+                    "internal": 12.0,
+                    "external": 24.0,
+                    "ratio": 0.5
+                }
+            }
+        },
+        "dbscan_stage": {
+            "per_community": {
+                "0": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 331.5885423378064,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "1": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 331.5885423378064,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "2": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 331.5885423378064,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "3": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 331.5885423378064,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                },
+                "4": {
+                    "n_clusters": 1,
+                    "n_noise_before_reassign": 0,
+                    "noise_fraction_before_reassign": 0.0,
+                    "eps": 331.5885423378064,
+                    "min_samples": 3,
+                    "target_mean_size": "4-10",
+                    "silhouette": null,
+                    "davies_bouldin": null,
+                    "calinski_harabasz": null
+                }
+            },
+            "n_communities": 5
+        },
+        "n_clusters": 5,
+        "coverage": 1.0,
+        "cluster_size_statistics": {
+            "min": 4,
+            "max": 7,
+            "mean": 6.4,
+            "median": 7.0,
+            "gini": 0.075
+        },
+        "silhouette": 0.27236892607344576,
+        "davies_bouldin": 0.8493100255615523,
+        "calinski_harabasz": 21.25
+    }
+}

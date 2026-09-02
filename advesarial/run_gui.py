@@ -17,18 +17,18 @@ sys.path.insert(0, "src")
 
 SCENARIOS_DIR = "../scenarios"
 MODELS_DIR = "../models"
-CLUSTERS_DIR = "clusters/leiden"
 
 
 def discover_maps():
     """Return maps that have a sumocfg, a cluster file, and at least one trained run."""
+    clusters_dir = f"clusters/{os.environ.get('CLUSTER_METHOD', 'dbscan')}"
     maps = []
     if not os.path.isdir(SCENARIOS_DIR):
         return maps
 
     for name in sorted(os.listdir(SCENARIOS_DIR)):
         sumo_cfg = os.path.join(SCENARIOS_DIR, name, f"{name}.sumocfg")
-        cluster_file = os.path.join(CLUSTERS_DIR, f"{name}_clusters.json")
+        cluster_file = os.path.join(clusters_dir, f"{name}_clusters.json")
         runs = sorted(glob.glob(os.path.join(MODELS_DIR, name, "run_*")))
         has_checkpoint = any(
             glob.glob(os.path.join(run_dir, "checkpoint_ep*.pth")) or glob.glob(os.path.join(run_dir, "*.pth"))
@@ -98,8 +98,15 @@ if __name__ == "__main__":
         action="store_true",
         help="Print the phase decision for each intersection every step.",
     )
+    parser.add_argument(
+        "--cluster-method",
+        type=str,
+        default=os.environ.get("CLUSTER_METHOD", "dbscan"),
+        help="Partition method whose cluster file is loaded (default: dbscan).",
+    )
     args = parser.parse_args()
 
+    os.environ["CLUSTER_METHOD"] = args.cluster_method
     scenario = select_map(args)
     os.environ["TRAFFIC_SCENARIO"] = scenario
 

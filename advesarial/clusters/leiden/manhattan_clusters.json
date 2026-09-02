@@ -16448,6 +16448,8 @@
                 "external": 0.0,
                 "ratio": 0.0
             }
-        }
+        },
+        "n_clusters": 1974,
+        "coverage": 0.9466
     }
 }

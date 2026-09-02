@@ -247,6 +247,8 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     with open("../metrics.txt", "a") as f:
         f.write(f"--- Evaluation Snapshot: {timestamp} ---\n")
+        f.write(f"Scenario: {SCENARIO}\n")
+        f.write(f"Cluster Method: {os.environ.get('CLUSTER_METHOD', 'dbscan')}\n")
         f.write(f"Evaluating Model: {model_dir}\n")
         f.write(f"Total Steps Evaluated: {len(total_queue_length)}\n")
         f.write(f"Completed Vehicles: {completed_vehicles}\n")

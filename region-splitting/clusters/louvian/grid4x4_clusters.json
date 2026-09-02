@@ -1,0 +1,69 @@
+{
+    "clusters": {
+        "1": [
+            "A0",
+            "A1",
+            "bottom0",
+            "left0",
+            "left1",
+            "B0",
+            "C0",
+            "bottom1",
+            "bottom2",
+            "B1",
+            "B2",
+            "C1",
+            "C2"
+        ],
+        "3": [
+            "A2",
+            "A3",
+            "left2",
+            "left3",
+            "top0",
+            "B3",
+            "C3",
+            "top1",
+            "top2"
+        ],
+        "4": [
+            "D0",
+            "D1",
+            "bottom3",
+            "right0",
+            "right1"
+        ],
+        "5": [
+            "D2",
+            "D3",
+            "right2",
+            "right3",
+            "top3"
+        ]
+    },
+    "metrics": {
+        "modularity": 0.503125,
+        "cluster_quality": {
+            "1": {
+                "internal": 30,
+                "external": 7,
+                "ratio": 3.75
+            },
+            "3": {
+                "internal": 16,
+                "external": 5,
+                "ratio": 2.6666666666666665
+            },
+            "4": {
+                "internal": 8,
+                "external": 3,
+                "ratio": 2.0
+            },
+            "5": {
+                "internal": 8,
+                "external": 3,
+                "ratio": 2.0
+            }
+        }
+    }
+}

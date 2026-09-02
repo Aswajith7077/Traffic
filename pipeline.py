@@ -6,17 +6,20 @@ Datasets live in scenarios/<scenario>/ and are used directly (no copies).
 Run region-splitting, training, and evaluation for any of them.
 
 Usage:
-    python pipeline.py                       # run full pipeline (manhattan)
+    python pipeline.py                               # run full pipeline (manhattan)
     python pipeline.py --scenario arterial4x4 --route 42
-    python pipeline.py baseline              # step 1 only
-    python pipeline.py cluster               # step 2 only
-    python pipeline.py copy                  # step 3 only
-    python pipeline.py train                 # step 4 only
-    python pipeline.py eval                  # step 5 only
+    python pipeline.py --cluster-method dbscan_leiden --scenario cologne8
+    python pipeline.py baseline                      # step 1 only
+    python pipeline.py cluster                       # step 2 only
+    python pipeline.py copy                          # step 3 only
+    python pipeline.py train                         # step 4 only
+    python pipeline.py eval                          # step 5 only
 
-Scenarios: manhattan, arterial4x4, cologne8, ingolstadt21.
-(grid4x4 is excluded: its network has no traffic lights, so RL signal
-control cannot run on it.)
+Scenarios: manhattan, arterial4x4, cologne8, ingolstadt21, grid4x4.
+
+Partitioning is pluggable via --cluster-method. Choose a standalone method
+(leiden, louvian, dbscan) or one of the four community-detection + clustering
+combinations (dbscan_louvian, dbscan_leiden, louvian_dbscan, leiden_dbscan).
 
 arterial4x4 ships 1400 demand route files (arterial4x4_N.rou.xml); pick
 one with --route N (default: the sumocfg's default, _1).
@@ -38,7 +41,16 @@ REGION_SPLITTING = ROOT / "region-splitting"
 ADVESARIAL = ROOT / "advesarial"
 SCENARIOS = ROOT / "scenarios"
 
-SCENARIO_CHOICES = ["manhattan", "arterial4x4", "cologne8", "ingolstadt21"]
+SCENARIO_CHOICES = ["manhattan", "arterial4x4", "cologne8", "ingolstadt21", "grid4x4"]
+CLUSTER_METHOD_CHOICES = [
+    "dbscan",
+    "leiden",
+    "louvian",
+    "dbscan_louvian",
+    "dbscan_leiden",
+    "louvian_dbscan",
+    "leiden_dbscan",
+]
 
 
 def banner(title):
@@ -55,9 +67,11 @@ def run(cmd, cwd, env):
     return result.returncode == 0
 
 
-def pipeline_env(scenario, route=None, episodes=None, episode_steps=None, save_every=None):
+def pipeline_env(scenario, route=None, episodes=None, episode_steps=None, save_every=None, cluster_method=None):
     env = dict(os.environ)
     env["TRAFFIC_SCENARIO"] = scenario
+    if cluster_method is not None:
+        env["CLUSTER_METHOD"] = cluster_method
     if route is not None:
         env["TRAFFIC_ROUTE"] = str(route)
     if episodes is not None:
@@ -145,21 +159,21 @@ def step_baseline(scenario, route):
     return True
 
 
-def step_cluster(scenario, route):
-    banner(f"Step 2/5: Region splitting (Leiden clustering) — {scenario}")
+def step_cluster(scenario, route, cluster_method):
+    banner(f"Step 2/5: Region splitting ({cluster_method} clustering) — {scenario}")
 
     return run(
-        [VENV_PYTHON, "main.py", "--scenario", scenario],
+        [VENV_PYTHON, "main.py", "--scenario", scenario, "--method", cluster_method],
         cwd=REGION_SPLITTING,
-        env=pipeline_env(scenario, route),
+        env=pipeline_env(scenario, route, cluster_method=cluster_method),
     )
 
 
-def step_copy(scenario, route):
+def step_copy(scenario, route, cluster_method):
     banner(f"Step 3/5: Copying cluster files to advesarial — {scenario}")
 
-    src = REGION_SPLITTING / "clusters" / "leiden" / f"{scenario}_clusters.json"
-    dst_dir = ADVESARIAL / "clusters" / "leiden"
+    src = REGION_SPLITTING / "clusters" / cluster_method / f"{scenario}_clusters.json"
+    dst_dir = ADVESARIAL / "clusters" / cluster_method
     dst_dir.mkdir(parents=True, exist_ok=True)
     dst = dst_dir / f"{scenario}_clusters.json"
 
@@ -174,30 +188,28 @@ def step_copy(scenario, route):
     return True
 
 
-def step_train(scenario, route, episodes, episode_steps, save_every):
+def step_train(scenario, route, episodes, episode_steps, save_every, cluster_method):
     banner(f"Step 4/5: Training RL agent ({episodes} episodes of {episode_steps}s) — {scenario}")
 
     return run(
         [VENV_PYTHON, "src/sample.py"],
         cwd=ADVESARIAL,
-        env=pipeline_env(scenario, route, episodes, episode_steps, save_every),
+        env=pipeline_env(scenario, route, episodes, episode_steps, save_every, cluster_method),
     )
 
 
-def step_eval(scenario, route):
+def step_eval(scenario, route, cluster_method, steps=500):
     banner(f"Step 5/5: Evaluating trained model ({scenario}) — latest checkpoint in newest run folder")
 
     return run(
-        [VENV_PYTHON, "src/evaluate.py", "--steps", "500"],
+        [VENV_PYTHON, "src/evaluate.py", "--steps", str(steps)],
         cwd=ADVESARIAL,
-        env=pipeline_env(scenario, route),
+        env=pipeline_env(scenario, route, cluster_method=cluster_method),
     )
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Pipeline for traffic signal control on the included SUMO scenarios"
-    )
+    parser = argparse.ArgumentParser(description="Pipeline for traffic signal control on the included SUMO scenarios")
     parser.add_argument(
         "command",
         nargs="?",
@@ -209,8 +221,13 @@ def main():
         "--scenario",
         default="manhattan",
         choices=SCENARIO_CHOICES,
-        help="Scenario dataset to use (default: manhattan). "
-        "grid4x4 is excluded (no traffic lights in the network).",
+        help="Scenario dataset to use (default: manhattan).",
+    )
+    parser.add_argument(
+        "--cluster-method",
+        default="dbscan",
+        choices=CLUSTER_METHOD_CHOICES,
+        help="Partitioning method: standalone leiden/louvian/dbscan or a hybrid combination (default: dbscan).",
     )
     parser.add_argument(
         "--route",
@@ -237,6 +254,12 @@ def main():
         default=10,
         help="Save a checkpoint every N episodes (default: 10)",
     )
+    parser.add_argument(
+        "--steps",
+        type=int,
+        default=500,
+        help="Sim-seconds for the evaluation step (default: 500)",
+    )
     args = parser.parse_args()
 
     scenario = args.scenario
@@ -244,27 +267,29 @@ def main():
     episodes = args.episodes
     episode_steps = args.episode_steps
     save_every = args.save_every
+    cluster_method = args.cluster_method
+    steps = args.steps
 
     if route is not None and not (scenario_dir(scenario) / f"{scenario}_{route}.rou.xml").exists():
         print(f"  ERROR: route file not found: {scenario_dir(scenario) / f'{scenario}_{route}.rou.xml'}")
         sys.exit(1)
 
-    steps = {
+    steps_map = {
         "all": [
             lambda: step_baseline(scenario, route),
-            lambda: step_cluster(scenario, route),
-            lambda: step_copy(scenario, route),
-            lambda: step_train(scenario, route, episodes, episode_steps, save_every),
-            lambda: step_eval(scenario, route),
+            lambda: step_cluster(scenario, route, cluster_method),
+            lambda: step_copy(scenario, route, cluster_method),
+            lambda: step_train(scenario, route, episodes, episode_steps, save_every, cluster_method),
+            lambda: step_eval(scenario, route, cluster_method, steps),
         ],
         "baseline": [lambda: step_baseline(scenario, route)],
-        "cluster": [lambda: step_cluster(scenario, route)],
-        "copy": [lambda: step_copy(scenario, route)],
-        "train": [lambda: step_train(scenario, route, episodes, episode_steps, save_every)],
-        "eval": [lambda: step_eval(scenario, route)],
+        "cluster": [lambda: step_cluster(scenario, route, cluster_method)],
+        "copy": [lambda: step_copy(scenario, route, cluster_method)],
+        "train": [lambda: step_train(scenario, route, episodes, episode_steps, save_every, cluster_method)],
+        "eval": [lambda: step_eval(scenario, route, cluster_method, steps)],
     }
 
-    for fn in steps[args.command]:
+    for fn in steps_map[args.command]:
         if not fn():
             print(f"\n  Pipeline stopped (scenario: {scenario})")
             sys.exit(1)

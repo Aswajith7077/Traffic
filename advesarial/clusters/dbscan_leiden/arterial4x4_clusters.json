@@ -1,0 +1,71 @@
+{
+    "clusters": {
+        "0": [
+            "np10",
+            "nt15",
+            "np11",
+            "nt14",
+            "np12",
+            "nt13",
+            "np13",
+            "np14",
+            "nt9",
+            "np15",
+            "nt5",
+            "np16",
+            "nt1",
+            "np1",
+            "np2",
+            "nt2",
+            "np3",
+            "nt3",
+            "np4",
+            "nt4",
+            "np5",
+            "np6",
+            "nt8",
+            "np7",
+            "nt12",
+            "np8",
+            "nt16",
+            "np9",
+            "nt10",
+            "nt11",
+            "nt6",
+            "nt7"
+        ]
+    },
+    "metrics": {
+        "order": "dbscan_then_leiden",
+        "first_stage": "dbscan",
+        "second_stage": "leiden",
+        "dbscan_stage": {
+            "n_clusters": 1,
+            "n_noise_before_reassign": 0,
+            "noise_fraction_before_reassign": 0.0,
+            "eps": 221.05902822520446,
+            "min_samples": 3,
+            "target_mean_size": "4-10",
+            "silhouette": null,
+            "davies_bouldin": null,
+            "calinski_harabasz": null
+        },
+        "cd_stage": {
+            "modularity": null,
+            "n_communities": 1,
+            "cd_method": "leiden"
+        },
+        "n_clusters": 1,
+        "coverage": 1.0,
+        "cluster_size_statistics": {
+            "min": 32,
+            "max": 32,
+            "mean": 32.0,
+            "median": 32.0,
+            "gini": 0.0
+        },
+        "silhouette": null,
+        "davies_bouldin": null,
+        "calinski_harabasz": null
+    }
+}

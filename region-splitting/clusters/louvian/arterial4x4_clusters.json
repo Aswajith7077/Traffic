@@ -1,0 +1,69 @@
+{
+    "clusters": {
+        "2": [
+            "np10",
+            "nt15",
+            "nt14",
+            "np11",
+            "nt13",
+            "np12",
+            "np13",
+            "nt11",
+            "nt10",
+            "nt6",
+            "nt7",
+            "nt9",
+            "np14",
+            "nt5",
+            "np15"
+        ],
+        "5": [
+            "nt16",
+            "nt12",
+            "np7",
+            "np8",
+            "np9"
+        ],
+        "3": [
+            "nt1",
+            "np16",
+            "np1",
+            "nt2",
+            "np2",
+            "nt3",
+            "np3"
+        ],
+        "4": [
+            "nt4",
+            "np4",
+            "np5",
+            "nt8",
+            "np6"
+        ]
+    },
+    "metrics": {
+        "modularity": 0.5015625,
+        "cluster_quality": {
+            "2": {
+                "internal": 36,
+                "external": 6,
+                "ratio": 5.142857142857143
+            },
+            "5": {
+                "internal": 8,
+                "external": 3,
+                "ratio": 2.0
+            },
+            "3": {
+                "internal": 12,
+                "external": 4,
+                "ratio": 2.4
+            },
+            "4": {
+                "internal": 8,
+                "external": 3,
+                "ratio": 2.0
+            }
+        }
+    }
+}

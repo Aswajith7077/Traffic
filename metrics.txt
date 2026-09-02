@@ -1190,3 +1190,385 @@ Average Travel Time: 486.26 seconds
 Average Delay Time: 437.85 seconds
 Peak Total Queue Length: 1650.00 vehicles
 
+--- Training Snapshot: arterial4x4 run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: 104.9292
+Latest AC Loss: 4.9664
+Latest Sub Loss: 21.5558
+Latest Reward: -28.5000
+
+--- Training Snapshot: arterial4x4 run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: 104.9292
+Latest AC Loss: 4.9664
+Latest Sub Loss: 21.5558
+Latest Reward: -28.5000
+
+--- Training Snapshot: cologne8 run_3 ---
+Episode: 3
+Steps taken: 855
+Latest Meta Loss: 1647.5308
+Latest AC Loss: 1.2648
+Latest Sub Loss: 332.4562
+Latest Reward: -147.5000
+
+--- Training Snapshot: cologne8 run_3 ---
+Episode: 3
+Steps taken: 855
+Latest Meta Loss: 1647.5308
+Latest AC Loss: 1.2648
+Latest Sub Loss: 332.4562
+Latest Reward: -147.5000
+
+--- Evaluation Snapshot: 20260827_144358 ---
+Evaluating Model: ../models/cologne8/run_20260827_143316
+Total Steps Evaluated: 300
+Completed Vehicles: 30
+Average Queue Length: 202.82 vehicles
+Average Waiting Time: 0.77 seconds
+Average Travel Time: 43.57 seconds
+Average Delay Time: 10.74 seconds
+Peak Total Queue Length: 337.00 vehicles
+
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 185
+Latest Meta Loss: 346.8925
+Latest AC Loss: 0.3977
+Latest Sub Loss: 70.9045
+Latest Reward: -76.3000
+
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 185
+Latest Meta Loss: 346.8925
+Latest AC Loss: 0.3977
+Latest Sub Loss: 70.9045
+Latest Reward: -76.3000
+
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 297.4883
+Latest AC Loss: 2.7569
+Latest Sub Loss: 60.4497
+Latest Reward: -47.6000
+
+--- Training Snapshot: cologne8 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 297.4883
+Latest AC Loss: 2.7569
+Latest Sub Loss: 60.4497
+Latest Reward: -47.6000
+
+--- Training Snapshot: grid4x4 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 474.3691
+Latest AC Loss: 4.9672
+Latest Sub Loss: 96.1278
+Latest Reward: -62.7000
+
+--- Training Snapshot: grid4x4 run_1 ---
+Episode: 1
+Steps taken: 85
+Latest Meta Loss: 474.3691
+Latest AC Loss: 4.9672
+Latest Sub Loss: 96.1278
+Latest Reward: -62.7000
+
+--- Training Snapshot: manhattan run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: -0.1578
+Latest AC Loss: 11.1415
+Latest Sub Loss: 0.0004
+Latest Reward: -1.6000
+
+--- Training Snapshot: manhattan run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: -0.1578
+Latest AC Loss: 11.1415
+Latest Sub Loss: 0.0004
+Latest Reward: -1.6000
+
+--- Training Snapshot: manhattan run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: -0.1675
+Latest AC Loss: 9.4659
+Latest Sub Loss: 0.0005
+Latest Reward: -1.7000
+
+--- Training Snapshot: manhattan run_1 ---
+Episode: 1
+Steps taken: 35
+Latest Meta Loss: -0.1675
+Latest AC Loss: 9.4659
+Latest Sub Loss: 0.0005
+Latest Reward: -1.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 31221.1074
+Latest AC Loss: 0.8115
+Latest Sub Loss: 6252.8994
+Latest Reward: -433.9000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 31221.1074
+Latest AC Loss: 0.8115
+Latest Sub Loss: 6252.8994
+Latest Reward: -433.9000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 23537.6973
+Latest AC Loss: 2.9113
+Latest Sub Loss: 4718.3833
+Latest Reward: -542.2000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 23537.6973
+Latest AC Loss: 2.9113
+Latest Sub Loss: 4718.3833
+Latest Reward: -542.2000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 173540.2344
+Latest AC Loss: 2.1182
+Latest Sub Loss: 34729.2344
+Latest Reward: -1059.4000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 173540.2344
+Latest AC Loss: 2.1182
+Latest Sub Loss: 34729.2344
+Latest Reward: -1059.4000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 31179.0781
+Latest AC Loss: 0.4736
+Latest Sub Loss: 6245.0972
+Latest Reward: -464.1000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 31179.0781
+Latest AC Loss: 0.4736
+Latest Sub Loss: 6245.0972
+Latest Reward: -464.1000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 46527.4023
+Latest AC Loss: 1.2011
+Latest Sub Loss: 9321.7734
+Latest Reward: -814.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 46527.4023
+Latest AC Loss: 1.2011
+Latest Sub Loss: 9321.7734
+Latest Reward: -814.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 95333.6094
+Latest AC Loss: -0.1555
+Latest Sub Loss: 19080.0430
+Latest Reward: -666.1000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 95333.6094
+Latest AC Loss: -0.1555
+Latest Sub Loss: 19080.0430
+Latest Reward: -666.1000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_louvian
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 49254.6445
+Latest AC Loss: 0.5331
+Latest Sub Loss: 9862.2451
+Latest Reward: -565.8000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_louvian
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 49254.6445
+Latest AC Loss: 0.5331
+Latest Sub Loss: 9862.2451
+Latest Reward: -565.8000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_leiden
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 41202.5742
+Latest AC Loss: 0.7192
+Latest Sub Loss: 8253.4092
+Latest Reward: -644.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_leiden
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 41202.5742
+Latest AC Loss: 0.7192
+Latest Sub Loss: 8253.4092
+Latest Reward: -644.7000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: leiden_dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 161031.8125
+Latest AC Loss: 1.4256
+Latest Sub Loss: 32232.0020
+Latest Reward: -1281.8000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: leiden_dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 161031.8125
+Latest AC Loss: 1.4256
+Latest Sub Loss: 32232.0020
+Latest Reward: -1281.8000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: louvian_dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 84419.3359
+Latest AC Loss: 0.3652
+Latest Sub Loss: 16902.7793
+Latest Reward: -945.6000
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: louvian_dbscan
+Episode: 10
+Steps taken: 9850
+Latest Meta Loss: 84419.3359
+Latest AC Loss: 0.3652
+Latest Sub Loss: 16902.7793
+Latest Reward: -945.6000
+
+--- Evaluation Snapshot: 20260902_234524 ---
+Scenario: cologne8
+Cluster Method: dbscan
+Evaluating Model: ../models/cologne8/run_20260902_224030_9179
+Total Steps Evaluated: 1000
+Completed Vehicles: 132
+Average Queue Length: 512.44 vehicles
+Average Waiting Time: 17.13 seconds
+Average Travel Time: 164.26 seconds
+Average Delay Time: 117.67 seconds
+Peak Total Queue Length: 996.00 vehicles
+
+--- Evaluation Snapshot: 20260902_234755 ---
+Scenario: cologne8
+Cluster Method: dbscan_louvian
+Evaluating Model: ../models/cologne8/run_20260902_224030_1781
+Total Steps Evaluated: 1000
+Completed Vehicles: 263
+Average Queue Length: 317.79 vehicles
+Average Waiting Time: 6.74 seconds
+Average Travel Time: 109.46 seconds
+Average Delay Time: 60.20 seconds
+Peak Total Queue Length: 590.00 vehicles
+
+--- Evaluation Snapshot: 20260902_235025 ---
+Scenario: cologne8
+Cluster Method: dbscan_leiden
+Evaluating Model: ../models/cologne8/run_20260902_224030_9536
+Total Steps Evaluated: 1000
+Completed Vehicles: 265
+Average Queue Length: 315.60 vehicles
+Average Waiting Time: 7.66 seconds
+Average Travel Time: 111.40 seconds
+Average Delay Time: 61.95 seconds
+Peak Total Queue Length: 589.00 vehicles
+
+--- Evaluation Snapshot: 20260902_235256 ---
+Scenario: cologne8
+Cluster Method: louvian_dbscan
+Evaluating Model: ../models/cologne8/run_20260902_224030_7060
+Total Steps Evaluated: 1000
+Completed Vehicles: 359
+Average Queue Length: 370.69 vehicles
+Average Waiting Time: 28.73 seconds
+Average Travel Time: 191.90 seconds
+Average Delay Time: 144.30 seconds
+Peak Total Queue Length: 721.00 vehicles
+
+--- Evaluation Snapshot: 20260902_235528 ---
+Scenario: cologne8
+Cluster Method: leiden_dbscan
+Evaluating Model: ../models/cologne8/run_20260902_224030_5082
+Total Steps Evaluated: 1000
+Completed Vehicles: 263
+Average Queue Length: 317.79 vehicles
+Average Waiting Time: 6.74 seconds
+Average Travel Time: 109.46 seconds
+Average Delay Time: 60.20 seconds
+Peak Total Queue Length: 590.00 vehicles
+
+--- Training Snapshot: ingolstadt21 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 10141.9746
+Latest AC Loss: 0.3292
+Latest Sub Loss: 2038.7251
+Latest Reward: -516.5000
+
+--- Training Snapshot: ingolstadt21 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 10141.9746
+Latest AC Loss: 0.3292
+Latest Sub Loss: 2038.7251
+Latest Reward: -516.5000
+
+--- Evaluation Snapshot: 20260903_000959 ---
+Scenario: ingolstadt21
+Cluster Method: dbscan
+Evaluating Model: ../models/ingolstadt21/run_20260902_234250_4774
+Total Steps Evaluated: 1000
+Completed Vehicles: 360
+Average Queue Length: 247.91 vehicles
+Average Waiting Time: 24.62 seconds
+Average Travel Time: 286.23 seconds
+Average Delay Time: 183.46 seconds
+Peak Total Queue Length: 400.00 vehicles
+
