@@ -1542,6 +1542,10 @@ Average Travel Time: 109.46 seconds
 Average Delay Time: 60.20 seconds
 Peak Total Queue Length: 590.00 vehicles
 
+
+
+
+
 --- Training Snapshot: ingolstadt21 run_5 ---
 Cluster Method: dbscan
 Episode: 5
@@ -1571,4 +1575,64 @@ Average Waiting Time: 24.62 seconds
 Average Travel Time: 286.23 seconds
 Average Delay Time: 183.46 seconds
 Peak Total Queue Length: 400.00 vehicles
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 76434.4688
+Latest AC Loss: 0.3044
+Latest Sub Loss: 15302.2607
+Latest Reward: -768.2000
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 76434.4688
+Latest AC Loss: 0.3044
+Latest Sub Loss: 15302.2607
+Latest Reward: -768.2000
+
+--- Evaluation Snapshot: 20260903_003123 ---
+Scenario: arterial4x4
+Cluster Method: dbscan
+Evaluating Model: ../models/arterial4x4/run_20260903_001003_9669
+Total Steps Evaluated: 1000
+Completed Vehicles: 1
+Average Queue Length: 301.12 vehicles
+Average Waiting Time: 57.00 seconds
+Average Travel Time: 734.00 seconds
+Average Delay Time: 650.15 seconds
+Peak Total Queue Length: 526.00 vehicles
+
+--- Training Snapshot: grid4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 4644.1509
+Latest AC Loss: 1.2372
+Latest Sub Loss: 934.1042
+Latest Reward: -263.7000
+
+--- Training Snapshot: grid4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 2425
+Latest Meta Loss: 4644.1509
+Latest AC Loss: 1.2372
+Latest Sub Loss: 934.1042
+Latest Reward: -263.7000
+
+--- Evaluation Snapshot: 20260903_011347 ---
+Scenario: grid4x4
+Cluster Method: dbscan
+Evaluating Model: ../models/grid4x4/run_20260903_003127_3862
+Total Steps Evaluated: 1000
+Completed Vehicles: 90
+Average Queue Length: 255.31 vehicles
+Average Waiting Time: 26.60 seconds
+Average Travel Time: 274.50 seconds
+Average Delay Time: 183.51 seconds
+Peak Total Queue Length: 489.00 vehicles
 
