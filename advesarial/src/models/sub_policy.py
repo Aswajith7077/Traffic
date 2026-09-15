@@ -11,8 +11,9 @@ class SubPolicy(nn.Module):
         self.gat = GATLayer(F)
 
     def fuse_global(self, z, global_feat):
-        # z: (N, 2F)
-        # global_feat: (F_g,) or (N, F_g)
+        # z: (N, 5F)
+        # global_feat: F_g, the Meta-Policy's current-timestep global
+        # Transformer embedding — shape (d_reg,) or (N, d_reg).
 
         if global_feat.dim() == 1:
             global_feat = global_feat.unsqueeze(0).repeat(z.size(0), 1)
@@ -23,10 +24,10 @@ class SubPolicy(nn.Module):
         # Step 1: encode
         h = self.encoder(o)  # (N, F)
 
-        # Step 2: graph attention
-        z = self.gat(h, adj_list)  # (N, 2F)
+        # Step 2: graph attention concat (GAC)
+        z = self.gat(h, adj_list)  # (N, 5F)
 
-        # Step 3: fuse global
-        final = self.fuse_global(z, global_feat)  # (N, 2F + Fg)
+        # Step 3: fuse with Meta-Policy's global feature F_g
+        final = self.fuse_global(z, global_feat)  # (N, 5F + d_reg)
 
         return final

@@ -24,7 +24,7 @@ class PositionalEncoder(nn.Module):
         positional_encoding[:, 0::2] = torch.sin(position / div_term)
         positional_encoding[:, 1::2] = torch.cos(position / div_term)
 
-        self.positional_encoding = positional_encoding
+        self.register_buffer("positional_encoding", positional_encoding)
 
     def forward(self, x):
         seq_len = x.size(1)

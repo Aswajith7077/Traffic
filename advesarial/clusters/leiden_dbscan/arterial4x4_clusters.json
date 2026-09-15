@@ -1,48 +1,28 @@
 {
     "clusters": {
         "0": [
-            "nt5",
-            "np15",
-            "nt6",
-            "nt7",
-            "nt8",
-            "np6"
+            "nt1",
+            "nt2",
+            "nt3",
+            "nt4"
         ],
         "1": [
-            "nt11",
-            "nt10",
-            "nt9",
-            "np14",
-            "nt12",
-            "np7"
+            "nt13",
+            "nt14",
+            "nt15",
+            "nt16"
         ],
         "2": [
-            "nt3",
-            "np3",
-            "nt4",
-            "np4",
-            "np5"
+            "nt10",
+            "nt11",
+            "nt12",
+            "nt9"
         ],
         "3": [
-            "np10",
-            "nt15",
-            "nt16",
-            "np8",
-            "np9"
-        ],
-        "4": [
-            "nt1",
-            "np16",
-            "np1",
-            "nt2",
-            "np2"
-        ],
-        "5": [
-            "nt14",
-            "np11",
-            "nt13",
-            "np12",
-            "np13"
+            "nt5",
+            "nt6",
+            "nt7",
+            "nt8"
         ]
     },
     "metrics": {
@@ -50,39 +30,29 @@
         "first_stage": "leiden",
         "second_stage": "dbscan",
         "cd_stage": {
-            "modularity": 0.4731249999999999,
-            "n_communities": 6,
+            "modularity": 0.24305555555555558,
+            "n_communities": 4,
             "cd_method": "leiden",
             "cluster_quality": {
                 "0": {
-                    "internal": 10.0,
-                    "external": 8.0,
-                    "ratio": 1.25
+                    "internal": 24.0,
+                    "external": 16.0,
+                    "ratio": 1.5
                 },
                 "1": {
-                    "internal": 10.0,
-                    "external": 8.0,
-                    "ratio": 1.25
+                    "internal": 24.0,
+                    "external": 16.0,
+                    "ratio": 1.5
                 },
                 "2": {
-                    "internal": 6.0,
-                    "external": 4.0,
-                    "ratio": 1.5
+                    "internal": 24.0,
+                    "external": 32.0,
+                    "ratio": 0.75
                 },
                 "3": {
-                    "internal": 6.0,
-                    "external": 4.0,
-                    "ratio": 1.5
-                },
-                "4": {
-                    "internal": 6.0,
-                    "external": 4.0,
-                    "ratio": 1.5
-                },
-                "5": {
-                    "internal": 6.0,
-                    "external": 4.0,
-                    "ratio": 1.5
+                    "internal": 24.0,
+                    "external": 32.0,
+                    "ratio": 0.75
                 }
             }
         },
@@ -92,7 +62,7 @@
                     "n_clusters": 1,
                     "n_noise_before_reassign": 0,
                     "noise_fraction_before_reassign": 0.0,
-                    "eps": 221.05902822520446,
+                    "eps": 222.17054076787312,
                     "min_samples": 3,
                     "target_mean_size": "4-10",
                     "silhouette": null,
@@ -103,7 +73,7 @@
                     "n_clusters": 1,
                     "n_noise_before_reassign": 0,
                     "noise_fraction_before_reassign": 0.0,
-                    "eps": 221.05902822520446,
+                    "eps": 222.17054076787312,
                     "min_samples": 3,
                     "target_mean_size": "4-10",
                     "silhouette": null,
@@ -114,7 +84,7 @@
                     "n_clusters": 1,
                     "n_noise_before_reassign": 0,
                     "noise_fraction_before_reassign": 0.0,
-                    "eps": 213.75884161653065,
+                    "eps": 222.17054076787312,
                     "min_samples": 3,
                     "target_mean_size": "4-10",
                     "silhouette": null,
@@ -125,29 +95,7 @@
                     "n_clusters": 1,
                     "n_noise_before_reassign": 0,
                     "noise_fraction_before_reassign": 0.0,
-                    "eps": 213.75884161653065,
-                    "min_samples": 3,
-                    "target_mean_size": "4-10",
-                    "silhouette": null,
-                    "davies_bouldin": null,
-                    "calinski_harabasz": null
-                },
-                "4": {
-                    "n_clusters": 1,
-                    "n_noise_before_reassign": 0,
-                    "noise_fraction_before_reassign": 0.0,
-                    "eps": 213.75884161653065,
-                    "min_samples": 3,
-                    "target_mean_size": "4-10",
-                    "silhouette": null,
-                    "davies_bouldin": null,
-                    "calinski_harabasz": null
-                },
-                "5": {
-                    "n_clusters": 1,
-                    "n_noise_before_reassign": 0,
-                    "noise_fraction_before_reassign": 0.0,
-                    "eps": 213.75884161653065,
+                    "eps": 222.17054076787312,
                     "min_samples": 3,
                     "target_mean_size": "4-10",
                     "silhouette": null,
@@ -155,19 +103,19 @@
                     "calinski_harabasz": null
                 }
             },
-            "n_communities": 6
+            "n_communities": 4
         },
-        "n_clusters": 6,
+        "n_clusters": 4,
         "coverage": 1.0,
         "cluster_size_statistics": {
-            "min": 5,
-            "max": 6,
-            "mean": 5.333333333333333,
-            "median": 5.0,
-            "gini": 0.041666666666666664
+            "min": 4,
+            "max": 4,
+            "mean": 4.0,
+            "median": 4.0,
+            "gini": 0.0
         },
-        "silhouette": 0.2545852182525471,
-        "davies_bouldin": 1.617782769227417,
-        "calinski_harabasz": 14.182765531062124
+        "silhouette": 0.04856711336370216,
+        "davies_bouldin": 2.0,
+        "calinski_harabasz": 4.0
     }
 }

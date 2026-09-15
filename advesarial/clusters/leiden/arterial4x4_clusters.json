@@ -1,83 +1,49 @@
 {
     "clusters": {
         "0": [
+            "nt10",
+            "nt11",
+            "nt13",
+            "nt14",
             "nt15",
             "nt16",
-            "np8",
-            "nt10",
-            "np10",
-            "nt6",
-            "np11",
-            "nt13",
-            "np13",
-            "nt14",
-            "nt11"
+            "nt6"
         ],
         "1": [
-            "nt7",
-            "np5",
+            "nt1",
+            "nt2",
+            "nt3",
             "nt4",
-            "np3",
-            "nt3"
+            "nt5",
+            "nt7"
         ],
         "2": [
-            "np16",
-            "nt2",
-            "nt1",
-            "np2",
-            "nt5"
-        ],
-        "3": [
-            "np6"
-        ],
-        "4": [
-            "np1"
-        ],
-        "5": [
-            "np15"
-        ],
-        "6": [
-            "np4"
-        ],
-        "7": [
-            "nt8"
-        ],
-        "8": [
-            "np9"
-        ],
-        "9": [
             "nt12"
         ],
-        "10": [
-            "np12"
+        "3": [
+            "nt8"
         ],
-        "11": [
-            "np7"
-        ],
-        "12": [
-            "np14"
-        ],
-        "13": [
+        "4": [
             "nt9"
         ]
     },
     "metrics": {
-        "modularity": 0.2449999999999998,
+        "modularity": 0.15277777777777782,
         "cluster_quality": {
             "0": {
-                "internal": 213.34880418492466,
-                "external": 61.211597327977536,
-                "ratio": 3.49
+                "internal": 509.2900418881095,
+                "external": 108.08658125951058,
+                "ratio": 4.71
             },
             "1": {
-                "internal": 256.3647479806005,
-                "external": 250.05181577049518,
-                "ratio": 1.03
+                "internal": 1980.0426715198043,
+                "external": 108.08658125951058,
+                "ratio": 18.32
             },
             "2": {
-                "internal": 319.200558733478,
-                "external": 207.65857307093154,
-                "ratio": 1.54
+                "internal": 0.0,
+                "external": 0.0,
+                "ratio": 0.0
             },
             "3": {
                 "internal": 0.0,
@@ -88,54 +54,9 @@
                 "internal": 0.0,
                 "external": 0.0,
                 "ratio": 0.0
-            },
-            "5": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "6": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "7": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "8": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "9": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "10": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "11": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "12": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
-            },
-            "13": {
-                "internal": 0.0,
-                "external": 0.0,
-                "ratio": 0.0
             }
         },
-        "n_clusters": 14,
+        "n_clusters": 5,
         "coverage": 1.0
     }
 }

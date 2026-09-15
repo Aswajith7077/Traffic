@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from .base import BaseClusteringService
+from .topology import build_tls_projected_graph, get_tls_node_ids
 from .traci import TraciService
 
 
@@ -18,36 +19,26 @@ class LeidenService(BaseClusteringService):
         print("  Building edge weight profile (may take a while on large networks)...")
         self.compute_weights()
 
-        print("  Constructing graph from network edges...")
-        vertices = set()
-        edges_to_add = []
+        print("  Constructing traffic-light-projected graph from network edges...")
+        tls_ids = get_tls_node_ids(self.net)
+        projected = build_tls_projected_graph(
+            self.net,
+            tls_ids,
+            weight_fn=lambda edge: self.edge_weights.get(edge.getID(), 0.0),
+        )
 
-        for edge in self.net.getEdges():
-            if edge.isSpecial():
-                continue
-
-            edge_id = edge.getID()
-            source = edge.getFromNode().getID()
-            destination = edge.getToNode().getID()
-
-            vertices.add(source)
-            vertices.add(destination)
-
-            weight = self.edge_weights.get(edge_id, 0)
-            edges_to_add.append((source, destination, weight))
         # Add unique vertices once
-        self.graph.add_vertices(list(vertices))
+        self.graph.add_vertices(sorted(projected.nodes()))
 
-        # Add edges
-        for source, destination, weight in edges_to_add:
+        # Add edges both ways so the directed igraph stays symmetric, matching
+        # how two-way streets already contributed edges in both directions
+        # before nodes were contracted down to traffic lights only.
+        for source, destination, data in projected.edges(data=True):
+            weight = data["weight"]
             self.graph.add_edge(source, destination, weight=weight)
+            self.graph.add_edge(destination, source, weight=weight)
 
-        print(f"  Graph built: {len(self.graph.vs)} nodes, {len(self.graph.es)} edges")
-
-        # for v in self.graph.vs:
-        #     print(v["name"], self.graph.degree(v.index))
-
-        # print(self.graph.vs["name"])
+        print(f"  Graph built: {len(self.graph.vs)} traffic-light nodes, {len(self.graph.es)} edges")
 
         return self.graph
 

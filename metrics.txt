@@ -1636,3 +1636,313 @@ Average Travel Time: 274.50 seconds
 Average Delay Time: 183.51 seconds
 Peak Total Queue Length: 489.00 vehicles
 
+--- Training Snapshot: cologne8 run_1 ---
+Cluster Method: dbscan
+Episode: 1
+Steps taken: 200
+Latest Meta Loss: 185585.5000
+Latest Reward: 0.2552
+
+--- Training Snapshot: cologne8 run_1 ---
+Cluster Method: dbscan
+Episode: 1
+Steps taken: 200
+Latest Meta Loss: 330595.4062
+Latest Sub L_AC: 2310.1877
+Latest Alignment Loss: 205.3098
+Latest Reward: -0.1414
+
+--- Training Snapshot: cologne8 run_1 ---
+Cluster Method: dbscan
+Episode: 1
+Steps taken: 1000
+Latest Meta Loss: 5360048.0000
+Latest Sub L_AC: 3079.0874
+Latest Alignment Loss: 1626.8987
+Latest Reward: -1.4383
+
+--- Evaluation Snapshot: 20260909_230220 ---
+Scenario: cologne8
+Cluster Method: dbscan
+Evaluating Model: ../models/cologne8/run_20260909_225938_4892
+Total Steps Evaluated: 200
+Completed Vehicles: 13
+Average Queue Length: 159.03 vehicles
+Average Waiting Time: 0.00 seconds
+Average Travel Time (ATT): 35.38 seconds
+Average Delay Time (ADT): 8.72 seconds
+Peak Total Queue Length: 271.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 251460.6406
+Latest Sub L_AC: 2097.8064
+Latest Alignment Loss: -99.4756
+Latest Reward: 0.1041
+
+--- Evaluation Snapshot: 20260910_004853 ---
+Scenario: cologne8
+Cluster Method: dbscan
+Evaluating Model: ../models/cologne8/run_20260909_232507_9928
+Total Steps Evaluated: 3600
+Completed Vehicles: 1048
+Average Queue Length: 642.64 vehicles
+Average Waiting Time: 14.08 seconds
+Average Travel Time (ATT): 329.70 seconds
+Average Delay Time (ADT): 261.98 seconds
+Peak Total Queue Length: 983.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_leiden
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 414668.1562
+Latest Sub L_AC: 1748.0459
+Latest Alignment Loss: -373.5482
+Latest Reward: -0.0426
+
+--- Evaluation Snapshot: 20260910_205624 ---
+Scenario: cologne8
+Cluster Method: dbscan_leiden
+Evaluating Model: /home/aswajiths/Documents/Traffic/models/cologne8/run_20260910_200505_8532
+Total Steps Evaluated: 500
+Completed Vehicles: 84
+Average Queue Length: 228.82 vehicles
+Average Waiting Time: 9.70 seconds
+Average Travel Time (ATT): 91.64 seconds
+Average Delay Time (ADT): 53.03 seconds
+Peak Total Queue Length: 346.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: dbscan_leiden
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 1251729.1250
+Latest Sub L_AC: 2564.5857
+Latest Alignment Loss: 83.9904
+Latest Reward: -0.0486
+
+--- Evaluation Snapshot: 20260910_221231 ---
+Scenario: cologne8
+Cluster Method: dbscan_leiden
+Evaluating Model: /home/aswajiths/Documents/Traffic/models/cologne8/run_20260910_211218_8622
+Total Steps Evaluated: 3600
+Completed Vehicles: 1113
+Average Queue Length: 771.39 vehicles
+Average Waiting Time: 25.58 seconds
+Average Travel Time (ATT): 453.06 seconds
+Average Delay Time (ADT): 384.90 seconds
+Peak Total Queue Length: 1261.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: louvian
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 18891.1875
+Latest Sub L_AC: 3517.7305
+Latest Alignment Loss: -129.5211
+Latest Reward: -2.2806
+
+--- Training Snapshot: cologne8 run_20 ---
+Cluster Method: louvian
+Episode: 20
+Steps taken: 72000
+Latest Meta Loss: 8322252.0000
+Latest Sub L_AC: 3044.1367
+Latest Alignment Loss: 2708.7295
+Latest Reward: 0.0824
+
+--- Training Snapshot: cologne8 run_30 ---
+Cluster Method: louvian
+Episode: 30
+Steps taken: 108000
+Latest Meta Loss: 3586325.2500
+Latest Sub L_AC: 1820.9493
+Latest Alignment Loss: 6325.4385
+Latest Reward: 1.3174
+
+--- Training Snapshot: cologne8 run_40 ---
+Cluster Method: louvian
+Episode: 40
+Steps taken: 144000
+Latest Meta Loss: 52205668.0000
+Latest Sub L_AC: 2918.7874
+Latest Alignment Loss: 5422.9473
+Latest Reward: 0.0999
+
+--- Training Snapshot: cologne8 run_50 ---
+Cluster Method: louvian
+Episode: 50
+Steps taken: 180000
+Latest Meta Loss: 104248104.0000
+Latest Sub L_AC: 3280.1174
+Latest Alignment Loss: 16882.1328
+Latest Reward: 1.2795
+
+--- Training Snapshot: cologne8 run_60 ---
+Cluster Method: louvian
+Episode: 60
+Steps taken: 216000
+Latest Meta Loss: 7454838.0000
+Latest Sub L_AC: 2171.7292
+Latest Alignment Loss: 765.3231
+Latest Reward: -0.2426
+
+--- Training Snapshot: cologne8 run_70 ---
+Cluster Method: louvian
+Episode: 70
+Steps taken: 252000
+Latest Meta Loss: 19938868.0000
+Latest Sub L_AC: 13272.7227
+Latest Alignment Loss: 9054.6025
+Latest Reward: 1.3877
+
+--- Training Snapshot: cologne8 run_80 ---
+Cluster Method: louvian
+Episode: 80
+Steps taken: 288000
+Latest Meta Loss: 95520304.0000
+Latest Sub L_AC: 5868.9736
+Latest Alignment Loss: 5832.0708
+Latest Reward: -0.5913
+
+--- Training Snapshot: cologne8 run_90 ---
+Cluster Method: louvian
+Episode: 90
+Steps taken: 324000
+Latest Meta Loss: 973596928.0000
+Latest Sub L_AC: 18851.6133
+Latest Alignment Loss: 19794.5234
+Latest Reward: -0.4462
+
+--- Training Snapshot: cologne8 run_100 ---
+Cluster Method: louvian
+Episode: 100
+Steps taken: 360000
+Latest Meta Loss: 15783.7578
+Latest Sub L_AC: 1497.8992
+Latest Alignment Loss: 1706.4673
+Latest Reward: 0.1592
+
+--- Evaluation Snapshot: 20260911_092339 ---
+Scenario: cologne8
+Cluster Method: louvian
+Evaluating Model: /home/aswajiths/Documents/Traffic/models/cologne8/run_20260910_231655_7749
+Total Steps Evaluated: 3600
+Completed Vehicles: 1385
+Average Queue Length: 459.55 vehicles
+Average Waiting Time: 19.95 seconds
+Average Travel Time (ATT): 306.79 seconds
+Average Delay Time (ADT): 237.70 seconds
+Peak Total Queue Length: 657.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: manual_clustering
+Episode: 10
+Steps taken: 33919
+Latest Meta Loss: 403556.5625
+Latest Sub L_AC: 1390.2560
+Latest Alignment Loss: -149.2295
+Latest Reward: -1.0075
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: manual_clustering
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 17703202816.0000
+Latest Sub L_AC: 55556.8555
+Latest Alignment Loss: 86129.5469
+Latest Reward: -0.8732
+
+--- Training Snapshot: cologne8 run_20 ---
+Cluster Method: manual_clustering
+Episode: 20
+Steps taken: 72000
+Latest Meta Loss: 143892864.0000
+Latest Sub L_AC: 5601.2080
+Latest Alignment Loss: 7106.1489
+Latest Reward: -1.4208
+
+--- Training Snapshot: cologne8 run_30 ---
+Cluster Method: manual_clustering
+Episode: 30
+Steps taken: 108000
+Latest Meta Loss: 157622432.0000
+Latest Sub L_AC: 1996.9911
+Latest Alignment Loss: 3237.7825
+Latest Reward: -0.7233
+
+--- Training Snapshot: cologne8 run_40 ---
+Cluster Method: manual_clustering
+Episode: 40
+Steps taken: 144000
+Latest Meta Loss: 120422008.0000
+Latest Sub L_AC: 1595.1052
+Latest Alignment Loss: 2230.0747
+Latest Reward: -0.8580
+
+--- Training Snapshot: cologne8 run_50 ---
+Cluster Method: manual_clustering
+Episode: 50
+Steps taken: 180000
+Latest Meta Loss: 4729298432.0000
+Latest Sub L_AC: 5112.4858
+Latest Alignment Loss: 41514.3555
+Latest Reward: -1.1774
+
+--- Training Snapshot: cologne8 run_60 ---
+Cluster Method: manual_clustering
+Episode: 60
+Steps taken: 216000
+Latest Meta Loss: 768506560.0000
+Latest Sub L_AC: 2794.8943
+Latest Alignment Loss: 23257.1270
+Latest Reward: 0.5896
+
+--- Training Snapshot: cologne8 run_70 ---
+Cluster Method: manual_clustering
+Episode: 70
+Steps taken: 252000
+Latest Meta Loss: 2221628416.0000
+Latest Sub L_AC: 3864.7493
+Latest Alignment Loss: 35125.9219
+Latest Reward: 0.1206
+
+--- Training Snapshot: cologne8 run_80 ---
+Cluster Method: manual_clustering
+Episode: 80
+Steps taken: 288000
+Latest Meta Loss: 155694272.0000
+Latest Sub L_AC: 3358.1477
+Latest Alignment Loss: 5065.1562
+Latest Reward: -1.5839
+
+--- Training Snapshot: cologne8 run_90 ---
+Cluster Method: manual_clustering
+Episode: 90
+Steps taken: 324000
+Latest Meta Loss: 408260.8750
+Latest Sub L_AC: 3286.7922
+Latest Alignment Loss: -223.5040
+Latest Reward: 0.5199
+
+--- Training Snapshot: cologne8 run_100 ---
+Cluster Method: manual_clustering
+Episode: 100
+Steps taken: 360000
+Latest Meta Loss: 2125469.2500
+Latest Sub L_AC: 3639.1028
+Latest Alignment Loss: -181.9858
+Latest Reward: 1.2078
+
+--- Training Snapshot: cologne8 run_110 ---
+Cluster Method: manual_clustering
+Episode: 110
+Steps taken: 396000
+Latest Meta Loss: 2078578.0000
+Latest Sub L_AC: 3035.7424
+Latest Alignment Loss: -441.8290
+Latest Reward: -2.8061
+

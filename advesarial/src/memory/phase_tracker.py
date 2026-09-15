@@ -1,5 +1,7 @@
 from collections import deque
 
+from utils import compute_phase_entropy
+
 
 class PhaseTracker:
     def __init__(self, window_size=20):

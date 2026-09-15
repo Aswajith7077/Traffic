@@ -20,12 +20,13 @@ from __future__ import annotations
 
 from .base import BaseClusteringService
 from .dbscan import DBSCANConfig, DBSCANService
+from .grid import GridService
 from .hybrid import HybridClusteringService
 from .leiden import LeidenService
 from .louvian import LouvianService
 from .traci import TraciService
 
-SINGLE_METHODS = ("leiden", "louvian", "dbscan")
+SINGLE_METHODS = ("leiden", "louvian", "dbscan", "manual_clustering")
 HYBRID_METHODS = ("dbscan_louvian", "dbscan_leiden", "louvian_dbscan", "leiden_dbscan")
 ALL_METHODS = SINGLE_METHODS + HYBRID_METHODS
 
@@ -67,6 +68,8 @@ def create_service(
             traci_service,
             DBSCANConfig(eps=eps, min_samples=min_samples),
         )
+    if method == "manual_clustering":
+        return GridService(net_config_path, traci_service)
     if method in HYBRID_METHODS:
         first, second = method.split("_", 1)
         return HybridClusteringService(

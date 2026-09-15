@@ -4,13 +4,8 @@ from datetime import datetime
 
 import torch
 import traci
-from agents import ActorCritic
-from config import SCENARIO, config
-from environment import Environment
-from schema import TraciConfig, TransformerEncoderConfig
-from services import TraciService
-
-from models import GATLayer, LocalEncoder, SubGoalGenerator, TransformerEncoder
+from config import SCENARIO
+from training import Trainer
 
 
 def find_latest_model_dir(model_dir=None):
@@ -28,134 +23,105 @@ def find_latest_model_dir(model_dir=None):
     return target_dir
 
 
+def get_free_flow_travel_time(route):
+    """Calculate the route time at each edge's maximum lane speed."""
+    free_flow_time = 0.0
+    for edge in route:
+        lane_id = f"{edge}_0"
+        length = traci.lane.getLength(lane_id)
+        max_speed = traci.lane.getMaxSpeed(lane_id)
+        if max_speed > 0:
+            free_flow_time += length / max_speed
+    return free_flow_time
+
+
+def run_gui_simulation(model_dir, steps=3600, delay=50.0, config_path=None, verbose=False):
+    """Watch a trained model drive the scenario in sumo-gui. No metrics, no logging to disk."""
+    print("Initializing GUI environment...")
+    if config_path is None:
+        config_path = f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg"
+
+    trainer = Trainer(scenario=SCENARIO, sumocfg_path=config_path, use_gui=True, delay=delay)
+
+    checkpoint_path = trainer.latest_checkpoint(model_dir)
+    if not checkpoint_path:
+        print(f"Error: no checkpoint found in {model_dir}")
+        trainer.close()
+        return
+
+    trainer.load_checkpoint(model_dir)
+    trainer.transformer_encoder.eval()
+    trainer.subgoal_generator.eval()
+    trainer.local_encoder.eval()
+    trainer.gat.eval()
+    trainer.actor_critic.eval()
+
+    print(f"Launching sumo-gui for scenario '{SCENARIO}' with model: {model_dir}")
+    try:
+        with torch.no_grad():
+            for t in range(steps):
+                f_g, goal = trainer._meta_forward()
+
+                obs = trainer.traci_service.get_observations()
+                obs = trainer._normalize_obs(obs)
+                final_state = trainer._encode_step(obs, f_g)
+
+                action_prob, _, _ = trainer.actor_critic(final_state)
+                action = torch.argmax(action_prob, dim=-1)
+
+                if verbose:
+                    phases = {
+                        tl: int(p)
+                        for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
+                    }
+                    print(f"[t={traci.simulation.getTime():.0f}] chosen phases: {phases}")
+
+                goal_pair = (goal[0, 0], goal[0, 1])
+                _, _, done = trainer.environment.step(action, goal=goal_pair)
+
+                if done:
+                    print(f"Simulation finished at step {t}")
+                    break
+    except (KeyboardInterrupt, traci.exceptions.FatalTraCIError):
+        print("\nGUI simulation closed.")
+    finally:
+        trainer.close()
+
+
 def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=None, verbose=False):
     print("Initializing environment...")
     if config_path is None:
         config_path = f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg"
-    traci_config = TraciConfig(config_path=config_path, use_gui=use_gui, delay=delay)
 
-    traci_service = TraciService(traci_config)
-    traci_service.start_simulation()
+    trainer = Trainer(scenario=SCENARIO, sumocfg_path=config_path, use_gui=use_gui, delay=delay)
 
-    environment = Environment(traci_service=traci_service)
-    adjacency_list = traci_service.get_adjacency_list()
+    checkpoint_path = trainer.latest_checkpoint(model_dir)
+    if not checkpoint_path:
+        print(f"Error: no checkpoint found in {model_dir}")
+        trainer.close()
+        return
 
-    raw_clusters = config.clusters
-    tls_set = set(traci_service.get_all_intersections())
-    clusters = {}
-    for cid, nodes in raw_clusters.items():
-        filtered = [n for n in nodes if n in tls_set]
-        if len(filtered) > 0:
-            clusters[cid] = filtered
-
-    m = len(clusters)
-
-    # Inspect the checkpoint first so the SubGoalGenerator is built with the exact
-    # architecture used during training (M clusters, d_g = 2 * num traffic lights).
-    # Building from the live cluster file alone can silently produce a mismatched
-    # model and fail with an opaque tensor-size error.
-    checkpoint_path = None
-    checkpoint = None
-    checkpoint_M = m
-    subgoal_dg = 2 * len(tls_set)
-    latest = sorted(glob.glob(os.path.join(model_dir, "checkpoint_ep*.pth")))
-    if latest:
-        checkpoint_path = latest[-1]
-        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
-        ffn0 = checkpoint["subgoal_generator"]["ffn.0.weight"]
-        subgoal_dg = ffn0.shape[0]
-        checkpoint_M = (ffn0.shape[1] - 128) // 128
-
-    print(
-        f"Architecture: detected m={m} clusters, {len(tls_set)} traffic lights; "
-        f"checkpoint trained with M={checkpoint_M}, d_g={subgoal_dg}."
-    )
-    if checkpoint_M != m:
+    checkpoint_M = torch.load(checkpoint_path, map_location="cpu", weights_only=False).get("M", trainer.M)
+    print(f"Architecture: detected M={trainer.M} clusters; checkpoint trained with M={checkpoint_M}.")
+    if checkpoint_M != trainer.M:
         print(
-            f"WARNING: checkpoint was trained with M={checkpoint_M} clusters but the "
-            f"current run detected m={m}. Re-run region-splitting and copy the cluster "
-            "file, or the meta-policy forward pass will not match training."
+            f"WARNING: checkpoint was trained with M={checkpoint_M} clusters but the current run "
+            f"detected M={trainer.M}. Re-run region-splitting and copy the cluster file, or the "
+            "meta-policy forward pass will not match training."
         )
 
-    # Initialize models
-    print("Initializing architecture...")
-    local_encoder = LocalEncoder()
-    GAT = GATLayer(feature_dim=64)
-    actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
+    trainer.load_checkpoint(model_dir)
+    trainer.transformer_encoder.eval()
+    trainer.subgoal_generator.eval()
+    trainer.local_encoder.eval()
+    trainer.gat.eval()
+    trainer.actor_critic.eval()
 
-    transformer_encoder_config = TransformerEncoderConfig(d_model=128, nhead=8, num_layers=6)
-    transformer_encoder = TransformerEncoder(transformer_encoder_config)
-    subgoal_generator = SubGoalGenerator(d_reg=128, d_hidden=128, M=checkpoint_M, d_g=subgoal_dg)
-
-    # Load models
-    print(f"Loading weights from {model_dir}...")
-    if latest:
-        transformer_encoder.load_state_dict(checkpoint["transformer_encoder"])
-        subgoal_generator.load_state_dict(checkpoint["subgoal_generator"])
-        local_encoder.load_state_dict(checkpoint["local_encoder"])
-        GAT.load_state_dict(checkpoint["GAT"])
-        actor_critic.load_state_dict(checkpoint["actor_critic"])
-        print(f"Loaded checkpoint: {checkpoint_path}")
-    else:
-        transformer_encoder.load_state_dict(
-            torch.load(
-                f"{model_dir}/transformer_encoder.pth",
-                map_location="cpu",
-                weights_only=True,
-            )
-        )
-        subgoal_generator.load_state_dict(
-            torch.load(f"{model_dir}/subgoal_generator.pth", map_location="cpu", weights_only=True)
-        )
-        local_encoder.load_state_dict(
-            torch.load(f"{model_dir}/local_encoder.pth", map_location="cpu", weights_only=True)
-        )
-        GAT.load_state_dict(torch.load(f"{model_dir}/gat.pth", map_location="cpu", weights_only=True))
-        actor_critic.load_state_dict(torch.load(f"{model_dir}/actor_critic.pth", map_location="cpu", weights_only=True))
-
-    transformer_encoder.eval()
-    subgoal_generator.eval()
-    local_encoder.eval()
-    GAT.eval()
-    actor_critic.eval()
-
-    def __normalize_states(states):
-        batch_mean = states.mean(dim=0)
-        batch_var = states.var(dim=0, unbiased=False)
-        return torch.clamp((states - batch_mean) / (torch.sqrt(batch_var) + 1e-8), -5, 5)
-
-    def _find_local_observations():
-        observations = traci_service.get_observations()
-        observations = __normalize_states(observations)
-        hidden_state = local_encoder(observations)
-        local_features = GAT(hidden_state, adjacency_list)
-        final_state = []
-        for i in range(len(local_features)):
-            z_i = local_features[i]
-            final_state.append(torch.cat([z_i, torch.mean(local_features, dim=0)], dim=-1))
-        return torch.stack(final_state, dim=0)
-
-    def _find_global_observation():
-        cluster_states = traci_service.get_cluster_states(clusters)
-        global_encoding, local_encoding = transformer_encoder(cluster_states.unsqueeze(0))
-        return subgoal_generator(local_encoding, global_encoding)
-
-    total_queue_length = []
     vehicle_metrics = {}
     vehicle_travel_times = []
     vehicle_delay_times = []
     vehicle_waiting_times = []
-
-    def get_free_flow_travel_time(route):
-        """Calculate the route time at each edge's maximum lane speed."""
-        free_flow_time = 0.0
-        for edge in route:
-            lane_id = f"{edge}_0"
-            length = traci.lane.getLength(lane_id)
-            max_speed = traci.lane.getMaxSpeed(lane_id)
-            if max_speed > 0:
-                free_flow_time += length / max_speed
-        return free_flow_time
+    total_queue_length = []
 
     def update_active_vehicle_metrics():
         """Cache data while vehicles remain queryable through TraCI."""
@@ -174,24 +140,25 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     try:
         with torch.no_grad():
             for t in range(steps):
-                # Compute global token each step to keep RNN states moving
-                # (unused for the greedy action selection).
-                _ = _find_global_observation()
-                final_state = _find_local_observations()
+                f_g, goal = trainer._meta_forward()
 
-                action_prob, state_values = actor_critic(final_state)
-                action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
+                obs = trainer.traci_service.get_observations()
+                obs = trainer._normalize_obs(obs)
+                final_state = trainer._encode_step(obs, f_g)
+
+                action_prob, _, _ = trainer.actor_critic(final_state)
+                action = torch.argmax(action_prob, dim=-1)
 
                 if verbose:
                     phases = {
-                        tl: int(p) for tl, p in zip(traci_service.get_all_intersections(), action.squeeze(-1).tolist())
+                        tl: int(p)
+                        for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
                     }
                     print(f"[t={traci.simulation.getTime():.0f}] chosen phases: {phases}")
 
-                # Store vehicle data before stepping because arrived vehicles can no
-                # longer be queried from TraCI after the simulation advances.
                 update_active_vehicle_metrics()
-                _, reward, done = environment.step(action)
+                goal_pair = (goal[0, 0], goal[0, 1])
+                _, _, done = trainer.environment.step(action, goal=goal_pair)
 
                 current_time = traci.simulation.getTime()
                 for vehicle_id in traci.simulation.getArrivedIDList():
@@ -203,10 +170,9 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
                     vehicle_delay_times.append(travel_time - metrics["free_flow_time"])
                     vehicle_waiting_times.append(metrics["waiting_time"])
 
-                # Fetch unnormalized raw values across the intersections
-                intersections = traci_service.get_all_intersections()
-                raw_queue = sum(traci_service.total_queue_length(i) for i in intersections)
-
+                raw_queue = sum(
+                    trainer.traci_service.total_queue_length(i) for i in trainer.traci_service.get_all_intersections()
+                )
                 total_queue_length.append(raw_queue)
 
                 if (t + 1) % 50 == 0:
@@ -218,12 +184,11 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
                 if done:
                     print(f"Environment finished early at step {t}")
                     break
-    except KeyboardInterrupt, traci.exceptions.FatalTraCIError:
+    except (KeyboardInterrupt, traci.exceptions.FatalTraCIError):
         print("\nSimulation interrupted (GUI closed). Exiting.")
-        traci_service.close_simulation()
+        trainer.close()
         return
 
-    # Summarize results
     avg_queue = sum(total_queue_length) / len(total_queue_length)
     peak_queue = max(total_queue_length)
     completed_vehicles = len(vehicle_travel_times)
@@ -238,12 +203,11 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     print(f"Completed Vehicles         : {completed_vehicles}")
     print(f"Average Queue Length       : {avg_queue:.2f} vehicles")
     print(f"Average Waiting Time       : {avg_wait:.2f} seconds")
-    print(f"Average Travel Time        : {avg_travel_time:.2f} seconds")
-    print(f"Average Delay Time         : {avg_delay_time:.2f} seconds")
+    print(f"Average Travel Time (ATT)  : {avg_travel_time:.2f} seconds")
+    print(f"Average Delay Time (ADT)   : {avg_delay_time:.2f} seconds")
     print(f"Peak Total Queue Length    : {peak_queue:.2f} vehicles")
     print("=" * 50)
 
-    # Save Evaluation Run Stats
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     with open("../metrics.txt", "a") as f:
         f.write(f"--- Evaluation Snapshot: {timestamp} ---\n")
@@ -254,12 +218,12 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
         f.write(f"Completed Vehicles: {completed_vehicles}\n")
         f.write(f"Average Queue Length: {avg_queue:.2f} vehicles\n")
         f.write(f"Average Waiting Time: {avg_wait:.2f} seconds\n")
-        f.write(f"Average Travel Time: {avg_travel_time:.2f} seconds\n")
-        f.write(f"Average Delay Time: {avg_delay_time:.2f} seconds\n")
+        f.write(f"Average Travel Time (ATT): {avg_travel_time:.2f} seconds\n")
+        f.write(f"Average Delay Time (ADT): {avg_delay_time:.2f} seconds\n")
         f.write(f"Peak Total Queue Length: {peak_queue:.2f} vehicles\n")
         f.write("\n")
 
-    traci_service.close_simulation()
+    trainer.close()
 
 
 if __name__ == "__main__":
@@ -271,7 +235,13 @@ if __name__ == "__main__":
         type=str,
         help="Directory containing the saved model parts e.g. ../models/run_XX",
     )
-    parser.add_argument("--steps", type=int, default=500, help="Number of steps to evaluate")
+    parser.add_argument("--steps", type=int, default=None, help="Number of steps to evaluate (default: 500)")
+    parser.add_argument(
+        "--gui",
+        action="store_true",
+        help="Launch sumo-gui and watch the model drive the scenario. Skips metrics computation entirely.",
+    )
+    parser.add_argument("--delay", type=float, default=50.0, help="sumo-gui playback delay in ms per step (--gui only)")
     args = parser.parse_args()
 
     target_dir = find_latest_model_dir(args.model_dir)
@@ -281,4 +251,7 @@ if __name__ == "__main__":
         print("Make sure you have trained and saved models before evaluating.")
         exit(1)
 
-    evaluate_models(target_dir, args.steps)
+    if args.gui:
+        run_gui_simulation(target_dir, steps=args.steps or 3600, delay=args.delay)
+    else:
+        evaluate_models(target_dir, args.steps or 500)

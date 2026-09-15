@@ -39,6 +39,7 @@ from .dbscan import (
     min_samples_for,
     run_dbscan,
 )
+from .topology import build_tls_projected_graph, get_tls_node_ids
 from .traci import TraciService
 
 CD_METHODS = ("louvian", "leiden")
@@ -103,25 +104,18 @@ class HybridClusteringService(BaseClusteringService):
     # graph construction
     # ------------------------------------------------------------------ #
     def build_graph(self):
-        print("  Constructing graph from network nodes (coordinates)...")
-        for node in self.net.getNodes():
-            nid = node.getID()
-            x, y = node.getCoord()
-            self.node_ids.append(nid)
-            self.coords.append((float(x), float(y)))
-            self.graph.add_node(nid, x=float(x), y=float(y))
+        print("  Constructing traffic-light-projected graph from network edges...")
+        tls_ids = get_tls_node_ids(self.net)
+        self.graph = build_tls_projected_graph(
+            self.net,
+            tls_ids,
+            weight_fn=lambda edge: float(edge.getLaneNumber()),
+        )
 
-        for edge in self.net.getEdges():
-            if edge.isSpecial():
-                continue
-            self.graph.add_edge(
-                edge.getFromNode().getID(),
-                edge.getToNode().getID(),
-                id=edge.getID(),
-                static_weight=edge.getLaneNumber(),
-            )
+        self.node_ids = list(self.graph.nodes())
+        self.coords = [(data["x"], data["y"]) for _, data in self.graph.nodes(data=True)]
 
-        print(f"  Graph built: {len(self.graph.nodes)} nodes, {len(self.graph.edges)} edges")
+        print(f"  Graph built: {len(self.graph.nodes)} traffic-light nodes, {len(self.graph.edges)} edges")
         return self.graph
 
     # ------------------------------------------------------------------ #
@@ -228,14 +222,10 @@ class HybridClusteringService(BaseClusteringService):
         return super_graph
 
     def _road_graph_undirected(self) -> nx.Graph:
-        undirected = nx.Graph()
-        for u, v, data in self.graph.edges(data=True):
-            w = data.get("static_weight", 1.0)
-            if undirected.has_edge(u, v):
-                undirected[u][v]["weight"] += w
-            else:
-                undirected.add_edge(u, v, weight=w)
-        return undirected
+        # `self.graph` is already the undirected, lane-weighted
+        # traffic-light-projected graph built in build_graph() — no further
+        # aggregation needed. Return a copy so callers can't mutate it.
+        return self.graph.copy()
 
     # ------------------------------------------------------------------ #
     # get_clusters dispatch

@@ -1,8 +1,10 @@
 from .dbscan import DBSCANService
+from .grid import GridService
 from .hybrid import HybridClusteringService
 from .leiden import LeidenService
 from .louvian import LouvianService
 from .registry import ALL_METHODS, HYBRID_METHODS, SINGLE_METHODS, create_service, is_hybrid
+from .topology import build_tls_projected_graph, get_tls_node_ids
 from .traci import TraciService
 
 __all__ = [
@@ -10,10 +12,13 @@ __all__ = [
     "LouvianService",
     "LeidenService",
     "DBSCANService",
+    "GridService",
     "HybridClusteringService",
     "create_service",
     "ALL_METHODS",
     "SINGLE_METHODS",
     "HYBRID_METHODS",
     "is_hybrid",
+    "get_tls_node_ids",
+    "build_tls_projected_graph",
 ]

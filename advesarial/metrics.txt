@@ -43,3 +43,18 @@ Vehicles: 1995
 Avg travel time: 114.39s
 Avg waiting time: 29.27s
 
+--- Baseline (actuated) [cologne8] ---
+Vehicles: 1925
+Avg travel time: 224.27s
+Avg waiting time: 97.37s
+
+--- Baseline (actuated) [cologne8] ---
+Vehicles: 1925
+Avg travel time: 224.27s
+Avg waiting time: 97.37s
+
+--- Baseline (actuated) [cologne8] ---
+Vehicles: 1925
+Avg travel time: 224.27s
+Avg waiting time: 97.37s
+

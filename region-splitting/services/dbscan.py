@@ -38,6 +38,7 @@ from sklearn.metrics import (
 from sklearn.neighbors import NearestNeighbors
 
 from .base import BaseClusteringService
+from .topology import build_tls_projected_graph, get_tls_node_ids
 from .traci import TraciService
 
 
@@ -876,24 +877,14 @@ class DBSCANService(BaseClusteringService):
         self.graph = nx.Graph()
 
     def build_graph(self):
-        print("  Constructing graph from network nodes (coordinates)...")
-        for node in self.net.getNodes():
-            nid = node.getID()
-            x, y = node.getCoord()
-            self.node_ids.append(nid)
-            self.coords.append((float(x), float(y)))
-            self.graph.add_node(nid, x=float(x), y=float(y))
+        print("  Constructing graph from traffic-light junction coordinates...")
+        tls_ids = get_tls_node_ids(self.net)
+        self.graph = build_tls_projected_graph(self.net, tls_ids)
 
-        for edge in self.net.getEdges():
-            if edge.isSpecial():
-                continue
-            self.graph.add_edge(
-                edge.getFromNode().getID(),
-                edge.getToNode().getID(),
-                id=edge.getID(),
-            )
+        self.node_ids = list(self.graph.nodes())
+        self.coords = [(data["x"], data["y"]) for _, data in self.graph.nodes(data=True)]
 
-        print(f"  Graph built: {len(self.graph.nodes)} nodes, {len(self.graph.edges)} edges")
+        print(f"  Graph built: {len(self.graph.nodes)} traffic-light nodes, {len(self.graph.edges)} edges")
         return self.graph
 
     def get_clusters(self, reassign_noise: bool = False):

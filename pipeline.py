@@ -13,7 +13,10 @@ Usage:
     python pipeline.py cluster                       # step 2 only
     python pipeline.py copy                          # step 3 only
     python pipeline.py train                         # step 4 only
-    python pipeline.py eval                          # step 5 only
+    python pipeline.py eval                          # step 5 only, latest run
+    python pipeline.py eval --scenario grid4x4 --run-id 20260902_211700
+    python pipeline.py run_gui --scenario grid4x4                  # sumo-gui, latest run, no metrics
+    python pipeline.py run_gui --scenario grid4x4 --run_id 20260902_211700
 
 Scenarios: manhattan, arterial4x4, cologne8, ingolstadt21, grid4x4.
 
@@ -46,6 +49,7 @@ CLUSTER_METHOD_CHOICES = [
     "dbscan",
     "leiden",
     "louvian",
+    "manual_clustering",
     "dbscan_louvian",
     "dbscan_leiden",
     "louvian_dbscan",
@@ -85,6 +89,27 @@ def pipeline_env(scenario, route=None, episodes=None, episode_steps=None, save_e
 
 def scenario_dir(scenario):
     return SCENARIOS / scenario
+
+
+def _wants_latest(run_id):
+    return run_id is None or run_id.lower() == "latest"
+
+
+def resolve_model_dir(scenario, run_id=None):
+    """Resolve models/<scenario>/run_<run_id>, or the newest run when run_id is None/"latest"."""
+    models_base = ROOT / "models"
+    scenario_models = models_base / scenario
+
+    if not _wants_latest(run_id):
+        run_name = run_id if run_id.startswith("run_") else f"run_{run_id}"
+        return scenario_models / run_name
+
+    candidates = sorted(scenario_models.glob("run_*")) if scenario_models.exists() else []
+    if not candidates:
+        candidates = sorted(models_base.glob("run_*"))
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_mtime)
 
 
 def step_baseline(scenario, route):
@@ -198,11 +223,42 @@ def step_train(scenario, route, episodes, episode_steps, save_every, cluster_met
     )
 
 
-def step_eval(scenario, route, cluster_method, steps=500):
-    banner(f"Step 5/5: Evaluating trained model ({scenario}) — latest checkpoint in newest run folder")
+def _resolve_model_dir_or_none(scenario, run_id):
+    model_dir = resolve_model_dir(scenario, run_id)
+    if model_dir is None or not model_dir.exists():
+        label = "any run" if _wants_latest(run_id) else f"run_id '{run_id}'"
+        print(f"  ERROR: no model directory found for {label} (scenario: {scenario})")
+        print(f"  Looked under: {ROOT / 'models' / scenario}")
+        return None
+    return model_dir
+
+
+def step_eval(scenario, route, cluster_method, steps=500, run_id=None):
+    model_dir = _resolve_model_dir_or_none(scenario, run_id)
+    if model_dir is None:
+        return False
+
+    banner(f"Step 5/5: Evaluating trained model ({scenario}) — {model_dir.name}")
+    print(f"  Model dir: {model_dir}")
 
     return run(
-        [VENV_PYTHON, "src/evaluate.py", "--steps", str(steps)],
+        [VENV_PYTHON, "src/evaluate.py", "--model-dir", str(model_dir), "--steps", str(steps)],
+        cwd=ADVESARIAL,
+        env=pipeline_env(scenario, route, cluster_method=cluster_method),
+    )
+
+
+def step_run_gui(scenario, route, cluster_method, run_id=None, delay=50.0):
+    model_dir = _resolve_model_dir_or_none(scenario, run_id)
+    if model_dir is None:
+        return False
+
+    banner(f"SUMO-GUI simulation ({scenario}) — {model_dir.name}")
+    print(f"  Model dir: {model_dir}")
+    print("  No metrics/evaluation will be computed; close the GUI window to stop.")
+
+    return run(
+        [VENV_PYTHON, "src/evaluate.py", "--model-dir", str(model_dir), "--gui", "--delay", str(delay)],
         cwd=ADVESARIAL,
         env=pipeline_env(scenario, route, cluster_method=cluster_method),
     )
@@ -214,7 +270,7 @@ def main():
         "command",
         nargs="?",
         default="all",
-        choices=["all", "baseline", "cluster", "copy", "train", "eval"],
+        choices=["all", "baseline", "cluster", "copy", "train", "eval", "run_gui"],
         help="Pipeline step to run (default: all)",
     )
     parser.add_argument(
@@ -260,6 +316,21 @@ def main():
         default=500,
         help="Sim-seconds for the evaluation step (default: 500)",
     )
+    parser.add_argument(
+        "--run-id",
+        "--run_id",
+        dest="run_id",
+        type=str,
+        default="latest",
+        help="Run directory to use, e.g. 20260902_211700, run_20260902_211700, or 'latest' "
+        "(default: 'latest' — auto-select the newest run under models/<scenario>/)",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=50.0,
+        help="sumo-gui playback delay in ms per step, run_gui only (default: 50.0)",
+    )
     args = parser.parse_args()
 
     scenario = args.scenario
@@ -269,6 +340,8 @@ def main():
     save_every = args.save_every
     cluster_method = args.cluster_method
     steps = args.steps
+    run_id = args.run_id
+    delay = args.delay
 
     if route is not None and not (scenario_dir(scenario) / f"{scenario}_{route}.rou.xml").exists():
         print(f"  ERROR: route file not found: {scenario_dir(scenario) / f'{scenario}_{route}.rou.xml'}")
@@ -280,13 +353,14 @@ def main():
             lambda: step_cluster(scenario, route, cluster_method),
             lambda: step_copy(scenario, route, cluster_method),
             lambda: step_train(scenario, route, episodes, episode_steps, save_every, cluster_method),
-            lambda: step_eval(scenario, route, cluster_method, steps),
+            lambda: step_eval(scenario, route, cluster_method, steps, run_id),
         ],
         "baseline": [lambda: step_baseline(scenario, route)],
         "cluster": [lambda: step_cluster(scenario, route, cluster_method)],
         "copy": [lambda: step_copy(scenario, route, cluster_method)],
         "train": [lambda: step_train(scenario, route, episodes, episode_steps, save_every, cluster_method)],
-        "eval": [lambda: step_eval(scenario, route, cluster_method, steps)],
+        "run_gui": [lambda: step_run_gui(scenario, route, cluster_method, run_id, delay)],
+        "eval": [lambda: step_eval(scenario, route, cluster_method, steps, run_id)],
     }
 
     for fn in steps_map[args.command]:

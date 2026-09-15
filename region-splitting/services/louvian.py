@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from .base import BaseClusteringService
+from .topology import build_tls_projected_graph, get_tls_node_ids
 from .traci import TraciService
 
 
@@ -18,21 +19,23 @@ class LouvianService(BaseClusteringService):
         super().__init__(net_config_path, traci_service)
         self.min_cluster_size = min_cluster_size
 
-        self.graph = nx.DiGraph()
+        self.graph = nx.Graph()
         self.edge_weights = {}
 
     def build_graph(self):
+        print("  Constructing traffic-light-projected graph from network edges...")
+        tls_ids = get_tls_node_ids(self.net)
+        self.graph = build_tls_projected_graph(self.net, tls_ids, weight_fn=self._edge_weight)
 
-        for edge in self.net.getEdges():
-            if edge.isSpecial():  # skip internal edges
-                continue
-
-            source = edge.getFromNode().getID()
-            destination = edge.getToNode().getID()
-
-            self.graph.add_edge(source, destination, id=edge.getID(), static_weight=edge.getLaneNumber())
-
+        print(f"  Graph built: {len(self.graph.nodes)} traffic-light nodes, {len(self.graph.edges)} edges")
         return self.graph
+
+    def _edge_weight(self, edge) -> float:
+        """Live simulation weight when available, falling back to lane count."""
+        w = self.edge_weights.get(edge.getID(), 0.0)
+        if w > 0:
+            return w
+        return float(edge.getLaneNumber())
 
     def compute_weights(self, max_iter=1000):
 
@@ -52,37 +55,13 @@ class LouvianService(BaseClusteringService):
 
         self.edge_weights = edge_weights
 
-    def normalize_edge_id(self, edge_id: str):
-        if edge_id.startswith("-"):
-            return edge_id[1:]
-        return edge_id
-
-    def to_weighted_undirected(self):
-        undirected_graph = nx.Graph()
-
-        for u, v, data in self.graph.edges(data=True):
-            edge_id = self.normalize_edge_id(data["id"])
-            w = self.edge_weights.get(edge_id, 0)
-
-            if w <= 0:
-                w = data.get("lane_weight", 1.0)
-
-            if undirected_graph.has_edge(u, v):
-                undirected_graph[u][v]["weight"] += w
-            else:
-                undirected_graph.add_edge(u, v, weight=w)
-
-        return undirected_graph
-
     def get_clusters(self):
-        # Step 1: convert to undirected graph
-        undirected_graph = self.to_weighted_undirected()
+        # Step 1: run Louvain directly on the (already undirected, weighted)
+        # traffic-light-projected graph
+        partition = community_louvain.best_partition(self.graph, weight="weight")
+        modularity = community_louvain.modularity(partition, self.graph, weight="weight")
 
-        # Step 2: run Louvain
-        partition = community_louvain.best_partition(undirected_graph, weight="weight")
-        modularity = community_louvain.modularity(partition, undirected_graph, weight="weight")
-
-        # Step 3: group nodes by community
+        # Step 2: group nodes by community
         clusters = {}
         for node, comm_id in partition.items():
             clusters.setdefault(comm_id, []).append(node)
@@ -120,8 +99,6 @@ class LouvianService(BaseClusteringService):
         return results
 
     def merge_small_clusters(self, clusters):
-        G = self.to_weighted_undirected()
-
         large = {}
         small = {}
 
@@ -136,16 +113,22 @@ class LouvianService(BaseClusteringService):
             best_weight = -1
 
             for node in nodes:
-                for nbr in G.neighbors(node):
+                for nbr in self.graph.neighbors(node):
                     for target_id, target_nodes in large.items():
                         if nbr in target_nodes:
-                            w = G[node][nbr]["weight"]
+                            w = self.graph[node][nbr]["weight"]
                             if w > best_weight:
                                 best_weight = w
                                 best_target = target_id
 
             if best_target is not None:
                 large[best_target].extend(nodes)
+            else:
+                # No large neighbor to merge into (e.g. an isolated
+                # traffic-light component). Keep it as its own region rather
+                # than silently dropping these traffic lights from the
+                # partition — every TLS node must end up in some region.
+                large[cid] = nodes
 
         return large
 

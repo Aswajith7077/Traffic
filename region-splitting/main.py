@@ -6,6 +6,7 @@ import numpy as np
 from schema import TraciConfig
 from services import create_service, is_hybrid
 from services.dbscan import auto_tune_config
+from services.topology import get_tls_node_ids
 from services.traci import TraciService
 
 
@@ -38,8 +39,8 @@ def run_partition(module_name: str, method: str = "leiden", eps: float | None = 
     metrics = clusters.setdefault("metrics", {})
     metrics.setdefault("n_clusters", len(clusters["clusters"]))
     total_nodes = sum(len(v) for v in clusters["clusters"].values())
-    total_net_nodes = len(service.net.getNodes())
-    metrics.setdefault("coverage", total_nodes / max(1, total_net_nodes))
+    total_tls_nodes = len(get_tls_node_ids(service.net))
+    metrics.setdefault("coverage", total_nodes / max(1, total_tls_nodes))
 
     with open(f"clusters/{method}/{module_name}_clusters.json", "w") as f:
         json.dump(clusters, f, indent=4)
@@ -67,7 +68,16 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--method",
-        choices=["leiden", "louvian", "dbscan", "dbscan_louvian", "dbscan_leiden", "louvian_dbscan", "leiden_dbscan"],
+        choices=[
+            "leiden",
+            "louvian",
+            "dbscan",
+            "manual_clustering",
+            "dbscan_louvian",
+            "dbscan_leiden",
+            "louvian_dbscan",
+            "leiden_dbscan",
+        ],
         default="leiden",
         help="Partitioning algorithm to run (default: leiden)",
     )

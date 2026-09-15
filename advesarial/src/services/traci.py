@@ -27,6 +27,8 @@ class TraciService:
         self.edge_ids = set()
         self.tl_ids = set()
         self.node_to_edges = defaultdict(list)
+        self._net = None
+        self._net_bounds = None
 
         self.valid_phases = {}
         self.min_green_time = config.min_green_steps
@@ -105,6 +107,9 @@ class TraciService:
             net = sumolib.net.readNet(net_path)
         except Exception:
             return
+
+        self._net = net
+        self._net_bounds = net.getBoundary()  # (min_x, min_y, max_x, max_y)
 
         for edge in net.getEdges():
             if edge.isSpecial():
@@ -387,21 +392,39 @@ class TraciService:
         return torch.stack(states)
 
     def get_intersection_reward(self, tls):
+        """Local reward r_i = -(ql + wt + dt + ps - ss), Section 4.3.1.
+
+        delay_time is approximated per-step as the sum, over incoming lanes, of
+        (actual travel time - ideal free-flow travel time) implied by the
+        lane's current mean speed vs. its speed limit (the paper defines
+        delay_time as "ideal travel time - actual travel time" per vehicle but
+        gives no per-step formula; this lane-level speed proxy is the natural
+        per-step analogue used elsewhere in this codebase for the same idea).
+        """
 
         queue_length = 0
         waiting_time = 0
         pressure = self.compute_intersection_pressure(tls)
         speed_score = 0
+        delay_time = 0.0
 
         lanes = traci.trafficlight.getControlledLanes(tls)
         for lane in lanes:
             waiting_time += traci.lane.getWaitingTime(lane)
             queue_length += traci.lane.getLastStepVehicleNumber(lane)
-            speed_score += traci.lane.getLastStepMeanSpeed(lane)
+            mean_speed = traci.lane.getLastStepMeanSpeed(lane)
+            speed_score += mean_speed
+
+            length = traci.lane.getLength(lane)
+            max_speed = traci.lane.getMaxSpeed(lane)
+            if max_speed > 0:
+                ideal_time = length / max_speed
+                actual_time = length / max(mean_speed, 0.1)
+                delay_time += max(actual_time - ideal_time, 0.0)
 
         speed_score /= len(lanes) if len(lanes) > 0 else 1
 
-        final = -(queue_length + waiting_time + pressure - speed_score)
+        final = -(queue_length + waiting_time + delay_time + pressure - speed_score)
         return final
 
     def total_waiting_time(self, tls):
@@ -546,86 +569,55 @@ class TraciService:
 
         return conflict_count
 
-    def get_cluster_states(self, clusters):
-        """
+    def get_regional_state(self, clusters):
+        """Per-subregion state fed to the Meta-Policy's Transformer (Appendix A):
+
+        [stop_car_num, waiting_time, centroid_x, centroid_y] aggregated over the
+        subregion's traffic lights, with (x, y) normalized to [0, 1] by the
+        network's bounding box.
+
         Returns:
-        tensor of shape (num_clusters, 10)
+            tensor of shape (num_clusters, 4)
         """
 
-        cluster_states = []
+        min_x, min_y, max_x, max_y = self._net_bounds or (0.0, 0.0, 1.0, 1.0)
+        width = max(max_x - min_x, 1e-6)
+        height = max(max_y - min_y, 1e-6)
+
+        region_states = []
 
         for _, cluster_nodes in clusters.items():
-            total_queue_length = 0.0
-            total_waiting_time = 0.0
-            total_vehicle_count = 0.0
-            total_speed = 0.0
-
-            incoming_flow = 0.0
-            outgoing_flow = 0.0
-
-            internal_cluster_flow = 0.0
-            pressure = 0.0
-
+            stop_car_num = 0.0
+            waiting_time = 0.0
+            centroid_x = 0.0
+            centroid_y = 0.0
             valid_nodes = 0
+
             for node in cluster_nodes:
-                # Aggregate traffic on the edges incident to this junction, so
-                # region tokens carry queue/wait/count/speed/flow information
-                # rather than pressure alone.
-                for edge_id in self.node_to_edges.get(node, ()):
-                    if edge_id not in self.edge_ids:
-                        continue
+                if node in self.tl_ids:
+                    stop_car_num += self.get_stop_count(node)
+                    waiting_time += self.total_waiting_time(node)
+
+                if self._net is not None:
                     try:
-                        occupancy = traci.edge.getLastStepOccupancy(edge_id)
-                        waiting_time = traci.edge.getWaitingTime(edge_id)
-                        vehicle_count = traci.edge.getLastStepVehicleNumber(edge_id)
-                        mean_speed = traci.edge.getLastStepMeanSpeed(edge_id)
-
-                        total_queue_length += occupancy
-                        total_waiting_time += waiting_time
-                        total_vehicle_count += vehicle_count
-                        total_speed += mean_speed
-
-                        incoming_flow += vehicle_count
-                        outgoing_flow += vehicle_count
-
+                        x, y = self._net.getNode(node).getCoord()
+                        centroid_x += x
+                        centroid_y += y
                         valid_nodes += 1
                     except Exception:
                         pass
 
-                if node in self.tl_ids:
-                    pressure += self.compute_intersection_pressure(node)
-
             if valid_nodes == 0:
                 valid_nodes = 1
 
-            avg_waiting_time = total_waiting_time / valid_nodes
-            avg_speed = total_speed / valid_nodes
+            centroid_x = (centroid_x / valid_nodes - min_x) / width
+            centroid_y = (centroid_y / valid_nodes - min_y) / height
 
-            internal_cluster_flow = incoming_flow - outgoing_flow
-
-            congestion_ratio = total_queue_length / (total_vehicle_count + 1e-6)
-
-            signal_phase_entropy = compute_phase_entropy(self.phase_history)
-
-            cluster_state = torch.tensor(
-                [
-                    total_queue_length,
-                    avg_waiting_time,
-                    total_vehicle_count,
-                    avg_speed,
-                    incoming_flow,
-                    outgoing_flow,
-                    internal_cluster_flow,
-                    pressure,
-                    congestion_ratio,
-                    signal_phase_entropy,
-                ],
-                dtype=torch.float32,
+            region_states.append(
+                torch.tensor([stop_car_num, waiting_time, centroid_x, centroid_y], dtype=torch.float32)
             )
 
-            cluster_states.append(cluster_state)
-
-        return torch.stack(cluster_states)
+        return torch.stack(region_states)
 
     def cluster_entropy(self, cluster_nodes, phase_histories):
         total = 0.0

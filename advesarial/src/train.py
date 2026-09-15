@@ -1,49 +1,18 @@
-from agents import Actor
-from config import Config
-from environment import Environment
-from memory import ReplayBuffer
-from schema import ReplayBufferItem, TraciConfig
+"""Thin wrapper kept for compatibility with anything calling `train.train(...)`
+directly; `sample.py` is the canonical CLI entrypoint used by pipeline.py."""
+
+from config import SCENARIO
+from training import Trainer
 
 
-def train(T: int = 100):
-
-    environment = Environment(config=TraciConfig(config_path="sumo/manhattan.sumocfg"))
-    config = Config("clusters/louvian/manhattan_clusters.json")
-    replay_buffer = ReplayBuffer(max_size=1000)
-    environment.reset()
-
-    for t in range(T):
-        state = environment.get_state()
-        action = Actor(state)
-        next_state, reward, done = environment.step(action=action)
-
-        buffer_item = ReplayBufferItem(state=state, action=action, reward=reward, next_state=next_state, done=done)
-        replay_buffer.add(buffer_item)
-
-        pass
-
-    print(config.clusters)
-    print(config.metrics)
+def train(episodes: int = 10, episode_steps: int = 1000, save_every: int = 10):
+    trainer = Trainer(scenario=SCENARIO, sumocfg_path=f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg")
+    run_dir = trainer.create_run_dir()
+    try:
+        trainer.train(episodes, episode_steps, save_every, run_dir)
+    finally:
+        trainer.close()
 
 
-def modules():
-
-    environment = Environment(config=TraciConfig(config_path="sumo/manhattan.sumocfg"))
-
-    # traci_config = TraciConfig(config_path="sumo/manhattan.sumocfg")
-    # traci_service = TraciService(traci_config)
-
-    # # Initialize models
-    # transformer_encoder = TransformerEncoder(TransformerEncoderConfig())
-    # sub_goal_generator = SubGoalGenerator()
-    # sub_policy = SubPolicy()
-
-
-config = Config("clusters/louvian/manhattan_clusters.json")
-environment = Environment(
-    config=config,
-    traci_config=TraciConfig(config_path="sumo/manhattan.sumocfg"),
-)
-state = environment.get_state()
-
-print(state.shape)
+if __name__ == "__main__":
+    train()
