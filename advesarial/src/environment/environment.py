@@ -12,10 +12,11 @@ There are dynamic phases
 
 
 class Environment:
-    def __init__(self, traci_service, max_t=3600):
+    def __init__(self, traci_service, max_t=3600, control_interval=10):
         self.traci_service = traci_service
         self.t = 0
         self.max_t = max_t
+        self.control_interval = control_interval
         self.intersections = self.traci_service.get_all_intersections()
 
         self.running_mean = torch.zeros(10)
@@ -51,15 +52,24 @@ class Environment:
 
         self._apply_action(action)
 
-        self.traci_service.step()
+        self.traci_service.step(self.control_interval)
 
         next_state = self.traci_service.get_observations() if needs_obs else None
         reward = self._compute_reward()
         done = self.t >= self.max_t
 
-        self.t += 1
+        self.t += self.control_interval
 
         return next_state, reward, done
+
+    def restart(self):
+        """Restart the SUMO simulation for a new training episode."""
+        self.t = 0
+        self.prev_queue = 0
+        self.prev_wait = 0
+        self.traci_service.reset_simulation()
+        self.intersections = self.traci_service.get_all_intersections()
+        self.adjacency_list = self.traci_service.get_adjacency_list()
 
     def compute_global_reward(self):
         total_queue_length = 0

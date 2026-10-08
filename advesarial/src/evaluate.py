@@ -36,7 +36,7 @@ def evaluate_models(model_dir, steps=3600):
     print("Initializing architecture...")
     local_encoder = LocalEncoder()
     GAT = GATLayer(feature_dim=64)
-    actor_critic = ActorCritic(state_dimension=128, action_dimension=7)
+    actor_critic = ActorCritic(state_dimension=144, action_dimension=7)
 
     transformer_encoder_config = TransformerEncoderConfig(
         d_model=128, nhead=8, num_layers=6
@@ -97,16 +97,24 @@ def evaluate_models(model_dir, steps=3600):
 
         return torch.clamp(states, -5, 5)
 
-    def _find_local_observations():
+    def _find_global_observation():
+        cluster_states = traci_service.get_cluster_states(clusters)
+        global_encoding, local_encoding = transformer_encoder(
+            cluster_states.unsqueeze(0)
+        )
+        subgoal_vector = subgoal_generator(local_encoding, global_encoding)
+        return subgoal_vector
+
+    def _find_local_observations(sub_goal_vector):
         observations = traci_service.get_observations()
         observations = __normalize_states(observations)
         hidden_state = local_encoder(observations)
         local_features = GAT(hidden_state, adjacency_list)
+        mean_feat = torch.mean(local_features, dim=0)
         final_state = []
-        for i in range(len(local_features)):
-            z_i = local_features[i]
+        for z_i in local_features:
             final_state.append(
-                torch.cat([z_i, torch.mean(local_features, dim=0)], dim=-1)
+                torch.cat([z_i, mean_feat, sub_goal_vector[0]], dim=-1)
             )
         return torch.stack(final_state, dim=0)
 
@@ -160,7 +168,8 @@ def evaluate_models(model_dir, steps=3600):
     with torch.no_grad():
         intersections = traci_service.get_all_intersections()
         for t in range(steps):
-            final_state = _find_local_observations()
+            sub_goal_vector = _find_global_observation()
+            final_state = _find_local_observations(sub_goal_vector)
 
             action_prob, state_values = actor_critic(final_state)
             action = torch.argmax(action_prob, dim=-1).unsqueeze(-1)
@@ -187,7 +196,7 @@ def evaluate_models(model_dir, steps=3600):
             total_queue_length.append(raw_queue)
             total_vehicle_count.append(raw_vehicles)
 
-            if (t + 1) % 300 == 0:
+            if (t + 1) % 30 == 0:
                 print(
                     f"Eval Step {t + 1}/{steps} (sim {current_time:.0f}s) - "
                     f"Queue (halted): {raw_queue:.2f}, Vehicles on TL lanes: {raw_vehicles:.2f}, "
@@ -261,8 +270,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--steps",
         type=int,
-        default=3600,
-        help="Number of steps to evaluate (default 3600 = full episode, matching HiLight protocol)",
+        default=360,
+        help=(
+            "Number of control steps to evaluate (default 360 = full 3600s "
+            "episode at a 10s control interval, matching HiLight protocol)"
+        ),
     )
     args = parser.parse_args()
 

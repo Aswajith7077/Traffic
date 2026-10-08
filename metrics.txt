@@ -787,41 +787,8 @@ Latest Reward: -8.1000
 Steps taken: 621
 Latest Meta Loss: -0.6872
 Latest AC Loss: 1.1179
-Latest Sub Loss: 0.0246
+ Latest Sub Loss: 0.0246
 Latest Reward: -8.1000
-
---- Evaluation Snapshot: 20260801_214537 ---
-Evaluating Model: ../models/run_test_cologne8
-Simulation Window: 25200s - 25260s
-Total Steps Evaluated: 60
-Completed Vehicles: 5
-Average Queue Length: 24.72 vehicles (halted)
-Average Waiting Time: 0.00 seconds
-Average Travel Time (ATT): 34.20 seconds
-Average Delay Time (ADT): 6.88 seconds
-Peak Total Queue Length: 61.00 vehicles
-
---- Evaluation Snapshot: 20260801_214706 ---
-Evaluating Model: ../models/run_test_cologne8
-Simulation Window: 25200s - 25230s
-Total Steps Evaluated: 30
-Completed Vehicles: 1
-Average Queue Length: 10.47 vehicles (halted)
-Average Waiting Time: 0.00 seconds
-Average Travel Time (ATT): 7.00 seconds
-Average Delay Time (ADT): 3.80 seconds
-Peak Total Queue Length: 32.00 vehicles
-
---- Evaluation Snapshot: 20260801_214913 ---
-Evaluating Model: ../models/run_test_cologne8
-Simulation Window: 25200s - 25260s
-Total Steps Evaluated: 60
-Completed Vehicles: 5
-Average Queue Length: 24.72 vehicles (halted)
-Average Waiting Time: 0.00 seconds
-Average Travel Time (ATT): 34.20 seconds
-Average Delay Time (ADT): 6.88 seconds
-Peak Total Queue Length: 61.00 vehicles
 
 --- Training Snapshot: 20260801_232136 ---
 Steps taken: 85
@@ -971,4 +938,493 @@ Latest Meta Loss: -5.3435
 Latest AC Loss: 0.0856
 Latest Sub Loss: 0.8672
 Latest Reward: -96.8000
+
+--- Training Snapshot: 20260802_121127 ---
+Steps taken: 37
+Latest Meta Loss: -20.1667
+Latest AC Loss: 0.8112
+Latest Sub Loss: 3.0243
+Latest Reward: -352.9000
+
+--- Training Snapshot: 20260802_121221 ---
+Steps taken: 43
+Latest Meta Loss: -5.6740
+Latest AC Loss: 1.8998
+Latest Sub Loss: 0.7710
+Latest Reward: -95.3000
+
+--- Training Snapshot: 20260802_121325 ---
+Steps taken: 50
+Latest Meta Loss: -55.0993
+Latest AC Loss: -0.1164
+Latest Sub Loss: 1.6859
+Latest Reward: -635.3000
+
+--- Training Snapshot: 20260802_121419 ---
+Steps taken: 56
+Latest Meta Loss: -9.8760
+Latest AC Loss: 3.0115
+Latest Sub Loss: 0.1047
+Latest Reward: -104.0000
+
+--- Training Snapshot: 20260802_121512 ---
+Steps taken: 62
+Latest Meta Loss: -5.7315
+Latest AC Loss: 2.4464
+Latest Sub Loss: 0.0277
+Latest Reward: -58.7000
+
+--- Training Snapshot: 20260802_121513 ---
+Steps taken: 62
+Latest Meta Loss: -5.7315
+Latest AC Loss: 2.4464
+Latest Sub Loss: 0.0277
+Latest Reward: -58.7000
+
+--- Evaluation Snapshot: 20260802_125330 ---
+Evaluating Model: ../models/run_20260802_121029
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 3600
+Completed Vehicles: 1033
+Average Queue Length: 736.95 vehicles (halted)
+Average Waiting Time: 14.14 seconds
+Average Travel Time (ATT): 204.68 seconds
+Average Delay Time (ADT): 153.51 seconds
+Peak Total Queue Length: 1309.00 vehicles
+
+--- Evaluation Snapshot: 20260802_133350 ---
+Evaluating Model: ../models/run_20260802_121513
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 3600
+Completed Vehicles: 1056
+Average Queue Length: 720.00 vehicles (halted)
+Average Waiting Time: 13.66 seconds
+Average Travel Time (ATT): 204.49 seconds
+Average Delay Time (ADT): 152.56 seconds
+Peak Total Queue Length: 1298.00 vehicles
+
+--- Training Snapshot: 20260802_133809 ---
+Steps taken: 6
+Latest Meta Loss: 254.8436
+Latest AC Loss: 8.2208
+Latest Sub Loss: 52.2060
+Latest Reward: -61.9000
+
+--- Training Snapshot: 20260802_133858 ---
+Steps taken: 12
+Latest Meta Loss: 21.0449
+Latest AC Loss: 0.7934
+Latest Sub Loss: 4.7748
+Latest Reward: -28.3000
+
+--- Training Snapshot: 20260802_133947 ---
+Steps taken: 18
+Latest Meta Loss: 0.1407
+Latest AC Loss: 1.4366
+Latest Sub Loss: 0.2641
+Latest Reward: -11.8000
+
+--- Training Snapshot: 20260802_134038 ---
+Steps taken: 25
+Latest Meta Loss: 9.3537
+Latest AC Loss: -0.0983
+Latest Sub Loss: 3.1504
+Latest Reward: -64.0000
+
+--- Training Snapshot: 20260802_134129 ---
+Steps taken: 31
+Latest Meta Loss: -1.3912
+Latest AC Loss: 0.3378
+Latest Sub Loss: 0.3097
+Latest Reward: -29.4000
+
+--- Training Snapshot: 20260802_134218 ---
+Steps taken: 37
+Latest Meta Loss: -2.2753
+Latest AC Loss: -0.7567
+Latest Sub Loss: 1.9247
+Latest Reward: -119.0000
+
+--- Training Snapshot: 20260802_134313 ---
+Steps taken: 43
+Latest Meta Loss: 4.7770
+Latest AC Loss: -0.8436
+Latest Sub Loss: 5.5570
+Latest Reward: -230.1000
+
+--- Training Snapshot: 20260802_134406 ---
+Steps taken: 50
+Latest Meta Loss: -24.4783
+Latest AC Loss: -0.5958
+Latest Sub Loss: 1.4100
+Latest Reward: -315.3000
+
+--- Training Snapshot: 20260802_134501 ---
+Steps taken: 56
+Latest Meta Loss: -19.5325
+Latest AC Loss: -0.8539
+Latest Sub Loss: 1.0933
+Latest Reward: -250.0000
+
+--- Training Snapshot: 20260802_134558 ---
+Steps taken: 62
+Latest Meta Loss: -45.5720
+Latest AC Loss: 2.5089
+Latest Sub Loss: 2.7112
+Latest Reward: -591.3000
+
+--- Training Snapshot: 20260802_134705 ---
+Steps taken: 68
+Latest Meta Loss: -27.0958
+Latest AC Loss: 2.4103
+Latest Sub Loss: 0.1987
+Latest Reward: -280.9000
+
+--- Training Snapshot: 20260802_134805 ---
+Steps taken: 75
+Latest Meta Loss: -10.2285
+Latest AC Loss: 4.1597
+Latest Sub Loss: 0.1122
+Latest Reward: -107.9000
+
+--- Training Snapshot: 20260802_134858 ---
+Steps taken: 81
+Latest Meta Loss: -5.9082
+Latest AC Loss: 4.0147
+Latest Sub Loss: 0.1343
+Latest Reward: -65.8000
+
+--- Training Snapshot: 20260802_134953 ---
+Steps taken: 87
+Latest Meta Loss: -21.5007
+Latest AC Loss: -0.4799
+Latest Sub Loss: 0.5558
+Latest Reward: -242.8000
+
+--- Training Snapshot: 20260802_135049 ---
+Steps taken: 93
+Latest Meta Loss: -21.0662
+Latest AC Loss: 0.6591
+Latest Sub Loss: 0.1207
+Latest Reward: -216.7000
+
+--- Training Snapshot: 20260802_135143 ---
+Steps taken: 100
+Latest Meta Loss: -14.9506
+Latest AC Loss: 1.9377
+Latest Sub Loss: 0.0379
+Latest Reward: -151.4000
+
+--- Training Snapshot: 20260802_135238 ---
+Steps taken: 106
+Latest Meta Loss: -18.5082
+Latest AC Loss: -0.7077
+Latest Sub Loss: 0.0264
+Latest Reward: -186.4000
+
+--- Training Snapshot: 20260802_135331 ---
+Steps taken: 112
+Latest Meta Loss: -9.8077
+Latest AC Loss: 1.3323
+Latest Sub Loss: 0.0924
+Latest Reward: -102.7000
+
+--- Training Snapshot: 20260802_135424 ---
+Steps taken: 118
+Latest Meta Loss: -7.4044
+Latest AC Loss: 3.0109
+Latest Sub Loss: 0.0891
+Latest Reward: -78.5000
+
+--- Training Snapshot: 20260802_135516 ---
+Steps taken: 125
+Latest Meta Loss: -34.3141
+Latest AC Loss: -0.8604
+Latest Sub Loss: 0.1992
+Latest Reward: -353.1000
+
+--- Training Snapshot: 20260802_135610 ---
+Steps taken: 131
+Latest Meta Loss: -14.4681
+Latest AC Loss: 1.4774
+Latest Sub Loss: 0.1303
+Latest Reward: -151.2000
+
+--- Training Snapshot: 20260802_135704 ---
+Steps taken: 137
+Latest Meta Loss: -10.4932
+Latest AC Loss: 2.9877
+Latest Sub Loss: 0.0793
+Latest Reward: -108.9000
+
+--- Training Snapshot: 20260802_135755 ---
+Steps taken: 143
+Latest Meta Loss: -13.5975
+Latest AC Loss: 0.4601
+Latest Sub Loss: 0.0565
+Latest Reward: -138.8000
+
+--- Training Snapshot: 20260802_135850 ---
+Steps taken: 150
+Latest Meta Loss: 12.5225
+Latest AC Loss: 1.9229
+Latest Sub Loss: 5.1340
+Latest Reward: -131.5000
+
+--- Training Snapshot: 20260802_135942 ---
+Steps taken: 156
+Latest Meta Loss: -14.2810
+Latest AC Loss: 1.1066
+Latest Sub Loss: 0.0598
+Latest Reward: -145.8000
+
+--- Training Snapshot: 20260802_140036 ---
+Steps taken: 162
+Latest Meta Loss: -14.0797
+Latest AC Loss: 2.4397
+Latest Sub Loss: 0.0520
+Latest Reward: -143.4000
+
+--- Training Snapshot: 20260802_140131 ---
+Steps taken: 168
+Latest Meta Loss: -17.2294
+Latest AC Loss: -0.0546
+Latest Sub Loss: 0.0521
+Latest Reward: -174.9000
+
+--- Training Snapshot: 20260802_140222 ---
+Steps taken: 175
+Latest Meta Loss: -27.1587
+Latest AC Loss: -0.5386
+Latest Sub Loss: 0.1342
+Latest Reward: -278.3000
+
+--- Training Snapshot: 20260802_140313 ---
+Steps taken: 181
+Latest Meta Loss: -8.5555
+Latest AC Loss: 1.8912
+Latest Sub Loss: 0.1708
+Latest Reward: -94.1000
+
+--- Training Snapshot: 20260802_140406 ---
+Steps taken: 187
+Latest Meta Loss: -12.3586
+Latest AC Loss: 0.3942
+Latest Sub Loss: 0.0543
+Latest Reward: -126.3000
+
+--- Training Snapshot: 20260802_140458 ---
+Steps taken: 193
+Latest Meta Loss: -4.3471
+Latest AC Loss: 3.1180
+Latest Sub Loss: 0.0486
+Latest Reward: -45.9000
+
+--- Training Snapshot: 20260802_140551 ---
+Steps taken: 200
+Latest Meta Loss: -4.2550
+Latest AC Loss: 0.4708
+Latest Sub Loss: 0.0630
+Latest Reward: -45.7000
+
+--- Training Snapshot: 20260802_140640 ---
+Steps taken: 206
+Latest Meta Loss: -2.3020
+Latest AC Loss: 0.9792
+Latest Sub Loss: 0.0696
+Latest Reward: -26.5000
+
+--- Training Snapshot: 20260802_140732 ---
+Steps taken: 212
+Latest Meta Loss: -5.2579
+Latest AC Loss: -0.4021
+Latest Sub Loss: 0.0604
+Latest Reward: -55.6000
+
+--- Training Snapshot: 20260802_140824 ---
+Steps taken: 218
+Latest Meta Loss: 3.9629
+Latest AC Loss: 0.8192
+Latest Sub Loss: 2.2383
+Latest Reward: -72.3000
+
+--- Training Snapshot: 20260802_140913 ---
+Steps taken: 225
+Latest Meta Loss: -4.6684
+Latest AC Loss: 1.9853
+Latest Sub Loss: 0.1043
+Latest Reward: -51.9000
+
+--- Training Snapshot: 20260802_140914 ---
+Steps taken: 225
+Latest Meta Loss: -4.6684
+Latest AC Loss: 1.9853
+Latest Sub Loss: 0.1043
+Latest Reward: -51.9000
+
+--- Evaluation Snapshot: 20260802_144030 ---
+Evaluating Model: ../models/run_20260802_140914
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 3600
+Completed Vehicles: 1337
+Average Queue Length: 503.30 vehicles (halted)
+Average Waiting Time: 14.04 seconds
+Average Travel Time (ATT): 213.59 seconds
+Average Delay Time (ADT): 150.84 seconds
+Peak Total Queue Length: 747.00 vehicles
+
+--- Training Snapshot: 20260802_153620 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260802_153622 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260802_154252 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260802_154254 ---
+Steps taken: 0
+
+--- Training Snapshot: 20260802_154935 ---
+Steps taken: 1
+Latest Meta Loss: -36.6978
+Latest AC Loss: -0.0000
+Latest Sub Loss: 0.7856
+Latest Reward: -0.7343
+
+--- Training Snapshot: 20260802_154938 ---
+Steps taken: 1
+Latest Meta Loss: -36.6978
+Latest AC Loss: -0.0000
+Latest Sub Loss: 0.7856
+Latest Reward: -0.7343
+
+--- Training Snapshot: 20260802_155520 ---
+Steps taken: 1
+Latest Meta Loss: -25.2887
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.7986
+Latest Reward: -0.6462
+
+--- Training Snapshot: 20260802_160116 ---
+Steps taken: 2
+Latest Meta Loss: -31.1589
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2288
+Latest Reward: -0.0098
+
+--- Training Snapshot: 20260802_160701 ---
+Steps taken: 3
+Latest Meta Loss: -34.3388
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2036
+Latest Reward: -0.0516
+
+--- Training Snapshot: 20260802_161217 ---
+Steps taken: 4
+Latest Meta Loss: -28.8193
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2154
+Latest Reward: 0.0898
+
+--- Training Snapshot: 20260802_161735 ---
+Steps taken: 5
+Latest Meta Loss: -45.0600
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2349
+Latest Reward: -0.1115
+
+--- Training Snapshot: 20260802_162239 ---
+Steps taken: 6
+Latest Meta Loss: -49.3527
+Latest AC Loss: -0.0000
+Latest Sub Loss: 0.2254
+Latest Reward: -0.0731
+
+--- Training Snapshot: 20260802_162746 ---
+Steps taken: 7
+Latest Meta Loss: -43.6303
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2217
+Latest Reward: 0.0292
+
+--- Training Snapshot: 20260802_163311 ---
+Steps taken: 8
+Latest Meta Loss: -36.8574
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2197
+Latest Reward: 0.0624
+
+--- Training Snapshot: 20260802_163314 ---
+Steps taken: 8
+Latest Meta Loss: -36.8574
+Latest AC Loss: 0.0000
+Latest Sub Loss: 0.2197
+Latest Reward: 0.0624
+
+--- Evaluation Snapshot: 20260802_164147 ---
+Evaluating Model: ../models/run_20260802_163314
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1959
+Average Queue Length: 183.89 vehicles (halted)
+Average Waiting Time: 34.59 seconds
+Average Travel Time (ATT): 211.31 seconds
+Average Delay Time (ADT): 146.75 seconds
+Peak Total Queue Length: 383.00 vehicles
+
+--- Evaluation Snapshot: 20260803_154858 ---
+Evaluating Model: ../models/run_20260802_163314
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1959
+Average Queue Length: 183.89 vehicles (halted)
+Average Waiting Time: 34.59 seconds
+Average Travel Time (ATT): 211.31 seconds
+Average Delay Time (ADT): 146.75 seconds
+Peak Total Queue Length: 383.00 vehicles
+
+--- Evaluation Snapshot: 20260804_083755 ---
+Evaluating Model: ../models/run_20260804_083347
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1806
+Average Queue Length: 154.14 vehicles (halted)
+Average Waiting Time: 22.45 seconds
+Average Travel Time (ATT): 144.99 seconds
+Average Delay Time (ADT): 83.76 seconds
+Peak Total Queue Length: 375.00 vehicles
+
+--- Evaluation Snapshot: 20260804_135651 ---
+Evaluating Model: ../models/run_20260804_135319
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1882
+Average Queue Length: 267.37 vehicles (halted)
+Average Waiting Time: 26.08 seconds
+Average Travel Time (ATT): 205.14 seconds
+Average Delay Time (ADT): 140.67 seconds
+Peak Total Queue Length: 406.00 vehicles
+
+--- Evaluation Snapshot: 20260804_181104 ---
+Evaluating Model: ../models/run_20260804_180747
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1847
+Average Queue Length: 408.21 vehicles (halted)
+Average Waiting Time: 27.77 seconds
+Average Travel Time (ATT): 337.76 seconds
+Average Delay Time (ADT): 270.89 seconds
+Peak Total Queue Length: 740.00 vehicles
+
+--- Evaluation Snapshot: 20260804_191958 ---
+Evaluating Model: ../models/run_20260804_191709
+Simulation Window: 25200s - 28800s
+Total Steps Evaluated: 360
+Completed Vehicles: 1981
+Average Queue Length: 185.68 vehicles (halted)
+Average Waiting Time: 28.01 seconds
+Average Travel Time (ATT): 221.74 seconds
+Average Delay Time (ADT): 153.62 seconds
+Peak Total Queue Length: 443.00 vehicles
 

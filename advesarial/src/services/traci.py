@@ -8,12 +8,12 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
+from collections import defaultdict, deque
+
 import torch
 import traci
-from sumolib import checkBinary
 from schema import TraciConfig
-from collections import defaultdict
-from collections import deque
+from sumolib import checkBinary
 from utils.compute_phase_history import compute_phase_entropy
 
 
@@ -29,8 +29,10 @@ class TraciService:
         self.tl_ids = set()
 
         self.valid_phases = {}
-        self.min_green_time = 5
-        self.yellow_time = 3
+        # Phase-switch safety timers count TraCI decision calls, which happen
+        # every `control_interval` (10s) sim-seconds; 1 call = 10s of traffic.
+        self.min_green_time = 1
+        self.yellow_time = 1
 
         self.time_since_last_switch = {}
         self.in_transition = {}
@@ -86,8 +88,8 @@ class TraciService:
         self.close_simulation()
         self.start_simulation()
 
-    def step(self):
-        traci.simulationStep()
+    def step(self, delta=1):
+        traci.simulationStep(traci.simulation.getTime() + delta)
 
     def compute_intersection_pressure(self, tl_id):
         pressure = 0.0
@@ -441,7 +443,7 @@ class TraciService:
 
         for lane in incoming_lanes:
             # Get pedestrians on this lane
-            edge_id = traci.lane.getEdgeID(lane) 
+            edge_id = traci.lane.getEdgeID(lane)
             person_ids = traci.edge.getLastStepPersonIDs(edge_id)
 
             for person_id in person_ids:
