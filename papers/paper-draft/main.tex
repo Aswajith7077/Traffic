@@ -403,6 +403,244 @@ transportation networks.
 
 
 % ===============================================================
+% PROPOSED FRAMEWORK
+% ===============================================================
+
+\section{Proposed Framework}\label{sec3}
+
+The proposed framework, \textbf{FairLight}, is organized around three
+complementary methods that together address scalability, emergency
+responsiveness, and equity in city-wide traffic signal control.
+First, the road network is automatically partitioned into coherent
+subregions using graph-based community detection (the Louvain
+algorithm), removing the need for manual, expert-driven region design
+and allowing the hierarchical Meta-Policy/Sub-Policy architecture to
+scale to arbitrarily large networks. Second, the framework extends
+single-vehicle emergency routing to a \textbf{multi-EMV} setting, in
+which several emergency vehicles may simultaneously request priority
+across overlapping parts of the network, requiring explicit conflict
+resolution and coordinated corridor clearing. Third, the framework
+treats \textbf{fairness} and \textbf{accident-induced congestion} as
+first-class control objectives rather than side effects, so that the
+learned policy neither systematically starves individual approaches
+nor collapses when unexpected incidents disrupt normal traffic flow.
+The remainder of this section describes each of these three methods
+in turn.
+
+% ---------------------------------------------------------------
+% 3.1 CLUSTERING BASED ON LOUVAIN
+% ---------------------------------------------------------------
+
+\subsection{Clustering Based on Louvain}\label{subsec3-1}
+
+In the proposed framework, manually dividing the road network into
+precise subsections is impractical for real-world scenarios due to
+the large number of roads and intersections involved. Therefore, the
+road network is modeled as a weighted graph $G = (V, E)$, where
+intersections are represented as nodes and road segments as edges.
+
+To automatically identify suitable subsections, the \textbf{Louvain
+community detection algorithm} is applied to the graph. The algorithm
+partitions the network into communities by maximizing
+\textbf{modularity}, which measures the difference between the
+observed connectivity within communities and the connectivity
+expected in a corresponding random network:
+
+\begin{equation}
+Q = \frac{1}{2m}\sum_{i,j}\left(A_{ij} - \frac{k_i k_j}{2m}\right)
+\delta(c_i, c_j),
+\end{equation}
+
+where $A_{ij}$ is the edge weight between nodes $i$ and $j$, $k_i$ and
+$k_j$ are their weighted degrees, $m$ is the total edge weight, and
+$\delta(c_i, c_j)$ indicates whether the nodes belong to the same
+community.
+
+A higher modularity indicates stronger community structure, allowing
+the identified communities to serve as automatically generated
+road-network subsections. Each subsection is assigned a
+\textbf{sub-policy}, while a higher-level \textbf{meta-policy}
+coordinates the behavior of these sub-policies across the complete
+network. This provides a scalable alternative to manual decomposition
+and enables hierarchical policy optimization over complex road
+networks.
+
+\begin{figure}[h]
+\centering
+\fbox{\parbox[c][6cm][c]{0.85\textwidth}{\centering\textit{
+Figure placeholder: Road network graph before partitioning, with
+nodes representing signalized intersections and edge thickness
+representing traffic-weighted connectivity.}}}
+\caption{Traffic-signal graph representation of the road network
+prior to Louvain partitioning.}
+\label{fig:louvain-graph}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\fbox{\parbox[c][6cm][c]{0.85\textwidth}{\centering\textit{
+Figure placeholder: Resulting Louvain partition overlaid on the road
+network, with each color denoting a distinct subregion assigned to
+its own Sub-Policy agent.}}}
+\caption{Subregions obtained after applying Louvain community
+detection to the traffic-signal graph.}
+\label{fig:louvain-partition}
+\end{figure}
+
+% ---------------------------------------------------------------
+% 3.2 MULTIPLE EMV VEHICLE ROUTING
+% ---------------------------------------------------------------
+
+\subsection{Multiple EMV Vehicle Routing Across the City}\label{subsec3-2}
+
+\textit{[Placeholder section --- content below is draft filler to be
+expanded with the final methodology, equations, and figures.]}
+
+Prior emergency-vehicle (EMV) prioritization approaches in the
+traffic-signal-control literature, including the single-agent
+preemption strategies discussed in Section~\ref{sec2}, are almost
+exclusively formulated around a single emergency vehicle traversing
+the network at any given time. This assumption breaks down in dense
+urban environments, where it is common for multiple ambulances, fire
+trucks, and police vehicles to be simultaneously active, often
+converging on overlapping segments of the road network from different
+origins and with different destinations. Extending EMV prioritization
+to a genuinely multi-vehicle setting therefore requires the framework
+to reason jointly about several time-critical routes rather than
+optimizing each one in isolation.
+
+We propose to model the multi-EMV routing problem as a joint
+optimization over a set of active emergency vehicles
+$\mathcal{E} = \{e_1, e_2, \dots, e_K\}$, each associated with a
+current position, a destination, and a priority class (for example,
+life-threatening medical emergency versus structural fire response).
+At each decision step, the framework must determine (i) a preferred
+route for every active emergency vehicle through the signalized
+network, and (ii) how to allocate green-phase priority at any
+intersection that lies on more than one emergency vehicle's preferred
+route. This second requirement is the central new difficulty relative
+to single-EMV routing: when two emergency vehicles approach the same
+intersection from conflicting directions within a short time window,
+granting unconditional priority to both is physically impossible, and
+the controller must instead arbitrate based on factors such as
+estimated time-to-intersection, remaining distance to destination, and
+priority class.
+
+We envision extending the existing Meta-Policy/Sub-Policy hierarchy so
+that each active emergency vehicle contributes an additional,
+time-decaying bias term to the regional and intersection-level state
+representations along its anticipated route, rather than introducing a
+wholly separate routing module. Conceptually, this bias term would
+increase in magnitude as an emergency vehicle approaches a given
+intersection and decay once it has passed, so that the learned
+Sub-Policy naturally favors clearing a path ahead of an approaching
+emergency vehicle while reverting to its ordinary efficiency/fairness
+trade-off once the vehicle has moved on. Coordination across
+subregions, needed when an emergency vehicle's route crosses several
+Louvain-derived subregions in sequence, would be handled by the
+Meta-Policy, which is already responsible for issuing cross-regional
+guidance.
+
+Resolving conflicts between multiple simultaneously active emergency
+vehicles is expected to require an explicit arbitration rule layered
+on top of this bias mechanism --- for instance, prioritizing the
+vehicle with the least estimated time-to-intersection, breaking ties
+by priority class, and bounding the maximum delay that can be imposed
+on a lower-priority emergency vehicle so that no single vehicle is
+perpetually deprioritized in favor of others. The corresponding
+evaluation methodology would extend the single-EMV response-time
+metrics used elsewhere in this work (e.g., average and 95th-percentile
+emergency waiting time) to the multi-vehicle case by additionally
+reporting the spread of response-time improvements across all active
+emergency vehicles, so that the framework can be shown to accelerate
+every emergency vehicle's passage and not merely the one considered by
+the controller to be of highest priority.
+
+Finally, we note that a multi-EMV setting also changes how the
+framework's fairness objective (Section~\ref{subsec3-3}) should be
+interpreted: granting priority to emergency vehicles necessarily
+imposes additional waiting time on ordinary traffic, and this
+additional cost must be distributed across the network rather than
+concentrated on whichever ordinary vehicles happen to be sharing a
+road segment with an active emergency-vehicle corridor at a given
+moment. This interaction between multi-EMV routing and the fairness
+reward is left as an open design question to be resolved in the full
+version of this section.
+
+% ---------------------------------------------------------------
+% 3.3 FAIRNESS AND ACCIDENTAL CONGESTION CONTROL
+% ---------------------------------------------------------------
+
+\subsection{Fairness and Accidental Congestion Control}\label{subsec3-3}
+
+\textit{[Placeholder section --- content below is draft filler to be
+expanded with the final methodology, equations, and figures.]}
+
+Traffic-signal controllers optimized purely for network-wide
+efficiency metrics, such as average travel time or average delay, can
+produce policies that are efficient in aggregate yet highly inequitable
+at the level of individual approaches or vehicles. A controller may,
+for instance, learn to sacrifice one chronically low-priority approach
+in order to keep throughput high on the network's dominant corridors,
+resulting in a small subset of vehicles experiencing persistent,
+disproportionate waiting times even while the network-wide average
+delay looks acceptable. The fairness component of the proposed
+framework is intended to make this trade-off explicit and controllable
+rather than an incidental by-product of reward design.
+
+We plan to quantify fairness along several complementary axes: the
+variance of waiting times across approaches at a given intersection,
+the maximum (tail) waiting time experienced by any single approach,
+and Jain's Fairness Index computed over per-approach or per-vehicle
+service levels. Unlike a single scalar efficiency term, these measures
+are each sensitive to a different failure mode --- variance captures
+persistent imbalance between approaches, the tail-waiting-time penalty
+specifically targets starvation of the worst-served approach, and
+Jain's index provides a normalized, scale-independent summary of
+overall equity that can be tracked and compared across scenarios and
+partitioning methods. An ``envy'' term, comparing each intersection's
+service level against that of its neighboring intersections, is
+further intended to discourage locally greedy policies that improve
+one intersection's performance strictly at a neighbor's expense ---
+directly relevant to the Louvain-based regional decomposition of
+Section~\ref{subsec3-1}, since poorly balanced subregions could
+otherwise induce exactly this kind of neighbor-level inequity.
+
+A second, largely orthogonal concern addressed by this subsection is
+robustness to \textbf{accidental congestion}: collisions, breakdowns,
+and other unplanned incidents that suddenly and sharply reduce the
+effective capacity of one or more road segments. Conventional traffic
+signal controllers are typically trained and evaluated exclusively
+under nominal demand conditions, and so may respond poorly when a
+lane or approach is unexpectedly blocked, continuing to allocate green
+time as though the obstructed segment retained its usual capacity. We
+intend to address this by exposing the controller to a representative
+distribution of injected incidents during training --- varying in
+location, duration, and severity --- so that the learned Sub-Policy
+and Meta-Policy learn to detect the resulting shift in local traffic
+statistics (e.g., a sudden rise in queue length or a collapse in mean
+speed on an otherwise normal approach) and reallocate green time
+accordingly, rather than requiring a separate, hand-engineered
+incident-detection and override layer.
+
+We additionally plan to evaluate whether accident-aware training
+degrades the framework's fairness guarantees: an incident response
+that simply redirects all available green time toward the obstructed
+approach could, in principle, starve unrelated approaches elsewhere in
+the network. The evaluation methodology for this subsection will
+therefore report fairness metrics (variance of waiting time, tail
+waiting time, Jain's index) separately for incident and incident-free
+simulation intervals, to confirm that the controller's response to
+accidental congestion does not come at the cost of the equity
+objectives established earlier in this section. Together with the
+multi-EMV routing extension of Section~\ref{subsec3-2}, this
+completes the three methods --- scalable graph-based regional
+decomposition, coordinated multi-emergency-vehicle routing, and
+fairness-aware, incident-robust congestion control --- that constitute
+the proposed FairLight framework.
+
+
+% ===============================================================
 % MULTI-OBJECTIVE REWARD FUNCTION
 % ===============================================================
 
