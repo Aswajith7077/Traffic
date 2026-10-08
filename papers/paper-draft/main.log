@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.28)  8 OCT 2026 15:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.28)  8 OCT 2026 15:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -544,28 +544,28 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [4] [5] [6] [7] [8] [9] [10] [11] [12]
-Underfull \hbox (badness 1418) in paragraph at lines 1362--1368
+Underfull \hbox (badness 1418) in paragraph at lines 1337--1343
 \T1/cmr/m/n/10.95 scale Traf-fic Sig-nal Con-trol,'' \T1/cmr/m/it/10.95 IEEE Tr
 ans-ac-tions on In-tel-li-gent Trans-porta-tion Sys-tems\T1/cmr/m/n/10.95 , 201
 9,
  []
 
-[13] [14] [15] (./main.aux)
+[13] [14] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3F8E453212872B56C50C8990BDFF837A;4138.
+(rerunfilecheck)             Checksum: 1BC7272B92938373A8BB58611BAD970E;3856.
  ) 
 Here is how much of TeX's memory you used:
- 13461 strings out of 469438
- 200908 string characters out of 5468410
- 632144 words of memory out of 5000000
- 41827 multiletter control sequences out of 15000+600000
+ 13457 strings out of 469438
+ 200857 string characters out of 5468410
+ 632070 words of memory out of 5000000
+ 41825 multiletter control sequences out of 15000+600000
  645138 words of font info for 83 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 75i,10n,79p,541b,579s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,10n,79p,541b,574s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/aswajiths/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1095
 .600pk> </home/aswajiths/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ecr
 m0800.600pk> </home/aswajiths/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/e
@@ -588,10 +588,10 @@ msfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm1
 0.pfb>
-Output written on main.pdf (15 pages, 299611 bytes).
+Output written on main.pdf (14 pages, 298608 bytes).
 PDF statistics:
- 867 PDF objects out of 1000 (max. 8388607)
- 352 compressed objects within 4 object streams
- 105 named destinations out of 1000 (max. 500000)
- 153 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 859 PDF objects out of 1000 (max. 8388607)
+ 345 compressed objects within 4 object streams
+ 103 named destinations out of 1000 (max. 500000)
+ 145 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -995,31 +995,6 @@ adapt its regional abstraction to different road networks while
 retaining a shared local control mechanism and a global coordination
 signal.
 
-% ---------------------------------------------------------------
-% 3.11 FAIRNESS AS AN EXTENSION OF THE FRAMEWORK
-% ---------------------------------------------------------------
-
-\subsection{Fairness as an Extension of the Framework}\label{subsec3-11}
-
-Fairness is a principal motivation of FairLight because network-level
-aggregate objectives can conceal persistent starvation of individual
-intersections or vehicles. The current implementation already provides
-instrumentation for Jain's fairness index and additional waiting-time
-measurements; however, these fairness terms are \textbf{not currently
-included in the optimization loss}. The active training objective
-consists of the local efficiency reward and the Meta-Policy
-goal-alignment term.
-
-Accordingly, fairness is treated in the present implementation as an
-evaluation and future optimization dimension rather than being
-represented as an active component of the learned reward. Incorporating
-waiting-time variance, tail waiting time, Jain's fairness index, and
-envy-based penalties into the trajectory reward constitutes a natural
-extension of the proposed hierarchical framework. This distinction
-ensures that the proposed architecture remains consistent with the
-implemented system while providing a clear path toward the full
-fairness-aware formulation.
-
 
 % ===============================================================
 % MULTI-OBJECTIVE REWARD FUNCTION
