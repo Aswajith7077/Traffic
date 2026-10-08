@@ -49,10 +49,19 @@ class ActorCritic(nn.Module):
             nn.Linear(branch_hidden, branch_hidden),
         )
 
-    def forward(self, state):
+    def forward(self, state, action_mask=None):
+        """action_mask: optional (..., action_dimension) bool tensor, True where that
+        raw action index maps to a real phase for that intersection. Needed because a
+        single shared head is reused across intersections with different phase counts
+        (see TraciService.get_action_mask) — without it, indices beyond an
+        intersection's real phase count get probability mass with nowhere valid to go.
+        """
         shared_feature = self.shared(state)  # no activation after the last shared layer (Table 6)
 
-        action_prob = F.softmax(self.actor(shared_feature), dim=-1)
+        logits = self.actor(shared_feature)
+        if action_mask is not None:
+            logits = logits.masked_fill(~action_mask, float("-inf"))
+        action_prob = F.softmax(logits, dim=-1)
 
         branch1 = F.relu(self.critic_branch1(shared_feature))
         partial = shared_feature[..., : self.partial_dim]

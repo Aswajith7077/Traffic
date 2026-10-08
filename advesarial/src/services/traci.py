@@ -173,6 +173,20 @@ class TraciService:
 
             self.valid_phases[tls_id] = v
 
+    def get_action_mask(self, num_actions):
+        """(len(tls_ids), num_actions) bool mask: True at raw indices [0, num_phases)
+        for that intersection. A single shared actor head (fixed num_actions) is reused
+        across intersections with different real phase counts; without masking,
+        `action % num_phases` aliases several raw indices onto the same real phase,
+        and a policy that settles on an aliased index can hold one phase forever."""
+
+        mask = torch.zeros((len(self.tls_ids), num_actions), dtype=torch.bool)
+        for row, tls_id in enumerate(self.tls_ids):
+            n = min(len(self.valid_phases[tls_id]), num_actions)
+            mask[row, :n] = True
+
+        return mask
+
     def __initialize_traci_state(self):
         self.__build_valid_phases()
         intersections = self.tls_ids
@@ -227,7 +241,11 @@ class TraciService:
         """
         valid_phases = self.valid_phases[tls_id]
         num_phases = len(valid_phases)
-        safe_phase = valid_phases[action % num_phases]
+        # `action` comes from a masked softmax (see get_action_mask) so it should
+        # already be < num_phases; clamp instead of wrapping (`% num_phases`) as
+        # defense-in-depth so an out-of-range action can't alias onto an unintended
+        # real phase.
+        safe_phase = valid_phases[min(action, num_phases - 1)]
 
         current_phase = traci.trafficlight.getPhase(tls_id)
 

@@ -1946,3 +1946,33 @@ Latest Sub L_AC: 3035.7424
 Latest Alignment Loss: -441.8290
 Latest Reward: -2.8061
 
+--- Evaluation Snapshot: 20260917_142013 ---
+Scenario: cologne8
+Cluster Method: manual_clustering
+Evaluating Model: /home/aswajiths/Documents/Traffic/models/cologne8/run_20260914_205806_3533
+Total Steps Evaluated: 3600
+Completed Vehicles: 1127
+Average Queue Length: 618.43 vehicles
+Average Waiting Time: 20.43 seconds
+Average Travel Time (ATT): 324.83 seconds
+Average Delay Time (ADT): 264.64 seconds
+Peak Total Queue Length: 1100.00 vehicles
+
+--- Training Snapshot: cologne8 run_10 ---
+Cluster Method: manual_clustering
+Episode: 10
+Steps taken: 36000
+Latest Meta Loss: 17134.5996
+Latest Sub L_AC: 3159.7102
+Latest Alignment Loss: -6.1547
+Latest Reward: 0.5836
+
+--- Training Snapshot: cologne8 run_20 ---
+Cluster Method: manual_clustering
+Episode: 20
+Steps taken: 72000
+Latest Meta Loss: 39835576.0000
+Latest Sub L_AC: 2150.4336
+Latest Alignment Loss: 2940.1521
+Latest Reward: -0.3563
+

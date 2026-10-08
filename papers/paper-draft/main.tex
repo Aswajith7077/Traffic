@@ -1,0 +1,902 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===============================================================
+% PACKAGES
+% ===============================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{manyfoot}
+\usepackage{booktabs}
+
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage[
+    left=1.5cm,
+    right=1.5cm,
+    top=2cm,
+    bottom=2cm
+]{geometry}
+
+% ===============================================================
+% HYPERREF SETUP
+% ===============================================================
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+% ===============================================================
+% THEOREM ENVIRONMENTS
+% ===============================================================
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+% ===============================================================
+% DOCUMENT SETTINGS
+% ===============================================================
+
+\raggedbottom
+
+% ===============================================================
+% TITLE
+% ===============================================================
+
+\title{
+    \textbf{
+    FairLight: City-Wide Emergency Vehicle Route Prioritization
+    via Envy-Free Hierarchical Multi-Agent Actor--Critic
+    }
+}
+
+\author{
+    First Author$^{1,2}$\\
+    \texttt{iauthor@gmail.com}
+    \and
+    Second Author$^{2,3}$\\
+    \texttt{iiauthor@gmail.com}
+    \and
+    Third Author$^{1,2}$\\
+    \texttt{iiiauthor@gmail.com}
+}
+
+\date{}
+
+% ===============================================================
+% DOCUMENT
+% ===============================================================
+
+\begin{document}
+
+\maketitle
+
+% ===============================================================
+% ABSTRACT
+% ===============================================================
+
+\begin{abstract}
+
+Urban traffic signal control is a complex sequential decision-making
+problem in which decisions made at one intersection can influence
+traffic conditions at neighboring and downstream intersections. The
+problem becomes increasingly challenging as the size of the road
+network grows because a controller must simultaneously achieve
+network-level coordination, local responsiveness, and computational
+scalability. Reinforcement learning has emerged as a promising approach
+for adaptive traffic signal control, while multi-agent reinforcement
+learning (MARL) allows control to be distributed among individual
+intersections. However, fully decentralized approaches may lack
+sufficient global context, whereas centralized approaches become
+difficult to scale.
+
+This paper proposes \textbf{FairLight}, a \textbf{Hierarchical
+Region-Aware Multi-Agent Reinforcement Learning framework for Fair and
+Adaptive Traffic Signal Control}. The framework introduces a regional
+abstraction between
+network-level coordination and intersection-level decision-making.
+The traffic network is partitioned using graph community detection.
+Regional traffic states are subsequently processed by a high-level
+Meta-Policy using spatial and temporal representations, while low-level
+intersection agents use local observations, neighboring information,
+and regional guidance to select signal actions.
+
+A central feature of the proposed framework is the explicit treatment
+of \textbf{fairness as a traffic-control objective}. Conventional
+evaluation based only on average delay, average travel time, or
+throughput can hide excessive delays experienced by a smaller group of
+vehicles. The proposed framework therefore incorporates
+vehicle-level waiting-time distribution, maximum waiting time, tail
+waiting time, and Jain's fairness index into optimization and
+evaluation. A multi-objective reward function jointly considers traffic
+efficiency, fairness, and emergency responsiveness.
+
+The framework also treats \textbf{region construction as part of the
+research problem rather than merely a preprocessing step}. DBSCAN,
+Louvain, Leiden, and hybrid region construction methods are
+investigated to determine how the choice of regional abstraction
+affects downstream traffic-control performance.
+
+\noindent\textbf{Keywords:}
+Traffic Signal Control,
+Multi-Agent Reinforcement Learning,
+Emergency Vehicle Routing,
+Community Detection,
+Louvain Algorithm,
+Fairness-Aware Optimization,
+Hierarchical Reinforcement Learning
+
+\end{abstract}
+
+
+% ===============================================================
+% INTRODUCTION
+% ===============================================================
+
+\section{Introduction}\label{sec1}
+
+Urban traffic signal control is a complex sequential decision-making
+problem where decisions at one intersection propagate to neighboring
+and downstream intersections. Traffic demand varies dynamically with
+time, incidents, weather, and travel patterns, making static or
+rule-based controllers insufficient for real-world conditions.
+Adaptive systems such as SCOOT introduced traffic-responsive
+coordination \cite{scoot}, while reinforcement learning approaches
+have since enabled data-driven signal control
+\cite{intellight}. Multi-agent reinforcement learning (MARL) further
+distributes control across intersections, improving scalability,
+though fully decentralized approaches risk optimizing locally at the
+expense of network-wide coordination \cite{thousandlights,ma2c}.
+
+Beyond aggregate congestion, traffic signal decisions simultaneously
+affect travel time, delay, queue formation, throughput, fuel
+consumption, and emissions. Critically, evaluating controllers solely
+through aggregate metrics such as average waiting time conceals how
+service is distributed among individual vehicles. Consider two
+controllers with vehicle waiting times
+$W_A = [10, 10, 10, 10, 10, 100]$ and
+$W_B = [25, 25, 25, 25, 25, 25]$: Controller~A achieves a lower mean
+delay yet inflicts severe starvation on one vehicle. This motivates
+fairness as a first-class control objective rather than a post-hoc
+evaluation criterion.
+
+A further dimension of real-world uncertainty that existing MARL
+frameworks largely overlook is the presence of emergency vehicles
+(EMVs). Most traffic signal control approaches, including hierarchical
+methods such as HiLight~\cite{hilight} and cooperative approaches such
+as CoLight~\cite{colight}, assume homogeneous vehicle populations and
+optimize purely for aggregate efficiency. In practice, ambulances,
+fire engines, and police vehicles impose stochastic, high-priority
+demands on the network that cannot be resolved by ordinary signal
+timing. Delayed EMV passage has measurable consequences: studies
+report approximately 700 annual fatalities attributable to late
+ambulance responses, and an estimated annual mean of 4{,}500
+ambulance-involved crashes in the United States
+\cite{nellore2016}. EMVLight demonstrated that jointly optimizing EMV
+routing and adaptive signal control within a multi-agent actor-critic
+framework substantially reduces emergency response times
+\cite{emvlight}, but does not address hierarchical city-wide
+coordination or fairness. These considerations establish EMV
+responsiveness as a necessary component of any realistic traffic
+management framework, not an optional extension. At the same time,
+providing unrestricted priority to an EMV may excessively delay
+ordinary traffic, potentially transferring congestion to other parts
+of the network rather than resolving it. EMV prioritization should
+therefore not be treated as an isolated intersection-level problem: it
+requires coordination across the surrounding traffic network while
+maintaining acceptable service for non-emergency vehicles.
+
+Hierarchical reinforcement learning addresses the
+scalability--coordination tradeoff by separating long-horizon
+strategic decisions from short-horizon local control
+\cite{feudalhrl,hirol}. HiLight is particularly relevant here,
+employing a Meta-Policy with Transformer-based spatial and LSTM-based
+temporal modelling to coordinate decentralized Sub-Policy agents
+across large networks~\cite{hilight}. However, its region
+partitioning is treated as a preprocessing artifact rather than a
+control-relevant variable, and it neither incorporates EMV priority
+nor vehicle-level fairness.
+
+This paper proposes \textbf{FairLight: City-Wide Emergency Vehicle
+Route Prioritization}, an \textbf{Envy-Free Hierarchical Multi-Agent
+Actor-Critic} framework that jointly addresses these limitations.
+The framework partitions the traffic network using graph community
+detection methods (DBSCAN, Louvain, Leiden, and hybrid variants),
+treating region construction as a research variable whose effect on
+downstream control performance is explicitly investigated. A
+hierarchical coordination layer issues regional guidance to local
+intersection agents, while a multi-objective reward function
+simultaneously optimizes traffic efficiency, vehicle-level fairness,
+and EMV responsiveness. To the best of our
+knowledge, no existing framework jointly integrates hierarchical MARL,
+topology-aware regional partitioning, envy-free fairness optimization,
+and dynamic multi-EMV routing within a unified city-wide architecture.
+
+
+% ===============================================================
+% RELATED WORK
+% ===============================================================
+
+\section{Related Work}\label{sec2}
+
+Conventional traffic signal control has primarily relied on analytical
+optimization and rule-based methods for determining optimal signal
+timings. Webster's signal timing formulation introduced one of the
+earliest mathematical models for fixed-cycle traffic signal
+optimization, while later adaptive traffic control systems such as
+SCOOT and SCATS dynamically adjusted signal timings using detector-based
+traffic measurements and predefined control strategies
+\cite{webster1958,scoot,scats,opac}. Max-pressure control further
+improved network throughput by selecting signal phases according to
+queue pressure differences between incoming and outgoing links
+\cite{maxpressure}. Although these approaches are computationally
+efficient and have been successfully deployed in practice, they rely
+heavily on predefined traffic models and handcrafted optimization
+rules. Consequently, they struggle to adapt to highly dynamic urban
+environments involving unpredictable congestion, heterogeneous
+intersections, accidents, and emergency vehicle requests.
+
+To improve adaptability, several optimization and machine learning
+techniques have been introduced for traffic signal control.
+Evolutionary optimization methods such as Genetic Algorithms optimize
+signal timing plans through iterative search, while Fuzzy Logic
+Controllers employ expert-defined rules to respond to uncertain
+traffic conditions \cite{genetic,fuzzy}. Later studies adopted machine
+learning techniques including Support Vector Machines, Artificial
+Neural Networks, and Long Short-Term Memory (LSTM) networks to predict
+traffic flow and congestion using historical observations
+\cite{anntraffic,svmtraffic,lstmtraffic}. Although these methods
+improve prediction accuracy and optimization quality, they primarily
+estimate future traffic states rather than learning sequential traffic
+control policies. Furthermore, they require extensive historical
+training data and cannot continuously adapt to rapidly changing
+traffic conditions.
+
+Recent advances in deep reinforcement learning have significantly
+improved adaptive traffic signal control by enabling traffic
+controllers to learn directly through interaction with the traffic
+environment. IntelliLight demonstrated the effectiveness of Deep
+Q-Networks for adaptive traffic signal control at isolated
+intersections \cite{intellight}. PressLight integrated max-pressure
+traffic theory into deep reinforcement learning to maximize traffic
+throughput while reducing handcrafted reward engineering
+\cite{presslight}. FRAP modeled traffic control as a phase competition
+problem and exploited traffic phase symmetry to improve learning
+efficiency \cite{frap}. AttendLight later introduced an
+attention-based architecture capable of generalizing across
+heterogeneous intersections with varying lane configurations
+\cite{attendlight}. MetaLight focused on transferring learned
+policies across unseen intersections \cite{metalight}, while
+Advanced-XLight demonstrated that effective traffic state
+representation can significantly influence performance in
+reinforcement-learning-based traffic signal control
+\cite{advancedxlight}. Despite these advances, existing deep
+reinforcement learning methods primarily optimize local traffic
+efficiency and do not jointly consider emergency vehicle
+prioritization, fairness, or large-scale hierarchical coordination.
+
+To improve cooperation among multiple intersections, graph neural
+networks and multi-agent reinforcement learning have received
+increasing attention. CoLight introduced graph attention networks to
+enable communication among neighboring intersections for cooperative
+traffic signal control \cite{colight}. MPLight further improved
+scalability by introducing parameter sharing across reinforcement
+learning agents, allowing efficient deployment over city-scale
+transportation networks \cite{mplight}. HiLight extended this concept
+by proposing a hierarchical reinforcement learning framework
+consisting of Meta-Policy and Sub-Policy agents for coordinating
+thousands of intersections efficiently \cite{hilight}. CityFlow
+provides a large-scale multi-agent reinforcement learning environment
+designed specifically for city traffic scenarios and supports
+evaluation of scalable traffic-control algorithms \cite{cityflow}.
+Although these methods substantially improve scalability and
+inter-agent cooperation, their primary objective remains maximizing
+traffic efficiency. They neither address emergency vehicle routing
+nor incorporate fairness-aware resource allocation across different
+regions of a city.
+
+HiLight's hierarchical Meta-Policy/Sub-Policy formulation
+\cite{hilight}, like most of the methods discussed above, operates
+under a closed-world assumption: it is trained and evaluated on
+recurrent congestion patterns and does not model non-recurrent
+disruptions such as emergency vehicle preemption or traffic
+incidents. This omission is not merely conceptual. Poorly coordinated
+EMV preemption has been shown to increase average delay for
+cross-traffic by 18--32 seconds per vehicle per preemption event, with
+these localized delays cascading into network-wide congestion
+\cite{dtpreemption}. Even well-established preemption strategies carry
+a measurable efficiency cost: EMVLight's own evaluation shows that
+traditional preemption techniques increase average non-EMV travel
+time by approximately 10\% relative to unpreempted baselines
+\cite{emvlight}. These results indicate that emergency vehicle
+disruption is a first-order cost of operating a real traffic network,
+not a negligible edge case that a closed-world controller can safely
+ignore. Motivated by this, our framework treats EMVs and accident
+events as first-class constraints on the control problem rather than
+external events layered on top of it, at the cost of an increase in
+average travel time and delay relative to a disruption-free
+benchmark---a cost we treat as the price of a tighter approximation to
+real-world operating conditions.
+
+Emergency vehicle routing and traffic signal pre-emption have also
+received considerable research attention. Conventional emergency
+routing methods generally employ shortest-path algorithms such as
+Dijkstra's algorithm, A*, and various time-dependent shortest path
+formulations to determine optimal routes under static or partially
+dynamic traffic conditions
+\cite{dijkstraemv,astar,tdsp,dynamicrouting,miprouting}. More recent
+studies have introduced reinforcement learning-based routing
+strategies capable of adapting to changing traffic environments
+\cite{rlrouting}. EMVLight jointly optimizes emergency vehicle routing
+and adaptive traffic signal control using multi-agent actor--critic
+reinforcement learning, significantly reducing emergency response
+times while maintaining acceptable traffic efficiency for ordinary
+vehicles \cite{emvlight}. Subsequently, hierarchical multi-agent
+actor--critic methods have been proposed to further improve emergency
+routing through coordinated traffic signal control
+\cite{hierarchicalemv}. However, existing emergency traffic management
+approaches generally assume decentralized coordination and do not
+explicitly consider fairness, topology-aware regional decomposition,
+or simultaneous optimization for multiple emergency vehicles
+operating within large urban transportation networks. Visual
+sensing-based approaches have further demonstrated that incorporating
+real-time distance measurement and vehicle counting into traffic
+management can substantially improve EMV scheduling and intersection
+clearance \cite{nellore2016}.
+
+Fairness has recently emerged as an important objective in intelligent
+transportation systems. FairMARL introduced a fairness-aware
+multi-agent reinforcement learning framework based on generalized
+social welfare functions to reduce disparities among intersections
+while maintaining competitive traffic efficiency \cite{fairmarl}.
+Although fairness-aware optimization improves equitable resource
+allocation, existing approaches primarily focus on balancing
+intersection delays and do not integrate emergency vehicle routing,
+hierarchical coordination, or topology-aware traffic management into
+a unified framework.
+
+Overall, significant progress has been achieved in analytical
+optimization, deep reinforcement learning, graph-based coordination,
+emergency vehicle routing, and fairness-aware traffic signal control.
+However, these objectives have largely been investigated independently.
+Classical optimization methods lack adaptability, deep reinforcement
+learning approaches prioritize traffic efficiency over fairness,
+graph-based coordination methods do not explicitly support emergency
+response, emergency vehicle routing methods overlook hierarchical
+city-wide coordination, and fairness-aware methods ignore emergency
+traffic management.
+
+To the best of our knowledge, no existing framework jointly integrates
+\textbf{hierarchical multi-agent reinforcement learning,
+topology-aware regional partitioning, envy-free fairness optimization,
+and dynamic multi-emergency vehicle routing} within a unified
+city-wide traffic management architecture. The proposed framework,
+\textbf{FairLight}, addresses these limitations by introducing an
+\textbf{Envy-Free Hierarchical Multi-Agent Actor--Critic} architecture
+that simultaneously optimizes traffic efficiency, fairness, emergency
+response, and scalable coordination across heterogeneous urban
+transportation networks.
+
+
+% ===============================================================
+% MULTI-OBJECTIVE REWARD FUNCTION
+% ===============================================================
+
+\section{Multi-Objective Reward Function Design}
+
+An effective traffic signal controller must optimize multiple
+objectives simultaneously rather than maximizing traffic throughput
+alone. Conventional reinforcement learning approaches primarily
+optimize queue lengths or average waiting times, often producing
+policies that systematically disadvantage certain intersections,
+neglect pedestrian requirements, and fail to prioritize emergency
+vehicles adequately. To address these limitations, we design a
+multi-objective reward function that jointly optimizes traffic
+efficiency, fairness, and emergency vehicle priority.
+
+The overall reward at each decision step is defined as
+
+\begin{equation}
+R_{\text{total}}
+=
+\frac{4}{9}R_{\text{eff}}
++
+\frac{2}{9}R_{\text{fair}}
++
+\frac{3}{9}R_{\text{emergency}},
+\end{equation}
+
+where each component corresponds to a distinct traffic management
+objective.
+
+\subsubsection*{Traffic Efficiency Reward}
+
+The efficiency component encourages continuous improvement in network
+performance by rewarding reductions in congestion rather than
+rewarding only low congestion states. It is defined as
+
+\begin{equation}
+R_{\text{eff}}
+=
+-\beta_1 \Delta Q
+-\beta_2 \Delta W
++
+L_{\text{avg}},
+\end{equation}
+
+where $\Delta Q$ denotes the change in total queue length between
+successive decision steps, $\Delta W$ represents the change in
+cumulative vehicle waiting time, and $L_{\text{avg}}$ is the average
+local throughput reward aggregated across all intersections. The
+coefficients $\beta_1$ and $\beta_2$ determine the relative importance
+assigned to queue reduction and waiting-time reduction.
+
+Unlike conventional reward formulations based solely on absolute queue
+lengths, the use of temporal differences provides denser learning
+signals by rewarding measurable improvements between consecutive time
+steps. This enables faster convergence while encouraging policies that
+continuously reduce congestion.
+
+\subsubsection*{Fairness Reward}
+
+Optimizing only traffic efficiency frequently results in certain
+approaches receiving excessively long red phases, leading to
+persistent vehicle starvation. To ensure equitable service across the
+network, a fairness reward is incorporated:
+
+\begin{equation}
+\begin{aligned}
+R_{\text{fair}}
+={}&
+-0.3\,\mathrm{Var}(W)
+-0.25\max(W-90,0)
+-0.15(1-J)\\
+&-0.5\,\mathrm{Envy}
+-0.5\max(W_{\text{ped}})
+-1.2C_{\text{ped}}.
+\end{aligned}
+\end{equation}
+
+where $\mathrm{Var}(W)$ is the variance of vehicle waiting times,
+$J$ denotes Jain's Fairness Index, $\mathrm{Envy}$ represents the
+difference between the best-performing neighboring intersection and
+the current intersection, $W_{\text{ped}}$ is pedestrian waiting
+time, and $C_{\text{ped}}$ measures pedestrian--vehicle conflicts.
+
+Each penalty addresses a different source of inequity. Waiting-time
+variance promotes balanced service among approaches, the starvation
+penalty prevents excessively long delays, Jain's Fairness Index
+encourages equitable signal allocation, the envy term discourages
+local policies that sacrifice one intersection for another, while
+pedestrian waiting and conflict penalties ensure that pedestrian
+mobility and safety are jointly optimized with vehicular traffic.
+
+\subsubsection*{Emergency Vehicle Reward}
+
+Emergency vehicles require substantially higher priority than regular
+traffic because delays directly affect emergency response times.
+Their reward component is therefore defined as
+
+\begin{equation}
+R_{\text{emergency}}
+=
+-W_{\text{emergency}},
+\end{equation}
+
+where $W_{\text{emergency}}$ is the cumulative waiting time
+experienced by emergency vehicles. This formulation directly
+penalizes any delay encountered by ambulances, fire trucks, or police
+vehicles, encouraging the controller to allocate green phases
+immediately upon emergency vehicle detection.
+
+\subsubsection*{Reward Weight Selection}
+
+The weighting coefficients $(\frac{4}{9},\,\frac{2}{9},\,\frac{3}{9})$
+reflect the relative importance of each optimization objective.
+Traffic efficiency receives the highest weight because congestion
+reduction remains the primary objective of urban traffic signal
+control. Emergency vehicle priority is assigned the second-highest
+weight owing to its critical societal importance. Fairness receives
+the remaining weight to prevent pathological policies that
+consistently disadvantage particular intersections.
+
+Finally, the combined reward is normalized using an exponential
+moving average before being supplied to the reinforcement learning
+algorithm. Reward normalization reduces reward variance, improves
+numerical stability during training, and accelerates policy
+convergence.
+
+
+% ===============================================================
+% FUTURE WORKS
+% ===============================================================
+
+\section{Future Works}\label{sec6}
+
+\subsection{Enhanced Emergency Vehicle Routing}
+
+The routing mechanism presented in this work improves on EMVLight's
+reactive dynamic Dijkstra heuristic by integrating route planning
+into the hierarchical Meta-Policy. However, several directions remain
+open. At each Meta-Policy decision step, a candidate route set is
+generated from current regional pressure readings and the known
+destination, and sub-goals are issued to Sub-Policy agents along
+candidate corridors to reduce queue lengths before EMV arrival. This
+transforms routing from a two-horizon problem (current link and next
+link) into a multi-horizon planning problem aligned with the
+hierarchical structure. Future work will extend this to settings
+where the destination is unknown at dispatch time---for example, in
+mass-casualty events where the nearest available hospital is itself
+dynamically determined---and to scenarios with more than two
+simultaneously active EMVs whose corridors intersect repeatedly. The
+Louvain community structure provides a natural abstraction for
+corridor planning at the boundary level: because inter-community
+transitions represent sparse bottleneck links, the Meta-Policy can
+reason about sequences of community transitions rather than
+individual links, substantially reducing the planning horizon while
+preserving global routing awareness.
+
+\subsection{Envy-Free Traffic Control}
+
+The envy-free regularization introduced in this work operates within
+individual Louvain communities during training. Future work will
+investigate adaptive scheduling of $\lambda_e$ across training:
+starting with a high efficiency weight and gradually increasing the
+fairness weight as the policy matures may accelerate convergence
+while preserving equity in the final policy. Additionally, the
+definition of envy used here is pairwise and local; extending it to
+group envy---where a set of intersections collectively prefers
+another group's allocation---would capture more subtle structural
+inequities in large networks. The interaction between the envy-free
+penalty and the EMV pre-emption reward also warrants further study:
+during active EMV passage, pre-emption agents and normal agents
+necessarily receive asymmetric rewards, and calibrating
+$\lambda_e$ dynamically based on EMV proximity could allow the
+system to temporarily suspend fairness constraints along the active
+corridor while preserving them network-wide.
+
+\subsection{Accident-Based Traffic Control on Real City Maps}
+
+The accident injection model used in this work assigns a fixed
+severity parameter $\kappa$ to each incident and samples accident
+locations according to a crash probability distribution derived from
+historical report data. Future work will model accidents with
+evolving severity: an initial partial blockage ($\kappa < 1$) that
+transitions to complete blockage ($\kappa = 1$) as secondary
+vehicles arrive and then gradually clears as the incident is
+resolved. This temporal evolution of supply disruption is a
+qualitatively harder problem for the Meta-Policy, requiring it to
+track incident lifecycle stages rather than treating each accident
+as a static constraint. Evaluation on the Coimbatore city map will be
+extended to multi-district scenarios in which accidents in one part
+of the city cascade congestion into adjacent zones, stressing the
+inter-community coordination capacity of the Meta-Policy. The
+combination of accident-induced rerouting, multiple active EMVs, and
+envy-free fairness enforcement represents the most realistic and
+demanding test scenario for the complete framework, and constitutes
+the primary experimental target for the next phase of this research.
+
+
+% ===============================================================
+% REFERENCES
+% ===============================================================
+
+\begin{thebibliography}{99}
+
+% ---------------------------------------------------------------
+% Conventional Traffic Signal Control
+% ---------------------------------------------------------------
+
+\bibitem{webster1958}
+F.~V. Webster,
+``Traffic Signal Settings,''
+Road Research Technical Paper No.~39,
+Road Research Laboratory, London, UK, 1958.
+
+\bibitem{scoot}
+P.~B. Hunt, D.~I. Robertson, R.~D. Bretherton, and R.~D. Winton,
+``SCOOT---A Traffic Responsive Method of Coordinating Signals,''
+TRRL Laboratory Report 1014,
+Transport and Road Research Laboratory, 1981.
+
+\bibitem{scats}
+A.~G. Sims and K.~W. Dobinson,
+``The Sydney Coordinated Adaptive Traffic System---
+Principles, Methodology, Algorithms,''
+in \textit{Proceedings of the International Conference on Road
+Traffic Signalling}, pp.~67--70, 1980.
+
+\bibitem{opac}
+N.~H.~Gartner,
+``OPAC: A Demand-Responsive Strategy for Traffic Signal Control,''
+\textit{Transportation Research Record},
+vol.~906, pp.~75--81, 1983.
+
+\bibitem{maxpressure}
+P.~Varaiya,
+``Max Pressure Control of a Network of Signalized Intersections,''
+\textit{Transportation Research Part C: Emerging Technologies},
+vol.~36, pp.~177--195, 2013.
+
+% ---------------------------------------------------------------
+% Optimization and Machine Learning
+% ---------------------------------------------------------------
+
+\bibitem{genetic}
+D.~E. Goldberg,
+\textit{Genetic Algorithms in Search, Optimization, and Machine
+Learning},
+Addison-Wesley, 1989.
+
+\bibitem{fuzzy}
+L.~A. Zadeh,
+``Fuzzy Logic,''
+\textit{Computer},
+vol.~21, no.~4, pp.~83--93, 1988.
+
+\bibitem{anntraffic}
+M.~J. Dougherty and R.~S. Cobbett,
+``A Neural Network Approach to the Prediction of Traffic Flow,''
+\textit{Transportation Research Part C},
+vol.~2, no.~1, pp.~1--17, 1994.
+
+\bibitem{svmtraffic}
+V.~N. Vapnik,
+\textit{The Nature of Statistical Learning Theory},
+Springer, 1995.
+
+\bibitem{lstmtraffic}
+S.~Hochreiter and J.~Schmidhuber,
+``Long Short-Term Memory,''
+\textit{Neural Computation},
+vol.~9, no.~8, pp.~1735--1780, 1997.
+
+% ---------------------------------------------------------------
+% Deep Reinforcement Learning for Traffic Signal Control
+% ---------------------------------------------------------------
+
+\bibitem{intellight}
+H.~Wei, G.~Zheng, H.~Yang, and Z.~Li,
+``IntelliLight: A Reinforcement Learning Approach for Intelligent
+Traffic Light Control,''
+in \textit{Proceedings of the 24th ACM SIGKDD International
+Conference on Knowledge Discovery \& Data Mining},
+pp.~2496--2505, 2018.
+
+\bibitem{presslight}
+H.~Wei, C.~Chen, G.~Zheng, K.~Wu, V.~Gayah, K.~Xu, and Z.~Li,
+``PressLight: Learning Max Pressure Control to Coordinate Traffic
+Signals in Arterial Network,''
+in \textit{Proceedings of the 25th ACM SIGKDD International
+Conference on Knowledge Discovery \& Data Mining},
+pp.~1290--1298, 2019.
+
+\bibitem{frap}
+C.~Zheng, Y.~Xie, H.~Wei, and Z.~Li,
+``Learning Phase Competition for Traffic Signal Control,''
+in \textit{Proceedings of the 28th International Joint Conference on
+Artificial Intelligence}, 2019.
+
+\bibitem{attendlight}
+A.~Oroojlooy, M.~Nazari, D.~Hajinezhad, and J.~Silva,
+``AttendLight: Universal Attention-Based Reinforcement Learning
+Model for Traffic Signal Control,''
+in \textit{Advances in Neural Information Processing Systems},
+vol.~33, 2020.
+
+\bibitem{metalight}
+H.~Wei, G.~Zheng, G.~Yao, and Z.~Li,
+``MetaLight: Value-Based Meta-Reinforcement Learning for Traffic
+Signal Control,''
+in \textit{Proceedings of the AAAI Conference on Artificial
+Intelligence}, 2019.
+
+\bibitem{advancedxlight}
+``Advanced-XLight: Advanced Traffic Signal Control with Deep
+Reinforcement Learning,''
+2020.
+
+% ---------------------------------------------------------------
+% Multi-Agent Reinforcement Learning and Graph Methods
+% ---------------------------------------------------------------
+
+\bibitem{colight}
+H.~Wei, N.~Xu, H.~Zheng, and Z.~Li,
+``CoLight: Learning Network-Level Cooperation for Traffic Signal
+Control,''
+in \textit{Proceedings of the 28th International Joint Conference on
+Artificial Intelligence},
+pp.~1405--1411, 2019.
+
+\bibitem{mplight}
+H.~Wei, G.~Zheng, H.~Yao, and Z.~Li,
+``MPLight: Efficient Multi-Agent Reinforcement Learning for
+Large-Scale Traffic Signal Control,''
+in \textit{Proceedings of the AAAI Conference on Artificial
+Intelligence}, 2020.
+
+\bibitem{ma2c}
+T.~Chu, J.~Wang, L.~Codec\`a, and Z.~Li,
+``Multi-Agent Deep Reinforcement Learning for Large-scale Traffic
+Signal Control,''
+\textit{IEEE Transactions on Intelligent Transportation Systems},
+2019,
+doi:10.1109/TITS.2019.2901791.
+
+\url{https://doi.org/10.1109/TITS.2019.2901791}
+
+\bibitem{thousandlights}
+C.~Chen, H.~Wei, N.~Xu, G.~Zheng, M.~Yang, Y.~Xiong, K.~Xu,
+and Z.~Li,
+``Toward A Thousand Lights: Decentralized Deep Reinforcement
+Learning for Large-Scale Traffic Signal Control,''
+\textit{Proceedings of the AAAI Conference on Artificial
+Intelligence},
+vol.~34, no.~04, pp.~3414--3421, 2020,
+doi:10.1609/aaai.v34i04.5744.
+
+\url{https://doi.org/10.1609/aaai.v34i04.5744}
+
+\bibitem{cityflow}
+H.~Zhang, S.~Feng, C.~Liu, Y.~Ding, Y.~Zhu, Z.~Zhou, W.~Zhang,
+Y.~Yu, H.~Jin, and Z.~Li,
+``CityFlow: A Multi-Agent Reinforcement Learning Environment for
+Large Scale City Traffic Scenario,''
+in \textit{Proceedings of the World Wide Web Conference},
+pp.~3620--3624, 2019,
+doi:10.1145/3308558.3314139.
+
+\url{https://doi.org/10.1145/3308558.3314139}
+
+\bibitem{feudalhrl}
+F.~Vezhnevets, S.~M.~Osindero, M.~P.~Schaul, R.~H.~Pascanu,
+R.~Heess, M.~Jaderberg, M.~W.~Czarnecki, and M.~S.~Rusu,
+``FeUdal Networks for Hierarchical Reinforcement Learning,''
+in \textit{Proceedings of the 34th International Conference on
+Machine Learning},
+pp.~3540--3549, 2017.
+
+\bibitem{hirol}
+S.~Nachum, S.~Gu, H.~Lee, and S.~Levine,
+``Data-Efficient Hierarchical Reinforcement Learning,''
+in \textit{Advances in Neural Information Processing Systems},
+vol.~31, 2018.
+
+\bibitem{hilight}
+Y.~Zhu, H.~Wen, G.~Min, and M.~Luo,
+``HiLight: A Hierarchical Reinforcement Learning Framework with
+Global Adversarial Guidance for Large-Scale Traffic Signal
+Control,''
+\textit{arXiv preprint arXiv:2506.14391}, 2025.
+
+\url{https://arxiv.org/abs/2506.14391}
+
+% ---------------------------------------------------------------
+% Emergency Vehicle Routing
+% ---------------------------------------------------------------
+
+\bibitem{dijkstraemv}
+E.~W. Dijkstra,
+``A Note on Two Problems in Connexion with Graphs,''
+\textit{Numerische Mathematik},
+vol.~1, pp.~269--271, 1959.
+
+\bibitem{astar}
+P.~E. Hart, N.~J. Nilsson, and B.~Raphael,
+``A Formal Basis for the Heuristic Determination of Minimum Cost
+Paths,''
+\textit{IEEE Transactions on Systems Science and Cybernetics},
+vol.~4, no.~2, pp.~100--107, 1968.
+
+\bibitem{tdsp}
+``Time-Dependent Shortest Path Methods for Dynamic Traffic
+Routing,''
+2020.
+
+\bibitem{dynamicrouting}
+``Dynamic Routing for Emergency Vehicles in Urban Transportation
+Networks,''
+2020.
+
+\bibitem{miprouting}
+``Mixed Integer Programming Approaches for Emergency Vehicle
+Routing,''
+2020.
+
+\bibitem{rlrouting}
+``Reinforcement Learning-Based Emergency Vehicle Routing,''
+2020.
+
+% ---------------------------------------------------------------
+% Emergency Vehicle Routing + Traffic Signal Control
+% ---------------------------------------------------------------
+
+\bibitem{emvlight}
+H.~Su, Y.~D.~Zhong, J.~Y.~J. Chow, B.~Dey, and L.~Jin,
+``EMVLight: A Multi-Agent Reinforcement Learning Framework for an
+Emergency Vehicle Decentralized Routing and Traffic Signal Control
+System,''
+\textit{Transportation Research Part C: Emerging Technologies},
+vol.~146, p.~103955, 2023.
+
+\url{https://doi.org/10.1016/j.trc.2022.103955}
+
+\bibitem{dtpreemption}
+H.~Su, H.~Deng, and Y.~Sun,
+``Emergency Preemption Without Online Exploration: A Decision
+Transformer Approach,''
+\textit{arXiv preprint arXiv:2603.22315}, 2026.
+
+\url{https://arxiv.org/abs/2603.22315}
+
+\bibitem{hierarchicalemv}
+``Hierarchical Multi-Agent Actor--Critic Emergency Routing and
+Traffic Signal Control,''
+2024.
+
+% ---------------------------------------------------------------
+% Fairness
+% ---------------------------------------------------------------
+
+\bibitem{fairmarl}
+``FairMARL: Fairness-Aware Multi-Agent Reinforcement Learning for
+Traffic Signal Control,''
+2024.
+
+% ---------------------------------------------------------------
+% EMV Visual Sensing
+% ---------------------------------------------------------------
+
+\bibitem{nellore2016}
+K.~Nellore and G.~P.~Hancke,
+``Traffic Management for Emergency Vehicle Priority Based on
+Visual Sensing,''
+\textit{Sensors},
+vol.~16, no.~11, p.~1892, 2016.
+
+\url{https://doi.org/10.3390/s16111892}
+
+% ---------------------------------------------------------------
+% Community Detection
+% ---------------------------------------------------------------
+
+\bibitem{blondel2008}
+V.~D.~Blondel, J.-L.~Guillaume, R.~Lambiotte, and R.~Lefebvre,
+``Fast Unfolding of Communities in Large Networks,''
+\textit{Journal of Statistical Mechanics: Theory and Experiment},
+vol.~2008, no.~10, p.~P10008, 2008.
+
+\bibitem{traag2019}
+V.~A.~Traag, L.~Waltman, and N.~J.~van Eck,
+``From Louvain to Leiden: Guaranteeing Well-Connected
+Communities,''
+\textit{Scientific Reports},
+vol.~9, no.~1, p.~5233, 2019.
+
+\end{thebibliography}
+
+\end{document}

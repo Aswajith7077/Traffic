@@ -53,6 +53,7 @@ class Trainer:
         self.environment = Environment(traci_service=self.traci_service)
         self.adjacency_list = self.traci_service.get_adjacency_list()
         self.intersections = self.traci_service.get_all_intersections()
+        self.action_mask = self.traci_service.get_action_mask(NUM_ACTIONS)
 
         raw_clusters = config.clusters
         tls_set = set(self.intersections)
@@ -173,7 +174,7 @@ class Trainer:
             new_log_probs, values, entropies = [], [], []
             for t in range(T):
                 final_state = self._encode_step(obs[t], f_g[t])
-                action_probs, value_t, _ = self.actor_critic(final_state)
+                action_probs, value_t, _ = self.actor_critic(final_state, action_mask=self.action_mask)
                 dist = Categorical(action_probs)
                 new_log_probs.append(dist.log_prob(actions[t]))
                 values.append(value_t.squeeze(-1))
@@ -218,7 +219,7 @@ class Trainer:
 
         with torch.no_grad():
             final_state = self._encode_step(obs, f_g)
-            action_probs, values, _ = self.actor_critic(final_state)
+            action_probs, values, _ = self.actor_critic(final_state, action_mask=self.action_mask)
             dist = Categorical(action_probs)
             action = dist.sample()
             log_prob = dist.log_prob(action)

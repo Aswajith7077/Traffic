@@ -66,7 +66,7 @@ def run_gui_simulation(model_dir, steps=3600, delay=50.0, config_path=None, verb
                 obs = trainer._normalize_obs(obs)
                 final_state = trainer._encode_step(obs, f_g)
 
-                action_prob, _, _ = trainer.actor_critic(final_state)
+                action_prob, _, _ = trainer.actor_critic(final_state, action_mask=trainer.action_mask)
                 action = torch.argmax(action_prob, dim=-1)
 
                 if verbose:
@@ -146,7 +146,7 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
                 obs = trainer._normalize_obs(obs)
                 final_state = trainer._encode_step(obs, f_g)
 
-                action_prob, _, _ = trainer.actor_critic(final_state)
+                action_prob, _, _ = trainer.actor_critic(final_state, action_mask=trainer.action_mask)
                 action = torch.argmax(action_prob, dim=-1)
 
                 if verbose:
