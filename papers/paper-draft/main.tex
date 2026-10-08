@@ -639,6 +639,387 @@ decomposition, coordinated multi-emergency-vehicle routing, and
 fairness-aware, incident-robust congestion control --- that constitute
 the proposed FairLight framework.
 
+% ---------------------------------------------------------------
+% 3.4 HIERARCHICAL ARCHITECTURE OVERVIEW
+% ---------------------------------------------------------------
+
+\subsection{Hierarchical Architecture Overview}\label{subsec3-4}
+
+The proposed FairLight framework addresses the scalability and
+coordination challenges of city-scale adaptive traffic signal control
+through a hierarchical multi-agent reinforcement learning
+architecture. A fully centralized controller becomes computationally
+expensive as the number of intersections increases, whereas
+independent intersection-level agents lack sufficient network-wide
+context to coordinate traffic across connected corridors. To address
+this trade-off, FairLight introduces an intermediate regional
+abstraction between network-level coordination and local signal
+control.
+
+The framework consists of four principal components: \textbf{(i)
+automatic regional construction, (ii) a network-level Meta-Policy,
+(iii) intersection-level Sub-Policies, and (iv) a safety-constrained
+signal execution layer}. Regional construction transforms the
+signalized road network into coherent traffic regions, the Meta-Policy
+extracts global spatial-temporal information and generates
+network-level control targets, and the Sub-Policies translate this
+global guidance into local phase decisions using intersection and
+neighborhood information. The resulting hierarchy is trained jointly
+using PPO with an adversarial goal-alignment mechanism.
+
+% ---------------------------------------------------------------
+% 3.5 TRAFFIC NETWORK REPRESENTATION AND AUTOMATIC REGIONALIZATION
+% ---------------------------------------------------------------
+
+\subsection{Traffic Network Representation and Automatic
+Regionalization}\label{subsec3-5}
+
+Manually decomposing a large urban road network into meaningful
+control regions is impractical because the number and connectivity of
+signalized intersections can vary substantially across networks.
+FairLight therefore represents the signalized road network as a
+weighted graph
+
+\begin{equation}
+G = (V, E),
+\end{equation}
+
+where each vertex $v_i \in V$ represents a signalized intersection and
+each edge $e_{ij} \in E$ represents the connectivity between two
+signalized intersections. Non-signalized junctions between traffic
+lights are contracted during graph construction so that the resulting
+graph directly represents the controllable signalized-intersection
+topology.
+
+The connectivity between intersections is characterized using a
+traffic-dependent edge weight rather than purely static topology. For
+an edge $e$, the implemented weighting function is
+
+\begin{equation}
+w_e = \alpha n_e + \beta \omega_e + \gamma \kappa_e n_e,
+\end{equation}
+
+where $n_e$ denotes the number of vehicles on the edge, $\omega_e$
+represents accumulated waiting time, and
+
+\begin{equation}
+\kappa_e =
+\operatorname{clip}\!\left(1 - \frac{v_e}{v_e^{\max}}, 0, 1\right)
+\end{equation}
+
+denotes the congestion ratio. The implementation uses $\alpha = 1.0$,
+$\beta = 0.3$, and $\gamma = 2.0$. These weights are averaged over a
+1000-step simulation window, allowing the regional structure to
+reflect persistent traffic interactions rather than a transient
+traffic state.
+
+The resulting weighted graph is partitioned into communities using
+graph community-detection methods. In particular, Louvain and Leiden
+identify communities by maximizing graph modularity,
+
+\begin{equation}
+Q = \frac{1}{2m}\sum_{i,j}
+\left(A_{ij} - \frac{k_i k_j}{2m}\right)
+\delta(c_i, c_j),
+\end{equation}
+
+where $A_{ij}$ is the weighted adjacency matrix, $k_i$ and $k_j$ are
+the weighted degrees of vertices $i$ and $j$, $m$ is the total edge
+weight, and $\delta(c_i, c_j)$ indicates whether the two vertices
+belong to the same community. DBSCAN and hybrid graph-density
+approaches are additionally supported, allowing regionalization itself
+to be evaluated as an experimental variable rather than treated as a
+fixed preprocessing choice.
+
+This regionalization produces a set of regions
+
+\begin{equation}
+\mathcal{R} = \{R_1, R_2, \ldots, R_M\},
+\end{equation}
+
+which forms the intermediate abstraction used by the hierarchical
+controller. Each region provides aggregated traffic information to the
+Meta-Policy, while individual intersections within the regions remain
+independently controllable by the Sub-Policies.
+
+% ---------------------------------------------------------------
+% 3.6 HIERARCHICAL META-POLICY
+% ---------------------------------------------------------------
+
+\subsection{Hierarchical Meta-Policy}\label{subsec3-6}
+
+The Meta-Policy provides network-level coordination by observing the
+temporal evolution of traffic conditions across the generated regions.
+For each region $R_k$, the regional state is represented as
+
+\begin{equation}
+s_k^t = \left[N_k^t, W_k^t, x_k, y_k\right] \in \mathbb{R}^{4},
+\end{equation}
+
+where $N_k^t$ denotes the aggregate stopped-vehicle count, $W_k^t$
+denotes aggregate waiting time, and $(x_k, y_k)$ represents the
+normalized spatial centroid of the region.
+
+Because traffic conditions are inherently temporal, the Meta-Policy
+maintains a sliding window of $T = 20$ regional observations. A
+Transformer encoder processes the regional tokens jointly to capture
+spatial dependencies between regions. A learnable global token is
+introduced to obtain a network-level representation
+
+\begin{equation}
+F_g \in \mathbb{R}^{4}.
+\end{equation}
+
+The temporal representations of individual regions are subsequently
+processed using an LSTM. The resulting hidden states are concatenated
+across the $M$ regions and transformed through an MLP to obtain a
+global representation $G \in \mathbb{R}^{16}$. The Meta-Policy then
+generates two network-level control targets,
+
+\begin{equation}
+(G_w, G_q) = \operatorname{Linear}_{16\rightarrow2}(G),
+\end{equation}
+
+where $G_w$ represents the desired global waiting-time level and
+$G_q$ represents the desired global queue-length level.
+
+Thus, rather than directly selecting signal phases throughout the
+network, the Meta-Policy establishes a global traffic-control
+objective that can be pursued by the lower-level intersection agents.
+This separation allows long-range traffic coordination to be handled
+at a compressed regional level while preserving local responsiveness
+at individual intersections.
+
+% ---------------------------------------------------------------
+% 3.7 INTERSECTION-LEVEL SUB-POLICY
+% ---------------------------------------------------------------
+
+\subsection{Intersection-Level Sub-Policy}\label{subsec3-7}
+
+The Sub-Policy converts global guidance into local signal-control
+actions. At each intersection $i$, the local observation is
+represented by
+
+\begin{equation}
+o_i^t = \left[v_i, q_i, o_i, f_i, s_i, w_i, v_i^{avg}, p_i, c_i,
+d_i\right] \in \mathbb{R}^{10},
+\end{equation}
+
+where the components capture local traffic volume, queue length,
+occupancy, flow, stops, waiting time, speed, pressure, congestion, and
+delay. The observations are normalized using an exponential moving
+average and clipped to a bounded range before being supplied to the
+policy network.
+
+A local multilayer perceptron first encodes the intersection state.
+Since traffic conditions at one intersection are influenced by
+neighboring intersections, the encoded representation is augmented
+using a Graph Attention Concat (GAC) mechanism over the
+intersection-adjacency graph. For a neighboring pair $(i, j)$, the
+attention coefficient is computed as
+
+\begin{equation}
+e_{ij} = \operatorname{LeakyReLU}\!\left(a^{T}[h_i \Vert h_j]\right),
+\qquad
+\alpha_{ij} = \operatorname{softmax}_j(e_{ij}),
+\end{equation}
+
+and the resulting neighborhood representation is constructed through
+concatenation,
+
+\begin{equation}
+z_i = h_i \Vert \alpha_{i1}h_{j_1} \Vert \cdots \Vert
+\alpha_{i4}h_{j_4}.
+\end{equation}
+
+The neighborhood representation is then combined with the global
+Meta-Policy embedding:
+
+\begin{equation}
+s_i^t = \left[z_i \Vert F_g\right].
+\end{equation}
+
+This representation simultaneously provides the Sub-Policy with
+\textbf{local traffic information, neighboring traffic context, and
+network-level coordination guidance}.
+
+A shared actor-critic network processes this representation and
+produces a probability distribution over signal phases. Because
+intersections may have different numbers of valid signal phases,
+invalid action indices are masked before the final softmax operation.
+Parameter sharing across intersections allows the same learned policy
+structure to be deployed across heterogeneous signalized intersections
+while retaining local observations and graph-based neighborhood
+information.
+
+% ---------------------------------------------------------------
+% 3.8 JOINT HIERARCHICAL OPTIMIZATION
+% ---------------------------------------------------------------
+
+\subsection{Joint Hierarchical Optimization}\label{subsec3-8}
+
+The Meta-Policy and Sub-Policies are optimized jointly. The Sub-Policy
+is trained using Proximal Policy Optimization (PPO) with Generalized
+Advantage Estimation (GAE). The temporal-difference residual is
+
+\begin{equation}
+\delta_t = r_t + \gamma V(s_{t+1})(1 - d_t) - V(s_t),
+\end{equation}
+
+and the generalized advantage estimate is
+
+\begin{equation}
+A_t = \delta_t + \gamma\lambda(1 - d_t)A_{t+1},
+\end{equation}
+
+with $\gamma = 0.99$ and $\lambda = 0.95$. The PPO policy objective
+uses the clipped probability ratio
+
+\begin{equation}
+L_{\text{policy}} = -\min\left(r_tA_t,
+\operatorname{clip}(r_t, 1-\epsilon, 1+\epsilon)A_t\right),
+\end{equation}
+
+where $\epsilon = 0.2$.
+
+The hierarchical relationship is enforced through an additional
+goal-alignment term. Let $W_{\mathrm{global}}$ and $Q_{\mathrm{global}}$
+denote the actual network-wide waiting time and queue length. The
+Meta-Policy is trained using
+
+\begin{equation}
+L_{\mathrm{Meta}} = \operatorname{MSE}\!\left((G_w, G_q),
+(W_{\mathrm{global}}, Q_{\mathrm{global}})\right) + \eta_1 r_g,
+\end{equation}
+
+while the Sub-Policy receives an alignment objective encouraging the
+realized network state to follow the Meta-Policy's targets:
+
+\begin{equation}
+L_{\mathrm{Sub}} = L_{\mathrm{AC}} + \eta_2 \left[
+\beta_q(Q_{\mathrm{global}} - G_q) +
+\beta_w(W_{\mathrm{global}} - G_w)\right].
+\end{equation}
+
+Here, $\eta_1 = \eta_2 = 0.1$ and $\beta_q = \beta_w = 0.5$. The
+alignment gradient is detached from the Meta-Policy in the Sub-Policy
+loss, preventing the lower-level policy from directly modifying the
+higher-level representation through this term.
+
+The local reward combines intersection-level traffic efficiency with
+the global goal-alignment reward:
+
+\begin{equation}
+r_i^t = -\left(q_i^t + w_i^t + d_i^t + p_i^t - s_i^t\right),
+\end{equation}
+
+\begin{equation}
+r_g^t = -\left[\beta_q(W_{\mathrm{global}} - G_q) +
+\beta_w(Q_{\mathrm{global}} - G_w)\right],
+\end{equation}
+
+and
+
+\begin{equation}
+r^t = r_i^t + r_g^t.
+\end{equation}
+
+This formulation ensures that each intersection is evaluated according
+to its own local traffic conditions while simultaneously receiving a
+network-level coordination signal.
+
+% ---------------------------------------------------------------
+% 3.9 SAFETY-CONSTRAINED SIGNAL EXECUTION
+% ---------------------------------------------------------------
+
+\subsection{Safety-Constrained Signal Execution}\label{subsec3-9}
+
+The learned policy does not directly bypass traffic-signal safety
+constraints. Every requested phase transition is passed through a
+deterministic execution layer that enforces a minimum green interval
+followed by a yellow transition before the new green phase is
+activated.
+
+Specifically, a requested phase change is permitted only after the
+current phase has satisfied the minimum-green requirement. The
+controller then enters a yellow transition for the prescribed duration
+before committing the requested green phase. In the current
+implementation, the minimum green time is 5 simulated seconds and the
+yellow transition lasts 3 seconds.
+
+This separation between \textbf{learned decision-making and
+deterministic safety enforcement} prevents the reinforcement-learning
+agent from producing physically invalid or unrealistically rapid
+signal transitions.
+
+% ---------------------------------------------------------------
+% 3.10 END-TO-END CONTROL PROCESS
+% ---------------------------------------------------------------
+
+\subsection{End-to-End Control Process}\label{subsec3-10}
+
+At every reinforcement-learning decision step, the framework first
+aggregates the current traffic state for each automatically generated
+region and updates the temporal regional-state buffer. The Meta-Policy
+then processes this temporal representation to obtain the global
+embedding and network-level queue and waiting-time targets.
+Simultaneously, each intersection obtains its normalized local
+observation, incorporates information from neighboring intersections
+through graph attention, and fuses this representation with the global
+Meta-Policy embedding.
+
+The resulting Sub-Policy actions are passed through the
+safety-constrained signal execution layer before being applied to the
+traffic simulator. The environment then advances the traffic
+simulation, computes local and global rewards, and stores the
+resulting transition for policy optimization. Meta-Policy updates are
+performed periodically, while Sub-Policy PPO updates are performed
+after the rollout buffer reaches the specified horizon.
+
+The complete architecture can therefore be expressed as the following
+hierarchical mapping:
+
+\begin{equation}
+\begin{aligned}
+G \rightarrow \mathcal{R} \rightarrow \text{Meta-Policy} \rightarrow
+F_g, (G_w, G_q) \\
+\rightarrow \text{Sub-Policies} \rightarrow \text{Signal Actions}
+\rightarrow \text{Traffic Environment}.
+\end{aligned}
+\end{equation}
+
+This design separates \textbf{regional coordination, temporal network
+reasoning, local spatial interaction, and physical signal execution}
+into distinct layers. Consequently, the framework can automatically
+adapt its regional abstraction to different road networks while
+retaining a shared local control mechanism and a global coordination
+signal.
+
+% ---------------------------------------------------------------
+% 3.11 FAIRNESS AS AN EXTENSION OF THE FRAMEWORK
+% ---------------------------------------------------------------
+
+\subsection{Fairness as an Extension of the Framework}\label{subsec3-11}
+
+Fairness is a principal motivation of FairLight because network-level
+aggregate objectives can conceal persistent starvation of individual
+intersections or vehicles. The current implementation already provides
+instrumentation for Jain's fairness index and additional waiting-time
+measurements; however, these fairness terms are \textbf{not currently
+included in the optimization loss}. The active training objective
+consists of the local efficiency reward and the Meta-Policy
+goal-alignment term.
+
+Accordingly, fairness is treated in the present implementation as an
+evaluation and future optimization dimension rather than being
+represented as an active component of the learned reward. Incorporating
+waiting-time variance, tail waiting time, Jain's fairness index, and
+envy-based penalties into the trajectory reward constitutes a natural
+extension of the proposed hierarchical framework. This distinction
+ensures that the proposed architecture remains consistent with the
+implemented system while providing a clear path toward the full
+fairness-aware formulation.
+
 
 % ===============================================================
 % MULTI-OBJECTIVE REWARD FUNCTION
