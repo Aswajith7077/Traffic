@@ -1,13 +1,11 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[3p,times]{elsarticle}
 
 % ===============================================================
 % PACKAGES
 % ===============================================================
 
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
 
-\usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{amsthm}
@@ -24,13 +22,6 @@
 \usepackage{listings}
 \usepackage{url}
 \usepackage{hyperref}
-
-\usepackage[
-    left=1.5cm,
-    right=1.5cm,
-    top=2cm,
-    bottom=2cm
-]{geometry}
 
 % ===============================================================
 % HYPERREF SETUP
@@ -64,36 +55,32 @@
 \raggedbottom
 
 % ===============================================================
-% TITLE
-% ===============================================================
-
-\title{
-    \textbf{
-    FairLight: City-Wide Emergency Vehicle Route Prioritization
-    via Envy-Free Hierarchical Multi-Agent Actor--Critic
-    }
-}
-
-\author{
-    First Author$^{1,2}$\\
-    \texttt{iauthor@gmail.com}
-    \and
-    Second Author$^{2,3}$\\
-    \texttt{iiauthor@gmail.com}
-    \and
-    Third Author$^{1,2}$\\
-    \texttt{iiiauthor@gmail.com}
-}
-
-\date{}
-
-% ===============================================================
 % DOCUMENT
 % ===============================================================
 
 \begin{document}
 
-\maketitle
+\begin{frontmatter}
+
+% ===============================================================
+% TITLE AND AUTHORS
+% ===============================================================
+
+\title{FairLight: City-Wide Emergency Vehicle Route Prioritization
+via Envy-Free Hierarchical Multi-Agent Actor--Critic}
+
+\author{Dr G Poonthalir\corref{cor1}}
+\author{A Sree Ram}
+\author{Aswajith S}
+
+\cortext[cor1]{Corresponding author}
+
+\affiliation{organization={},
+            addressline={},
+            city={},
+            postcode={},
+            state={},
+            country={}}
 
 % ===============================================================
 % ABSTRACT
@@ -114,9 +101,9 @@ intersections. However, fully decentralized approaches may lack
 sufficient global context, whereas centralized approaches become
 difficult to scale.
 
-This paper proposes \textbf{FairLight}, a \textbf{Hierarchical
+This paper proposes FairLight, a Hierarchical
 Region-Aware Multi-Agent Reinforcement Learning framework for Fair and
-Adaptive Traffic Signal Control}. The framework introduces a regional
+Adaptive Traffic Signal Control. The framework introduces a regional
 abstraction between
 network-level coordination and intersection-level decision-making.
 The traffic network is partitioned using graph community detection.
@@ -126,7 +113,7 @@ intersection agents use local observations, neighboring information,
 and regional guidance to select signal actions.
 
 A central feature of the proposed framework is the explicit treatment
-of \textbf{fairness as a traffic-control objective}. Conventional
+of fairness as a traffic-control objective. Conventional
 evaluation based only on average delay, average travel time, or
 throughput can hide excessive delays experienced by a smaller group of
 vehicles. The proposed framework therefore incorporates
@@ -135,23 +122,25 @@ waiting time, and Jain's fairness index into optimization and
 evaluation. A multi-objective reward function jointly considers traffic
 efficiency, fairness, and emergency responsiveness.
 
-The framework also treats \textbf{region construction as part of the
-research problem rather than merely a preprocessing step}. DBSCAN,
+The framework also treats region construction as part of the
+research problem rather than merely a preprocessing step. DBSCAN,
 Louvain, Leiden, and hybrid region construction methods are
 investigated to determine how the choice of regional abstraction
 affects downstream traffic-control performance.
 
-\noindent\textbf{Keywords:}
-Traffic Signal Control,
-Multi-Agent Reinforcement Learning,
-Emergency Vehicle Routing,
-Community Detection,
-Louvain Algorithm,
-Fairness-Aware Optimization,
-Hierarchical Reinforcement Learning
-
 \end{abstract}
 
+\begin{keyword}
+Traffic Signal Control \sep
+Multi-Agent Reinforcement Learning \sep
+Emergency Vehicle Routing \sep
+Community Detection \sep
+Louvain Algorithm \sep
+Fairness-Aware Optimization \sep
+Hierarchical Reinforcement Learning
+\end{keyword}
+
+\end{frontmatter}
 
 % ===============================================================
 % INTRODUCTION
@@ -221,9 +210,9 @@ partitioning is treated as a preprocessing artifact rather than a
 control-relevant variable, and it neither incorporates EMV priority
 nor vehicle-level fairness.
 
-This paper proposes \textbf{FairLight: City-Wide Emergency Vehicle
-Route Prioritization}, an \textbf{Envy-Free Hierarchical Multi-Agent
-Actor-Critic} framework that jointly addresses these limitations.
+This paper proposes FairLight: City-Wide Emergency Vehicle
+Route Prioritization, an Envy-Free Hierarchical Multi-Agent
+Actor-Critic framework that jointly addresses these limitations.
 The framework partitions the traffic network using graph community
 detection methods (DBSCAN, Louvain, Leiden, and hybrid variants),
 treating region construction as a research variable whose effect on
@@ -391,12 +380,12 @@ city-wide coordination, and fairness-aware methods ignore emergency
 traffic management.
 
 To the best of our knowledge, no existing framework jointly integrates
-\textbf{hierarchical multi-agent reinforcement learning,
+hierarchical multi-agent reinforcement learning,
 topology-aware regional partitioning, envy-free fairness optimization,
-and dynamic multi-emergency vehicle routing} within a unified
+and dynamic multi-emergency vehicle routing within a unified
 city-wide traffic management architecture. The proposed framework,
-\textbf{FairLight}, addresses these limitations by introducing an
-\textbf{Envy-Free Hierarchical Multi-Agent Actor--Critic} architecture
+FairLight, addresses these limitations by introducing an
+Envy-Free Hierarchical Multi-Agent Actor--Critic architecture
 that simultaneously optimizes traffic efficiency, fairness, emergency
 response, and scalable coordination across heterogeneous urban
 transportation networks.
@@ -408,7 +397,7 @@ transportation networks.
 
 \section{Proposed Framework}\label{sec3}
 
-The proposed framework, \textbf{FairLight}, is organized around three
+The proposed framework, FairLight, is organized around three
 complementary methods that together address scalability, emergency
 responsiveness, and equity in city-wide traffic signal control.
 First, the road network is automatically partitioned into coherent
@@ -416,11 +405,11 @@ subregions using graph-based community detection (the Louvain
 algorithm), removing the need for manual, expert-driven region design
 and allowing the hierarchical Meta-Policy/Sub-Policy architecture to
 scale to arbitrarily large networks. Second, the framework extends
-single-vehicle emergency routing to a \textbf{multi-EMV} setting, in
+single-vehicle emergency routing to a multi-EMV setting, in
 which several emergency vehicles may simultaneously request priority
 across overlapping parts of the network, requiring explicit conflict
 resolution and coordinated corridor clearing. Third, the framework
-treats \textbf{fairness} and \textbf{accident-induced congestion} as
+treats fairness and accident-induced congestion as
 first-class control objectives rather than side effects, so that the
 learned policy neither systematically starves individual approaches
 nor collapses when unexpected incidents disrupt normal traffic flow.
@@ -439,10 +428,10 @@ the large number of roads and intersections involved. Therefore, the
 road network is modeled as a weighted graph $G = (V, E)$, where
 intersections are represented as nodes and road segments as edges.
 
-To automatically identify suitable subsections, the \textbf{Louvain
-community detection algorithm} is applied to the graph. The algorithm
+To automatically identify suitable subsections, the Louvain
+community detection algorithm is applied to the graph. The algorithm
 partitions the network into communities by maximizing
-\textbf{modularity}, which measures the difference between the
+modularity, which measures the difference between the
 observed connectivity within communities and the connectivity
 expected in a corresponding random network:
 
@@ -459,7 +448,7 @@ community.
 A higher modularity indicates stronger community structure, allowing
 the identified communities to serve as automatically generated
 road-network subsections. Each subsection is assigned a
-\textbf{sub-policy}, while a higher-level \textbf{meta-policy}
+sub-policy, while a higher-level meta-policy
 coordinates the behavior of these sub-policies across the complete
 network. This provides a scalable alternative to manual decomposition
 and enables hierarchical policy optimization over complex road
@@ -579,7 +568,7 @@ Section~\ref{subsec3-1}, since poorly balanced subregions could
 otherwise induce exactly this kind of neighbor-level inequity.
 
 A second, largely orthogonal concern addressed by this subsection is
-robustness to \textbf{accidental congestion}: collisions, breakdowns,
+robustness to accidental congestion: collisions, breakdowns,
 and other unplanned incidents that suddenly and sharply reduce the
 effective capacity of one or more road segments. Conventional traffic
 signal controllers are typically trained and evaluated exclusively
@@ -628,10 +617,10 @@ this trade-off, FairLight introduces an intermediate regional
 abstraction between network-level coordination and local signal
 control.
 
-The framework consists of four principal components: \textbf{(i)
+The framework consists of four principal components: (i)
 automatic regional construction, (ii) a network-level Meta-Policy,
 (iii) intersection-level Sub-Policies, and (iv) a safety-constrained
-signal execution layer}. Regional construction transforms the
+signal execution layer. Regional construction transforms the
 signalized road network into coherent traffic regions, the Meta-Policy
 extracts global spatial-temporal information and generates
 network-level control targets, and the Sub-Policies translate this
@@ -812,8 +801,8 @@ s_i^t = \left[z_i \Vert F_g\right].
 \end{equation}
 
 This representation simultaneously provides the Sub-Policy with
-\textbf{local traffic information, neighboring traffic context, and
-network-level coordination guidance}.
+local traffic information, neighboring traffic context, and
+network-level coordination guidance.
 
 A shared actor-critic network processes this representation and
 produces a probability distribution over signal phases. Because
@@ -919,8 +908,8 @@ before committing the requested green phase. In the current
 implementation, the minimum green time is 5 simulated seconds and the
 yellow transition lasts 3 seconds.
 
-This separation between \textbf{learned decision-making and
-deterministic safety enforcement} prevents the reinforcement-learning
+This separation between learned decision-making and
+deterministic safety enforcement prevents the reinforcement-learning
 agent from producing physically invalid or unrealistically rapid
 signal transitions.
 
@@ -960,8 +949,8 @@ F_g, (G_w, G_q) \\
 \end{aligned}
 \end{equation}
 
-This design separates \textbf{regional coordination, temporal network
-reasoning, local spatial interaction, and physical signal execution}
+This design separates regional coordination, temporal network
+reasoning, local spatial interaction, and physical signal execution
 into distinct layers. Consequently, the framework can automatically
 adapt its regional abstraction to different road networks while
 retaining a shared local control mechanism and a global coordination
@@ -972,7 +961,7 @@ signal.
 % MULTI-OBJECTIVE REWARD FUNCTION
 % ===============================================================
 
-\section{Multi-Objective Reward Function Design}
+\section{Multi-Objective Reward Function Design}\label{sec4}
 
 An effective traffic signal controller must optimize multiple
 objectives simultaneously rather than maximizing traffic throughput
@@ -989,15 +978,24 @@ The overall reward at each decision step is defined as
 \begin{equation}
 R_{\text{total}}
 =
-\frac{4}{9}R_{\text{eff}}
+w_1 R_{\text{eff}}
 +
-\frac{2}{9}R_{\text{fair}}
+w_2 R_{\text{fair}}
 +
-\frac{3}{9}R_{\text{emergency}},
+w_3 R_{\text{emergency}},
 \end{equation}
 
 where each component corresponds to a distinct traffic management
-objective.
+objective and the weights satisfy
+
+\begin{equation}
+w_1 + w_2 + w_3 = 1, \qquad w_1 \ge w_2 \ge w_3 \ge 0.
+\end{equation}
+
+$R_{\text{eff}}$ is assigned the largest weight because it governs
+global traffic-congestion control across the whole network rather than
+emergency-vehicle service alone, followed by fairness and then
+emergency responsiveness.
 
 \subsection{Traffic Efficiency Reward}
 
@@ -1149,10 +1147,192 @@ responsiveness.
 
 
 % ===============================================================
+% EXPERIMENTATION
+% ===============================================================
+
+\section{Experimentation}\label{sec5}
+
+\subsection{Simulation Environment}\label{subsec5-1}
+
+The proposed framework is evaluated in the Simulation of Urban MObility
+(SUMO) environment via the TraCI interface. SUMO is chosen because its
+microscopic, lane-level vehicle dynamics and configurable signal
+infrastructure allow the simulated network to closely approximate the
+congestion and coordination patterns of a real signalized road network,
+providing a controlled setting in which the proposed regional
+partitioning, fairness, and emergency-routing mechanisms can be
+exercised repeatedly under known traffic demand. A simulation study,
+however, remains an approximation: real-world deployment would need to
+contend with sensor noise, imperfect vehicle detection, driver
+non-compliance, and infrastructure constraints that are not fully
+captured by SUMO's vehicle models. Validating the framework on a real
+traffic signal system is therefore treated as a necessary step beyond
+the present simulation-based evaluation, and not as a substitute for
+it.
+
+\subsection{Base Model and Benchmark Methods}\label{subsec5-2}
+
+The base model used throughout this evaluation is the Hierarchical
+Region-Aware Multi-Agent Reinforcement Learning controller with the
+fairness reward of Section~\ref{subsec3-3} enabled (Meta-Policy +
+Sub-Policy, trained with the multi-objective reward of
+Section~\ref{sec4}). This base model is compared against two
+traditional, non-learning traffic signal control strategies commonly
+used as references in the traffic-signal-control literature:
+
+\begin{itemize}
+\item \textit{Fixed Time}: a cyclical, predefined signal-phase schedule
+with a fixed green/yellow split and no responsiveness to real-time
+traffic conditions.
+\item \textit{Max Pressure}: a reactive, non-learning controller that
+selects the signal phase maximizing the pressure difference between
+incoming and outgoing lanes at each intersection~\cite{maxpressure}.
+\end{itemize}
+
+In addition to this three-way comparison, the base model is evaluated
+with and without the city-wide multi-EMV routing extension of
+Section~\ref{subsec3-2} enabled, to isolate the contribution of
+coordinated, network-wide emergency-vehicle routing from the
+underlying hierarchical traffic-control policy.
+
+\subsection{Dynamic Neighborhood Construction}\label{subsec5-3}
+
+Unlike approaches that fix the neighborhood of an intersection to a
+constant number of adjacent intersections regardless of network
+topology, the proposed framework's Graph Attention Concat mechanism
+(Section~\ref{subsec3-7}) operates over the intersection-adjacency
+graph produced by the regional partitioning step, so that the number
+of neighbors considered for a given intersection varies with its
+actual degree in the signalized road network rather than being fixed
+to a constant value. This design choice is intended to let the learned
+policy generalize across heterogeneous regions of a city --- dense
+grid-like subnetworks and sparser arterial corridors alike --- without
+retraining a separate neighborhood scheme for each topology.
+
+\subsection{Evaluation Metrics}\label{subsec5-4}
+
+Consistent with Section~\ref{subsec3-8}, each configuration is
+evaluated using: total average trip time, aggregated over all vehicles
+that complete their trip during the simulation horizon; total waiting
+time, summed across all vehicles and intersections; and total average
+waiting time, the mean per-vehicle waiting time over the same horizon.
+These three metrics are reported for the Fixed Time, Max Pressure, and
+base-model (Algorithm) configurations, and separately for the base
+model with and without city-wide multi-EMV routing, in
+Section~\ref{sec6}.
+
+
+% ===============================================================
+% RESULTS AND DISCUSSION
+% ===============================================================
+
+\section{Results and Discussion}\label{sec6}
+
+\subsection{Effect of City-Wide EMV Routing}\label{subsec6-1}
+
+Table~\ref{tab:emv-routing} compares the base model operated with the
+city-wide multi-EMV routing extension of Section~\ref{subsec3-2}
+against the same base model with city-wide EMV routing disabled (i.e.,
+emergency vehicles are pre-empted locally at each intersection without
+network-wide route coordination). The experimental runs required to
+populate this comparison have not yet been completed; the values below
+are placeholders and are reported as such rather than omitted, so that
+the table structure and intended comparison are explicit ahead of the
+full evaluation campaign.
+
+\begin{table}[t]
+\centering
+\caption{Base model with vs.\ without city-wide EMV routing (placeholder values pending full evaluation runs).}
+\label{tab:emv-routing}
+\begin{tabular}{lccc}
+\toprule
+Configuration & Total Avg.\ Trip Time [s] & Total Waiting Time [s] & Total Avg.\ Waiting Time [s] \\
+\midrule
+Without city-wide EMV routing & 0.00 & 0.00 & 0.00 \\
+With city-wide EMV routing    & 0.00 & 0.00 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparison with Baseline Traffic Control Methods}\label{subsec6-2}
+
+Table~\ref{tab:baseline-comparison} reports the three evaluation
+metrics of Section~\ref{subsec5-4} for Fixed Time, Max Pressure, and
+the proposed base model (Algorithm). As in
+Section~\ref{subsec6-1}, the corresponding simulation runs have not yet
+been executed, so all entries are placeholders.
+
+\begin{table}[t]
+\centering
+\caption{Comparison of traffic signal control methods (placeholder values pending full evaluation runs).}
+\label{tab:baseline-comparison}
+\begin{tabular}{lccc}
+\toprule
+Method & Total Avg.\ Trip Time [s] & Total Waiting Time [s] & Total Avg.\ Waiting Time [s] \\
+\midrule
+Fixed       & 0.00 & 0.00 & 0.00 \\
+Max Pressure & 0.00 & 0.00 & 0.00 \\
+Algorithm   & 0.00 & 0.00 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Discussion}\label{subsec6-3}
+
+The structure of Tables~\ref{tab:emv-routing}
+and~\ref{tab:baseline-comparison} reflects the comparisons the
+framework is designed to support: isolating the contribution of
+city-wide, coordinated EMV routing from the underlying hierarchical
+controller, and situating the base model relative to the two
+traditional, non-learning baselines most commonly reported in the
+traffic-signal-control literature. Populating these tables with
+measured values, and discussing the resulting trends, is left to the
+full evaluation campaign; no performance claims are made on the basis
+of the placeholder entries reported here.
+
+
+% ===============================================================
+% CONCLUSION
+% ===============================================================
+
+\section{Conclusion}\label{sec7}
+
+This paper proposed FairLight, a hierarchical region-aware multi-agent
+reinforcement learning framework that treats regional partitioning,
+vehicle-level fairness, and city-wide emergency-vehicle routing as
+first-class, jointly optimized objectives rather than independent
+preprocessing steps or post-hoc evaluation criteria. The main
+limitation of the work at its current stage is that several of its
+central components --- the multi-EMV routing extension of
+Section~\ref{subsec3-2} and the accident-robustness mechanism of
+Section~\ref{subsec3-3} --- are presented as proposed designs rather
+than fully trained and evaluated systems, and the comparative results
+in Section~\ref{sec6} are reported as placeholders pending a complete
+evaluation campaign. Training the full hierarchy has also been
+observed to be numerically unstable under the current optimization
+setup, and the framework has so far been validated only in SUMO,
+whose vehicle models and signal infrastructure are a simplification of
+an operating real-world traffic system.
+
+Addressing these limitations requires, first, completing the
+evaluation campaign outlined in Section~\ref{sec5} across the
+Fixed-Time, Max-Pressure, and base-model configurations and across the
+city-wide-EMV-routing ablation, with multiple random seeds and
+variability estimates rather than single runs; second, stabilizing the
+joint Meta-Policy/Sub-Policy optimization so that reported results
+reflect converged rather than diverging training; and third, extending
+validation beyond simulation toward hardware-in-the-loop or
+closed-course testing with a real signal controller, which would
+expose the framework to sensing noise and driver behavior that SUMO
+does not model. Section~\ref{sec8} discusses these and related
+directions in greater detail.
+
+
+% ===============================================================
 % FUTURE WORKS
 % ===============================================================
 
-\section{Future Works}\label{sec6}
+\section{Future Works}\label{sec8}
 
 \subsection{Enhanced Emergency Vehicle Routing}
 
