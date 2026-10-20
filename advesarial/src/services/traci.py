@@ -41,6 +41,15 @@ class TraciService:
         self.yellow_timer = {}
         self.yellow_phases = {}
 
+        # Fairness: per-vehicle waiting timers and phase -> served-lane maps.
+        self.max_wait = config.max_wait
+        self.wait_ref = config.wait_ref
+        self.wait_timers = {}
+        self.timer_lanes = {}
+        self.phase_served_lanes = {}
+        self._incoming_lanes_cache = {}
+        self.override_count = 0
+
     def __set_config_path(self, config_path):
         if not config_path.endswith(".sumocfg"):
             raise ValueError("Config path must end with .sumocfg")
@@ -65,6 +74,10 @@ class TraciService:
             "--no-step-log",
             "--verbose",
             "true",
+            # Keep accumulated waiting time over the whole trip (SUMO default window is 100 s),
+            # so fairness metrics can see waits beyond W_max.
+            "--waiting-time-memory",
+            "100000",
         ]
         if self.config.use_gui:
             cmd += ["--delay", str(self.config.delay)]
@@ -90,6 +103,7 @@ class TraciService:
         self.tls_ids = sorted(list(self.tl_ids))
         self.__initialize_traci_state()
         self.__normalize_phase_durations()
+        self.__build_fairness_maps()
         self._build_node_to_edges()
 
     def _build_node_to_edges(self):
@@ -187,6 +201,96 @@ class TraciService:
 
         return mask
 
+    def __build_fairness_maps(self):
+        """For every TLS and phase, the set of incoming lanes that phase gives a green to."""
+        self.wait_timers = {tls_id: {} for tls_id in self.tls_ids}
+        self.timer_lanes = {tls_id: {} for tls_id in self.tls_ids}
+        self.override_count = 0
+        self.phase_served_lanes = {}
+        self._incoming_lanes_cache = {}
+
+        for tls_id in self.tls_ids:
+            links = traci.trafficlight.getControlledLinks(tls_id)
+            phases = traci.trafficlight.getAllProgramLogics(tls_id)[0].phases
+            served = {}
+            for idx, phase in enumerate(phases):
+                lanes = set()
+                for sig, link_group in enumerate(links):
+                    if sig < len(phase.state) and phase.state[sig] in "Gg":
+                        lanes.update(link[0] for link in link_group)
+                served[idx] = lanes
+            self.phase_served_lanes[tls_id] = served
+
+    def update_wait_timers(self):
+        """Per-vehicle waiting timers w_{v,j} (Section 4.1).
+
+        A vehicle's timer grows by one step while it is stopped (speed < 0.1 m/s) on an
+        incoming lane of intersection j. It is kept while the vehicle creeps forward in the
+        queue and discarded once the vehicle is served and leaves the incoming lanes.
+        """
+        dt = self.config.step_length
+        for tls_id in self.tls_ids:
+            timers = self.wait_timers.setdefault(tls_id, {})
+            present = {}
+            for lane in self._get_incoming_lanes(tls_id):
+                for veh_id in traci.lane.getLastStepVehicleIDs(lane):
+                    waited = timers.get(veh_id, 0.0)
+                    if traci.vehicle.getSpeed(veh_id) < 0.1:
+                        waited += dt
+                    present[veh_id] = (waited, lane)
+            self.wait_timers[tls_id] = {v: w for v, (w, _) in present.items()}
+            self.timer_lanes[tls_id] = {v: lane for v, (_, lane) in present.items()}
+
+    def get_vehicle_waits(self, tls_id):
+        return list(self.wait_timers.get(tls_id, {}).values())
+
+    @staticmethod
+    def compute_jain_index(values):
+        """Jain's fairness index (sum x)^2 / (n * sum x^2); 1.0 when there is nothing to compare."""
+        n = len(values)
+        if n == 0:
+            return 1.0
+        denom = n * sum(x * x for x in values)
+        if denom == 0:
+            return 1.0
+        return sum(values) ** 2 / denom
+
+    def service_score(self, wait):
+        """Bounded service score s = 1 / (1 + w / W_ref) used as the Jain-index input."""
+        return 1.0 / (1.0 + wait / self.wait_ref)
+
+    def get_intersection_fairness(self, tls_id):
+        """Local fairness statistics at one intersection (Section 4.1).
+
+        Returns (J, var, max_wait): Jain index over service scores, variance of the
+        reference-normalized waiting times, and the maximum waiting timer. With no
+        waiting vehicles: (1.0, 0.0, 0.0).
+        """
+        waits = self.get_vehicle_waits(tls_id)
+        if not waits:
+            return 1.0, 0.0, 0.0
+        normalized = [w / self.wait_ref for w in waits]
+        mean = sum(normalized) / len(normalized)
+        var = sum((x - mean) ** 2 for x in normalized) / len(normalized)
+        jain = self.compute_jain_index([self.service_score(w) for w in waits])
+        return jain, var, max(waits)
+
+    def _starved_phase(self, tls_id, valid_phases, current_phase):
+        """Valid phase serving the longest-waiting vehicle at/over W_max, else None.
+        The current phase is preferred when it already serves that vehicle."""
+        timers = self.wait_timers.get(tls_id, {})
+        lanes = self.timer_lanes.get(tls_id, {})
+        starved = sorted(((w, v) for v, w in timers.items() if w >= self.max_wait), reverse=True)
+        for _, veh_id in starved:
+            lane = lanes.get(veh_id)
+            candidates = ([current_phase] if current_phase in valid_phases else []) + [
+                p for p in valid_phases if p != current_phase
+            ]
+            for phase in candidates:
+                if lane in self.phase_served_lanes[tls_id].get(phase, ()):
+                    return phase
+        return None
+
     def __initialize_traci_state(self):
         self.__build_valid_phases()
         intersections = self.tls_ids
@@ -248,6 +352,15 @@ class TraciService:
         safe_phase = valid_phases[min(action, num_phases - 1)]
 
         current_phase = traci.trafficlight.getPhase(tls_id)
+
+        # Fairness safeguard (Section 4.1): a vehicle that has reached W_max overrides the
+        # policy's choice with a phase that serves it. The override only changes the
+        # *requested* phase; min-green and yellow clearance below still apply.
+        if not self.in_transition[tls_id]:
+            starved_phase = self._starved_phase(tls_id, valid_phases, current_phase)
+            if starved_phase is not None and starved_phase != safe_phase:
+                safe_phase = starved_phase
+                self.override_count += 1
 
         if self.in_transition[tls_id]:
             self.yellow_timer[tls_id] += 1
@@ -452,6 +565,9 @@ class TraciService:
         return sum(traci.lane.getLastStepVehicleNumber(lane) for lane in traci.trafficlight.getControlledLanes(tls))
 
     def _get_incoming_lanes(self, tls_id):
+        if tls_id in self._incoming_lanes_cache:
+            return self._incoming_lanes_cache[tls_id]
+
         incoming_lanes = set()
         controlled_links = traci.trafficlight.getControlledLinks(tls_id)
 
@@ -459,7 +575,8 @@ class TraciService:
             for in_lane, _, _ in link_group:
                 incoming_lanes.add(in_lane)
 
-        return list(incoming_lanes)
+        self._incoming_lanes_cache[tls_id] = sorted(incoming_lanes)
+        return self._incoming_lanes_cache[tls_id]
 
     def get_stop_count(self, intersection_id, speed_threshold=0.1):
         """

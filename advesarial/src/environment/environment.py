@@ -21,6 +21,12 @@ class Environment:
         self.beta_q = 0.5
         self.beta_w = 0.5
 
+        # Fairness penalty weights (Section 4): P_fair = lam_var*Var(w/W_ref)
+        # + lam_starve*max(0, (W - W_max)/W_max) + lam_jain*(1 - J). Initial, untuned values.
+        self.lam_var = 1.0
+        self.lam_starve = 10.0
+        self.lam_jain = 10.0
+
         self.reward_mean = 0.0
         self.reward_var = 1.0
         self.reward_alpha = 0.01
@@ -43,6 +49,7 @@ class Environment:
         self._apply_action(action)
 
         self.traci_service.step()
+        self.traci_service.update_wait_timers()
 
         next_state = self.traci_service.get_observations()
         reward = self._compute_reward(goal)
@@ -65,17 +72,29 @@ class Environment:
 
         return -(self.beta_q * (W_global - G_q) + self.beta_w * (Q_global - G_w))
 
+    def _compute_fairness_reward(self):
+        """Per-intersection R_fair_j = -P_fair_j (dimensionless penalties, Section 4)."""
+        w_max = self.traci_service.max_wait
+        rewards = []
+        for i in self.intersections:
+            jain, var, max_wait = self.traci_service.get_intersection_fairness(i)
+            starve = max(max_wait - w_max, 0.0) / w_max
+            rewards.append(-(self.lam_var * var + self.lam_starve * starve + self.lam_jain * (1.0 - jain)))
+        return torch.tensor(rewards, dtype=torch.float32)
+
     def _compute_local_reward(self):
-        """Per-intersection local reward r_i^t = -(ql+wt+dt+ps-ss), Section 4.3.1.
+        """Per-intersection local reward r_i^t = -(ql+wt+dt+ps-ss), Section 4.3.1,
+        plus the per-intersection fairness reward R_fair_i (Section 4).
 
         Returns a (N,) tensor — one reward per agent, using that agent's own
         intersection metrics (not a team-average).
         """
 
-        return torch.tensor(
+        efficiency = torch.tensor(
             [self.traci_service.get_intersection_reward(i) for i in self.intersections],
             dtype=torch.float32,
         )
+        return efficiency + self._compute_fairness_reward()
 
     def _compute_reward(self, goal=None):
         r_i = self._compute_local_reward()  # (N,)

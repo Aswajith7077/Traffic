@@ -465,36 +465,11 @@ network. This provides a scalable alternative to manual decomposition
 and enables hierarchical policy optimization over complex road
 networks.
 
-\begin{figure}[h]
-\centering
-\fbox{\parbox[c][6cm][c]{0.85\textwidth}{\centering\textit{
-Figure placeholder: Road network graph before partitioning, with
-nodes representing signalized intersections and edge thickness
-representing traffic-weighted connectivity.}}}
-\caption{Traffic-signal graph representation of the road network
-prior to Louvain partitioning.}
-\label{fig:louvain-graph}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\fbox{\parbox[c][6cm][c]{0.85\textwidth}{\centering\textit{
-Figure placeholder: Resulting Louvain partition overlaid on the road
-network, with each color denoting a distinct subregion assigned to
-its own Sub-Policy agent.}}}
-\caption{Subregions obtained after applying Louvain community
-detection to the traffic-signal graph.}
-\label{fig:louvain-partition}
-\end{figure}
-
 % ---------------------------------------------------------------
 % 3.2 MULTIPLE EMV VEHICLE ROUTING
 % ---------------------------------------------------------------
 
 \subsection{Multiple EMV Vehicle Routing Across the City}\label{subsec3-2}
-
-\textit{[Placeholder section --- content below is draft filler to be
-expanded with the final methodology, equations, and figures.]}
 
 Prior emergency-vehicle (EMV) prioritization approaches in the
 traffic-signal-control literature, including the single-agent
@@ -572,9 +547,6 @@ version of this section.
 % ---------------------------------------------------------------
 
 \subsection{Fairness and Accidental Congestion Control}\label{subsec3-3}
-
-\textit{[Placeholder section --- content below is draft filler to be
-expanded with the final methodology, equations, and figures.]}
 
 Traffic-signal controllers optimized purely for network-wide
 efficiency metrics, such as average travel time or average delay, can
@@ -1027,7 +999,7 @@ R_{\text{total}}
 where each component corresponds to a distinct traffic management
 objective.
 
-\subsubsection*{Traffic Efficiency Reward}
+\subsection{Traffic Efficiency Reward}
 
 The efficiency component encourages continuous improvement in network
 performance by rewarding reductions in congestion rather than
@@ -1055,41 +1027,90 @@ signals by rewarding measurable improvements between consecutive time
 steps. This enables faster convergence while encouraging policies that
 continuously reduce congestion.
 
-\subsubsection*{Fairness Reward}
+\subsection{Fairness Reward}
 
-Optimizing only traffic efficiency frequently results in certain
-approaches receiving excessively long red phases, leading to
-persistent vehicle starvation. To ensure equitable service across the
-network, a fairness reward is incorporated:
+Conventional traffic-signal controllers commonly optimize aggregate measures such as queue
+length, average delay, and throughput. These objectives can improve network efficiency but do
+not guarantee equitable service to individual vehicles: a movement repeatedly deprioritized by
+the controller may experience prolonged waiting even when network-level metrics improve.
+FairLight therefore treats fairness as a complement to traffic efficiency and emergency-vehicle
+responsiveness, consistent with the multi-objective reward defined above.
 
+\paragraph{Vehicle waiting-time monitoring.}
+For each vehicle $v$ and intersection $j$, let $w_{v,j}(t)$ denote its accumulated waiting time
+at time $t$. The timer increases by one simulation step whenever the vehicle is stopped (speed
+below $0.1$~m/s) on an incoming lane of $j$, is kept while the vehicle creeps forward in the
+queue, and is discarded when the vehicle is served and leaves the incoming lanes of $j$; a new
+waiting episode then starts at the next intersection. The same definition is used in training
+and evaluation. A vehicle is flagged as a starvation risk when
 \begin{equation}
-\begin{aligned}
-R_{\text{fair}}
-={}&
--0.3\,\mathrm{Var}(W)
--0.25\max(W-90,0)
--0.15(1-J)\\
-&-0.5\,\mathrm{Envy}
--0.5\max(W_{\text{ped}})
--1.2C_{\text{ped}}.
-\end{aligned}
+w_{v,j}(t)\ge W_{\max},\qquad W_{\max}=90\ \text{s}.
 \end{equation}
+Reaching $W_{\max}$ flags the vehicle and increases its consideration in subsequent phase
+selection: the requested phase of the Sub-Policy is replaced by a feasible phase that gives a
+green to the lane of the longest-waiting flagged vehicle (the current phase is kept if it
+already does). The 90-second threshold is a design threshold and not a universal guarantee
+that every vehicle is served within 90 seconds: demand, conflicting movements, incidents,
+clearance intervals, and physical feasibility may make the threshold temporarily or
+persistently unattainable. The override only changes the \emph{requested} phase; the controller
+never bypasses the minimum-green requirement (5 steps) or the 3~s yellow clearance of
+Section~\ref{subsec3-9}, and no override is issued during a yellow transition.
 
-where $\mathrm{Var}(W)$ is the variance of vehicle waiting times,
-$J$ denotes Jain's Fairness Index, $\mathrm{Envy}$ represents the
-difference between the best-performing neighboring intersection and
-the current intersection, $W_{\text{ped}}$ is pedestrian waiting
-time, and $C_{\text{ped}}$ measures pedestrian--vehicle conflicts.
+To align this safeguard with the reward, define the local maximum waiting time at intersection
+$j$ as $W_j(t)=\max_{v\in\mathcal{V}_j(t)} w_{v,j}(t)$, where $\mathcal{V}_j(t)$ is the set of
+tracked vehicles currently waiting at that intersection. The threshold penalty is then
+$\max(0,\,W_j(t)-W_{\max})$. The maximum is taken locally per intersection, not over the whole
+episode or network.
 
-Each penalty addresses a different source of inequity. Waiting-time
-variance promotes balanced service among approaches, the starvation
-penalty prevents excessively long delays, Jain's Fairness Index
-encourages equitable signal allocation, the envy term discourages
-local policies that sacrifice one intersection for another, while
-pedestrian waiting and conflict penalties ensure that pedestrian
-mobility and safety are jointly optimized with vehicular traffic.
+\paragraph{Intersection-level fairness using Jain's index.}
+At each intersection, Jain's Fairness Index (JFI) summarizes how evenly a set of non-negative
+service scores is distributed. For $n$ included vehicles with scores $x_i\ge 0$,
+\begin{equation}
+J=\frac{\left(\sum_{i=1}^{n}x_i\right)^2}{n\sum_{i=1}^{n}x_i^{2}}.
+\end{equation}
+For non-zero scores, $J\in[1/n,1]$, and a value closer to $1$ indicates a more even
+distribution. If all scores are zero the denominator vanishes; we adopt the convention
+$J=1$ (no disparity) and, when no vehicle is waiting at all, set every fairness term to zero.
 
-\subsubsection*{Emergency Vehicle Reward}
+The choice of $x_i$ matters. Raw waiting time should not be used as a service score, because a
+higher waiting time indicates \emph{worse} service, and equal but very high waiting times still
+yield $J=1$. We therefore use the bounded, non-negative score that is inversely related to
+waiting time,
+\begin{equation}
+x_i=\frac{1}{1+w_{i,j}/W_{\mathrm{ref}}},
+\end{equation}
+where $W_{\mathrm{ref}}=30$~s is a fixed reference time chosen before training. The score, the
+population (all vehicles waiting on the incoming lanes of $j$), the sampling interval (every
+simulation step), and the handling of vehicles not yet served are identical across methods and
+experiments. JFI measures equality, not absolute performance or starvation by itself, so it is
+reported alongside the mean, maximum, and 95th-percentile waiting time, queue length,
+throughput, and emergency-vehicle response time, and it is computed locally per intersection
+before any city-wide aggregation so that local disparities are not concealed by a network
+average.
+
+\paragraph{Fairness reward.}
+Let $W_j$ be the maximum waiting time at intersection $j$ as defined above, let
+$\sigma^2_{\hat w,j}$ be the variance of the normalized waiting times
+$\hat w_i=w_{i,j}/W_{\mathrm{ref}}$ over the local population, and let $J_j$ be the JFI of the
+scores $x_i$. The dimensionless local fairness penalty is
+\begin{equation}
+P_{\mathrm{fair},j}=\lambda_{\mathrm{var}}\,\mathrm{Var}(\hat w)
++\lambda_{\mathrm{starve}}\max\!\Big(0,\frac{W_j-W_{\max}}{W_{\max}}\Big)
++\lambda_{J}\,(1-J_j),
+\end{equation}
+and the fairness reward is $R_{\mathrm{fair},j}=-P_{\mathrm{fair},j}$, which is added to the
+local reward $r_j^t$ of Section~\ref{subsec3-8}. Normalizing waiting times by $W_{\mathrm{ref}}$
+and the starvation excess by $W_{\max}$ is important because waiting-time variance has
+squared-time units whereas the starvation and JFI terms are dimensionless. The coefficients
+$\lambda_{\mathrm{var}},\lambda_{\mathrm{starve}},\lambda_J\ge 0$ are hyperparameters; larger
+disparity, threshold excess, or inequality reduces the reward. Their initial values
+$(\lambda_{\mathrm{var}},\lambda_{\mathrm{starve}},\lambda_J)=(1,10,10)$ were chosen so that the
+fairness terms are not negligible next to the queue and waiting terms of $r_j^t$; they are
+design choices, not empirically established optimal values. The earlier coefficients $0.3$, $0.25$ and $0.15$ applied to
+quantities with incompatible units and are superseded by this formulation. Envy and
+pedestrian terms are not part of the implemented fairness reward.
+
+\subsection{Emergency Vehicle Reward}
 
 Emergency vehicles require substantially higher priority than regular
 traffic because delays directly affect emergency response times.
@@ -1107,22 +1128,24 @@ penalizes any delay encountered by ambulances, fire trucks, or police
 vehicles, encouraging the controller to allocate green phases
 immediately upon emergency vehicle detection.
 
-\subsubsection*{Reward Weight Selection}
-
-The weighting coefficients $(\frac{4}{9},\,\frac{2}{9},\,\frac{3}{9})$
-reflect the relative importance of each optimization objective.
-Traffic efficiency receives the highest weight because congestion
-reduction remains the primary objective of urban traffic signal
-control. Emergency vehicle priority is assigned the second-highest
-weight owing to its critical societal importance. Fairness receives
-the remaining weight to prevent pathological policies that
-consistently disadvantage particular intersections.
-
 Finally, the combined reward is normalized using an exponential
 moving average before being supplied to the reinforcement learning
 algorithm. Reward normalization reduces reward variance, improves
 numerical stability during training, and accelerates policy
 convergence.
+
+\subsection{Evaluation Protocol}
+
+Fairness is evaluated jointly with efficiency and safety. At minimum we report the mean,
+maximum, and 95th-percentile vehicle waiting time; the proportion of vehicles exceeding
+90~seconds; intersection-level JFI; queue length; throughput; and emergency response time. The
+controller is compared against the same controller without fairness terms, under identical
+traffic demand, random seeds where applicable, signal constraints, and simulation horizons, and
+multiple runs are reported with variability estimates. A reduction in average delay alone is
+insufficient evidence of improved fairness, and a higher JFI alone is insufficient unless
+absolute delays remain acceptable. Emergency pre-emption intentionally gives some vehicles
+higher urgency, so results distinguish ordinary-vehicle fairness from emergency-vehicle
+responsiveness.
 
 
 % ===============================================================

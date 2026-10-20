@@ -71,8 +71,7 @@ def run_gui_simulation(model_dir, steps=3600, delay=50.0, config_path=None, verb
 
                 if verbose:
                     phases = {
-                        tl: int(p)
-                        for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
+                        tl: int(p) for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
                     }
                     print(f"[t={traci.simulation.getTime():.0f}] chosen phases: {phases}")
 
@@ -82,7 +81,7 @@ def run_gui_simulation(model_dir, steps=3600, delay=50.0, config_path=None, verb
                 if done:
                     print(f"Simulation finished at step {t}")
                     break
-    except (KeyboardInterrupt, traci.exceptions.FatalTraCIError):
+    except KeyboardInterrupt, traci.exceptions.FatalTraCIError:
         print("\nGUI simulation closed.")
     finally:
         trainer.close()
@@ -122,6 +121,8 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     vehicle_delay_times = []
     vehicle_waiting_times = []
     total_queue_length = []
+    intersection_jain = []
+    max_timer_seen = 0.0
 
     def update_active_vehicle_metrics():
         """Cache data while vehicles remain queryable through TraCI."""
@@ -151,8 +152,7 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
 
                 if verbose:
                     phases = {
-                        tl: int(p)
-                        for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
+                        tl: int(p) for tl, p in zip(trainer.traci_service.get_all_intersections(), action.tolist())
                     }
                     print(f"[t={traci.simulation.getTime():.0f}] chosen phases: {phases}")
 
@@ -175,6 +175,12 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
                 )
                 total_queue_length.append(raw_queue)
 
+                for tls in trainer.traci_service.get_all_intersections():
+                    waits = trainer.traci_service.get_vehicle_waits(tls)
+                    if waits:
+                        intersection_jain.append(trainer.traci_service.get_intersection_fairness(tls)[0])
+                        max_timer_seen = max(max_timer_seen, max(waits))
+
                 if (t + 1) % 50 == 0:
                     print(
                         f"Eval Step {t + 1}/{steps} - Current Queue Total: {raw_queue:.2f}, "
@@ -184,7 +190,7 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
                 if done:
                     print(f"Environment finished early at step {t}")
                     break
-    except (KeyboardInterrupt, traci.exceptions.FatalTraCIError):
+    except KeyboardInterrupt, traci.exceptions.FatalTraCIError:
         print("\nSimulation interrupted (GUI closed). Exiting.")
         trainer.close()
         return
@@ -196,6 +202,17 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     avg_travel_time = sum(vehicle_travel_times) / completed_vehicles if completed_vehicles else 0.0
     avg_delay_time = sum(vehicle_delay_times) / completed_vehicles if completed_vehicles else 0.0
 
+    w_max = trainer.traci_service.max_wait
+    sorted_waits = sorted(vehicle_waiting_times)
+    max_wait_veh = sorted_waits[-1] if sorted_waits else 0.0
+    p95_wait = sorted_waits[min(int(0.95 * len(sorted_waits)), len(sorted_waits) - 1)] if sorted_waits else 0.0
+    frac_over = sum(1 for w in sorted_waits if w >= w_max) / len(sorted_waits) if sorted_waits else 0.0
+    network_jain = trainer.traci_service.compute_jain_index(
+        [trainer.traci_service.service_score(w) for w in sorted_waits]
+    )
+    mean_intersection_jain = sum(intersection_jain) / len(intersection_jain) if intersection_jain else 1.0
+    overrides = trainer.traci_service.override_count
+
     print("\n" + "=" * 50)
     print("EVALUATION METRICS SUMMARY")
     print("=" * 50)
@@ -206,6 +223,12 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
     print(f"Average Travel Time (ATT)  : {avg_travel_time:.2f} seconds")
     print(f"Average Delay Time (ADT)   : {avg_delay_time:.2f} seconds")
     print(f"Peak Total Queue Length    : {peak_queue:.2f} vehicles")
+    print(f"Jain Index (vehicle waits) : {network_jain:.4f}")
+    print(f"Mean Intersection Jain     : {mean_intersection_jain:.4f}")
+    print(f"Max / P95 Vehicle Wait     : {max_wait_veh:.2f} / {p95_wait:.2f} seconds")
+    print(f"Vehicles with wait >= {w_max:.0f}s : {frac_over * 100:.2f}%")
+    print(f"Max Intersection Timer     : {max_timer_seen:.2f} seconds")
+    print(f"Starvation Overrides       : {overrides}")
     print("=" * 50)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -221,6 +244,12 @@ def evaluate_models(model_dir, steps=500, use_gui=False, delay=0.0, config_path=
         f.write(f"Average Travel Time (ATT): {avg_travel_time:.2f} seconds\n")
         f.write(f"Average Delay Time (ADT): {avg_delay_time:.2f} seconds\n")
         f.write(f"Peak Total Queue Length: {peak_queue:.2f} vehicles\n")
+        f.write(f"Jain Index (vehicle waits): {network_jain:.4f}\n")
+        f.write(f"Mean Intersection Jain: {mean_intersection_jain:.4f}\n")
+        f.write(f"Max Vehicle Wait: {max_wait_veh:.2f} seconds\n")
+        f.write(f"P95 Vehicle Wait: {p95_wait:.2f} seconds\n")
+        f.write(f"Vehicles Over {w_max:.0f}s Wait: {frac_over * 100:.2f}%\n")
+        f.write(f"Starvation Overrides: {overrides}\n")
         f.write("\n")
 
     trainer.close()

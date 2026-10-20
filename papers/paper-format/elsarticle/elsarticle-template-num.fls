@@ -1,0 +1,7 @@
+PWD /home/aswajiths/Documents/Traffic/papers/paper-format/elsarticle
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/aswajiths/Documents/Traffic/papers/paper-format/elsarticle/elsarticle-template-num.tex
+OUTPUT elsarticle-template-num.log
