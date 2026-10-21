@@ -21,7 +21,11 @@
 
 \usepackage{listings}
 \usepackage{url}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage{hyperref}
+
+\graphicspath{{../../paper_metrics/}}
 
 % ===============================================================
 % HYPERREF SETUP
@@ -224,6 +228,32 @@ and EMV responsiveness. To the best of our
 knowledge, no existing framework jointly integrates hierarchical MARL,
 topology-aware regional partitioning, envy-free fairness optimization,
 and dynamic multi-EMV routing within a unified city-wide architecture.
+
+In summary, this paper makes four contributions. First, we treat
+regional partitioning as a first-class, empirically investigated
+design variable -- evaluating DBSCAN, Louvain, Leiden, and hybrid
+community-detection/density-clustering combinations -- rather than a
+fixed manual preprocessing step, and show that automatically detected
+regions adapt to network topology and demand density in ways a fixed
+manual grid partition cannot (Section~\ref{subsec6-3}). Second, we
+extend single-EMV preemption to a city-wide, multi-EMV routing
+mechanism (Section~\ref{subsec3-2}) that injects a time-decaying,
+route-anticipatory bias into the hierarchical state representation,
+and report a controlled on/off comparison
+(Table~\ref{tab:emv-routing}) isolating its contribution over purely
+local EMV preemption. Third, we formulate traffic efficiency,
+vehicle-level fairness, and EMV responsiveness as an explicit,
+user-configurable multi-objective reward (Eq.~23--24) rather than
+fixed, hand-tuned constants, and expose accident/incident robustness
+(Section~\ref{subsec3-3}) as an evaluated training condition rather
+than an untested assumption. Fourth, we situate this work against the
+scale of the problem it targets: emergency vehicle delay is associated
+with on the order of 700 annual fatalities and 4{,}500
+ambulance-involved crashes in the United States alone
+\cite{nellore2016}, and the urban populations served by the
+signalized road networks this framework targets number in the
+millions -- making EMV-aware, fairness-aware traffic control a
+high-population-impact problem rather than a narrow research exercise.
 
 
 % ===============================================================
@@ -452,7 +482,27 @@ sub-policy, while a higher-level meta-policy
 coordinates the behavior of these sub-policies across the complete
 network. This provides a scalable alternative to manual decomposition
 and enables hierarchical policy optimization over complex road
-networks.
+networks. Figure~\ref{fig:clusters} illustrates this on Cologne8:
+intersections before any regional abstraction, and the same
+intersections colored by detected cluster (Section~\ref{subsec6-3}
+discusses why a manual grid partition cannot adapt to a network's
+actual connectivity the way this does).
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{after_cluster.png}
+\end{minipage}
+\caption{Cologne8 signalized intersections before regional clustering
+(left) and after Leiden clustering, same color = same cluster (right).}
+\label{fig:clusters}
+\end{figure}
 
 % ---------------------------------------------------------------
 % 3.2 MULTIPLE EMV VEHICLE ROUTING
@@ -954,7 +1004,19 @@ reasoning, local spatial interaction, and physical signal execution
 into distinct layers. Consequently, the framework can automatically
 adapt its regional abstraction to different road networks while
 retaining a shared local control mechanism and a global coordination
-signal.
+signal. Figure~\ref{fig:architecture} summarizes this pipeline
+diagrammatically.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{architecture_diagram.png}
+\caption{End-to-end FairLight architecture (Eq.~22): the road network is
+regionalized, the Meta-Policy issues a global embedding and
+waiting-time/queue targets to the Sub-Policies, whose phase decisions
+pass through a safety-constrained execution layer before reaching the
+SUMO/TraCI environment.}
+\label{fig:architecture}
+\end{figure}
 
 
 % ===============================================================
@@ -1187,6 +1249,11 @@ traffic conditions.
 \item \textit{Max Pressure}: a reactive, non-learning controller that
 selects the signal phase maximizing the pressure difference between
 incoming and outgoing lanes at each intersection~\cite{maxpressure}.
+The implementation used here approximates this with the phase whose
+served incoming lanes carry the most queued vehicles, since the
+framework's phase/lane bookkeeping (reused from the EMV/fairness
+override logic of Sections~\ref{subsec3-2} and~\ref{sec4}) tracks each
+phase's incoming lanes but not their downstream lanes.
 \end{itemize}
 
 In addition to this three-way comparison, the base model is evaluated
@@ -1219,7 +1286,14 @@ waiting time, the mean per-vehicle waiting time over the same horizon.
 These three metrics are reported for the Fixed Time, Max Pressure, and
 base-model (Algorithm) configurations, and separately for the base
 model with and without city-wide multi-EMV routing, in
-Section~\ref{sec6}.
+Section~\ref{sec6}. The evaluation harness additionally records mean
+and 95th-percentile vehicle waiting time, the fraction of vehicles
+exceeding $W_{\max}$, network- and intersection-level Jain's Fairness
+Index split by incident-vs-incident-free simulation steps
+(Section~\ref{subsec3-3}), throughput, and emergency-vehicle response
+time (mean and 95th-percentile); these are discussed in prose in
+Section~\ref{sec6} and reported in full in the accompanying
+\texttt{paper\_metrics/eval\_results.csv}.
 
 
 % ===============================================================
@@ -1234,48 +1308,111 @@ Table~\ref{tab:emv-routing} compares the base model operated with the
 city-wide multi-EMV routing extension of Section~\ref{subsec3-2}
 against the same base model with city-wide EMV routing disabled (i.e.,
 emergency vehicles are pre-empted locally at each intersection without
-network-wide route coordination). The experimental runs required to
-populate this comparison have not yet been completed; the values below
-are placeholders and are reported as such rather than omitted, so that
-the table structure and intended comparison are explicit ahead of the
-full evaluation campaign.
+network-wide route coordination). Both rows are measured on Cologne8
+(8 signalized intersections), trained for five 1200-simulated-second
+episodes per seed (6,000 steps, 25 PPO updates; 3 seeds) and evaluated
+over a further 1200-simulated-second run; Section~\ref{subsec6-3}
+discusses the scale of this evaluation.
 
 \begin{table}[t]
 \centering
-\caption{Base model with vs.\ without city-wide EMV routing (placeholder values pending full evaluation runs).}
+\caption{Base model with vs.\ without city-wide EMV routing, Cologne8, 1200-step evaluation (5 training episodes, seed 0).}
 \label{tab:emv-routing}
 \begin{tabular}{lccc}
 \toprule
 Configuration & Total Avg.\ Trip Time [s] & Total Waiting Time [s] & Total Avg.\ Waiting Time [s] \\
 \midrule
-Without city-wide EMV routing & 0.00 & 0.00 & 0.00 \\
-With city-wide EMV routing    & 0.00 & 0.00 & 0.00 \\
+Without city-wide EMV routing & 166.41 & 40126.97 & 64.62 \\
+With city-wide EMV routing    & 167.06 & 40962.01 & 67.26 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+With 25 PPO updates instead of 5 (Section~\ref{subsec6-3} reports the
+earlier, 5-update result for comparison), the two configurations are
+no longer bit-identical. City-wide EMV routing reduces
+emergency-vehicle response time -- mean 52.75\,s vs.\ 56.25\,s, P95
+93.0\,s vs.\ 111.0\,s ($n=4$ EMVs each) -- at the cost of a small
+increase in ordinary-traffic travel time (167.06\,s vs.\ 166.41\,s,
++0.4\%) and total waiting time (+2.1\%). This is the expected
+trade-off the framework is designed to make explicit (Section~\ref{sec4}:
+EMV priority necessarily imposes some additional cost on ordinary
+traffic) and the correct direction for the mechanism's stated purpose
+-- prioritizing EMVs measurably reduces their response time. Whether
+this specific margin is representative, rather than an artifact of a
+single seed and 4 EMVs, is exactly the multi-seed question
+Section~\ref{sec7} leaves to a longer campaign. Figure~\ref{fig:emv-compare}
+shows the Actor-Critic loss (Section~\ref{subsec3-8}'s $L_{AC}$
+component of Eq.~18) for the two configurations separately, mean $\pm$
+1 std.\ over 3 seeds; neither curve shows clean monotonic convergence
+over 25 updates, which Section~\ref{subsec6-3} returns to.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{with_emv.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{without_emv.png}
+\end{minipage}
+\caption{Actor-Critic training loss with city-wide EMV routing
+\emph{on} (left) vs.\ \emph{off}, local preemption only (right), mean
+$\pm$ 1 std.\ over 3 seeds.}
+\label{fig:emv-compare}
+\end{figure}
+
 \subsection{Comparison with Baseline Traffic Control Methods}\label{subsec6-2}
 
 Table~\ref{tab:baseline-comparison} reports the three evaluation
-metrics of Section~\ref{subsec5-4} for Fixed Time, Max Pressure, and
-the proposed base model (Algorithm). As in
-Section~\ref{subsec6-1}, the corresponding simulation runs have not yet
-been executed, so all entries are placeholders.
+metrics of Section~\ref{subsec5-4} for Fixed Time, Max Pressure
+(Section~\ref{subsec5-2}), and the proposed base model (Algorithm,
+the without-city-wide-EMV-routing configuration of
+Table~\ref{tab:emv-routing}), measured under the same Cologne8 setup
+as Section~\ref{subsec6-1}.
 
 \begin{table}[t]
 \centering
-\caption{Comparison of traffic signal control methods (placeholder values pending full evaluation runs).}
+\caption{Comparison of traffic signal control methods, Cologne8, 1200-step evaluation (5 training episodes, seed 0, where applicable).}
 \label{tab:baseline-comparison}
 \begin{tabular}{lccc}
 \toprule
 Method & Total Avg.\ Trip Time [s] & Total Waiting Time [s] & Total Avg.\ Waiting Time [s] \\
 \midrule
-Fixed       & 0.00 & 0.00 & 0.00 \\
-Max Pressure & 0.00 & 0.00 & 0.00 \\
-Algorithm   & 0.00 & 0.00 & 0.00 \\
+Fixed        & 155.90 & 38421.98 & 58.75 \\
+Max Pressure & 96.54  & 8769.98  & 11.95 \\
+Algorithm    & 166.41 & 40126.97 & 64.62 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Max Pressure -- a reactive heuristic with no learning required --
+outperforms Algorithm on every column, and now so does Fixed Time:
+Algorithm's average trip time is 6.7\% \emph{worse} than the
+non-adaptive Fixed-Time baseline it beat at 5 PPO updates (see
+Section~\ref{subsec6-3} for the direct 5-vs-25-update comparison).
+This is not the expected direction for additional training and is
+reported as such: it is direct, measured evidence for the training
+instability Section~\ref{sec7} already lists as this work's main
+limitation, not a property hidden behind the reduced-scale framing.
+Figure~\ref{fig:reward} shows
+the raw $R_{\mathrm{eff}}$, $R_{\mathrm{fair}}$, and
+$R_{\mathrm{emergency}}$ components (Eq.~25, 29, 30) on a symlog axis
+against the normalized overall reward $R_{\mathrm{total}}$ on the
+right axis, mean $\pm$ 1 std.\ over 3 seeds, for the training runs
+underlying both tables above.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{reward_components.png}
+\caption{Raw reward components $R_{\mathrm{eff}}$, $R_{\mathrm{fair}}$,
+$R_{\mathrm{emergency}}$ (symlog, left axis) and the normalized
+overall reward $R_{\mathrm{total}}$ (right axis) during training,
+mean $\pm$ 1 std.\ over 3 seeds.}
+\label{fig:reward}
+\end{figure}
 
 \subsection{Discussion}\label{subsec6-3}
 
@@ -1285,10 +1422,77 @@ framework is designed to support: isolating the contribution of
 city-wide, coordinated EMV routing from the underlying hierarchical
 controller, and situating the base model relative to the two
 traditional, non-learning baselines most commonly reported in the
-traffic-signal-control literature. Populating these tables with
-measured values, and discussing the resulting trends, is left to the
-full evaluation campaign; no performance claims are made on the basis
-of the placeholder entries reported here.
+traffic-signal-control literature.
+
+\paragraph{Manual clustering does not adapt to network topology.}
+Section~\ref{subsec3-1} treats regional partitioning as a research
+variable rather than a fixed preprocessing step precisely because a
+fixed manual partition cannot adapt to a network's actual connectivity.
+On Cologne8's 8 signalized intersections, a manual $2\times1$ grid
+partition forces a split into clusters of size 3 and 5 regardless of
+road-network structure, whereas Louvain and the production DBSCAN
+partition both report zero modularity and collapse to a single region
+-- i.e.\ the automatic methods correctly detect that this small,
+densely-interconnected network does not support a meaningful
+multi-community split, something a fixed grid cannot do by
+construction. On the larger Manhattan network, the opposite failure
+mode appears: a manual $3\times5$ grid partition produces clusters
+ranging from 15 to 88 intersections (a 5.9$\times$ size imbalance)
+purely from grid geometry, while Louvain finds real community
+structure (modularity 0.62) and partitions the same network into 9
+regions sized to that structure. In both directions -- collapsing
+when no structure exists, and fragmenting unevenly when real structure
+exists -- manual clustering's errors are an artifact of the grid, not
+of the traffic network, which is the concrete case for treating
+regionalization as a learned/detected variable (Section~\ref{subsec3-1})
+rather than a manual design choice. Figure~\ref{fig:clusters}
+(Section~\ref{subsec3-1}) shows Cologne8's 8 signalized intersections
+before any regional abstraction is applied, and after Leiden
+clustering (the one automatic method that yields more than one
+Cologne8 region, making the color-by-cluster visualization meaningful;
+DBSCAN's single-region result on this network is itself part of the
+evidence above).
+
+\paragraph{5 vs.\ 25 PPO updates: measured instability, not just a
+caveat.} An earlier pass trained the same three configurations for a
+single 1200-step episode (5 PPO updates) rather than the five episodes
+(25 updates) reported in Tables~\ref{tab:emv-routing}
+and~\ref{tab:baseline-comparison}. At 5 updates, Algorithm (the
+without-EMV-routing configuration) reached 126.92\,s average trip
+time -- 19\% \emph{better} than Fixed Time's 155.90\,s. At 25 updates,
+the same configuration reached 166.41\,s -- 6.7\% \emph{worse} than
+Fixed Time. The with-EMV-routing and HiLight-ablation configurations
+show the same direction (126.92\,s $\to$ 167.06\,s, and
+126.92\,s $\to$ 160.43\,s, respectively; at 5 updates all three
+configurations were in fact bit-identical, since that little training
+was insufficient to move a greedy policy's decisions at all --
+Section~\ref{subsec6-1}). More training made every configuration's
+raw travel time worse on this single seed, which is the opposite of
+what additional training should do and is reported here as direct,
+measured evidence for exactly the instability Section~\ref{sec7}
+lists as this work's main limitation, rather than a property that
+disappears once training resumes. It does not, by itself, indicate
+that the hierarchical architecture cannot converge -- only that this
+optimization setup has not yet been shown to, over the training
+horizons tested so far.
+
+\paragraph{Reduced-scale evaluation.} The runs underlying
+Tables~\ref{tab:emv-routing} and~\ref{tab:baseline-comparison} are a
+few-seed demonstration on Cologne8 (Section~\ref{sec7} discusses this
+scope limitation), not the long-horizon, multi-seed campaign a
+publication-grade efficiency/fairness claim would need; the trends
+below should be read as evidence the implemented mechanisms behave as
+designed, not as a final performance claim. Figure~\ref{fig:reward}
+(Section~\ref{subsec6-2}) shows that $R_{\mathrm{fair}}$ and
+$R_{\mathrm{emergency}}$ are visibly smaller in magnitude than
+$R_{\mathrm{eff}}$, the concrete instance of the risk Section~\ref{sec4}
+already flags for the $\lambda$ coefficients -- an unweighted
+efficiency term can swamp the fairness/EMV terms unless deliberately
+scaled, and $w_1, w_2, w_3$ (Eq.~24) are the user-facing knob for
+correcting it. Figure~\ref{fig:emv-compare} (Section~\ref{subsec6-1})
+shows why Table~\ref{tab:emv-routing} is the metric that isolates
+city-wide EMV routing's contribution rather than the Actor-Critic loss
+curve alone.
 
 
 % ===============================================================
@@ -1301,26 +1505,33 @@ This paper proposed FairLight, a hierarchical region-aware multi-agent
 reinforcement learning framework that treats regional partitioning,
 vehicle-level fairness, and city-wide emergency-vehicle routing as
 first-class, jointly optimized objectives rather than independent
-preprocessing steps or post-hoc evaluation criteria. The main
-limitation of the work at its current stage is that several of its
-central components --- the multi-EMV routing extension of
-Section~\ref{subsec3-2} and the accident-robustness mechanism of
-Section~\ref{subsec3-3} --- are presented as proposed designs rather
-than fully trained and evaluated systems, and the comparative results
-in Section~\ref{sec6} are reported as placeholders pending a complete
-evaluation campaign. Training the full hierarchy has also been
-observed to be numerically unstable under the current optimization
-setup, and the framework has so far been validated only in SUMO,
-whose vehicle models and signal infrastructure are a simplification of
-an operating real-world traffic system.
+preprocessing steps or post-hoc evaluation criteria. The multi-EMV
+routing extension of Section~\ref{subsec3-2} and the
+accident-robustness mechanism of Section~\ref{subsec3-3} are now
+implemented end-to-end -- local and city-wide EMV preemption, the
+weighted multi-objective reward of Section~\ref{sec4}, and random
+lane-closure incident injection -- and the comparative results in
+Section~\ref{sec6} are measured values from that implementation on the
+Cologne8 network, not placeholders. The main limitation at this stage
+is scale: the runs reported in Section~\ref{sec6} are a five-episode,
+few-seed demonstration rather than the long-horizon, multi-seed
+evaluation campaign a publication-grade claim would require, and
+training the full hierarchy has been observed to be numerically
+sensitive under the current optimization setup over longer
+horizons -- confirmed directly in Section~\ref{subsec6-3}, where
+extending training from 5 to 25 PPO updates made average trip time
+\emph{worse} on every configuration tested rather than better. The
+framework has so far been validated only in SUMO, whose vehicle
+models and signal infrastructure are a simplification of an operating
+real-world traffic system.
 
-Addressing these limitations requires, first, completing the
-evaluation campaign outlined in Section~\ref{sec5} across the
-Fixed-Time, Max-Pressure, and base-model configurations and across the
-city-wide-EMV-routing ablation, with multiple random seeds and
-variability estimates rather than single runs; second, stabilizing the
-joint Meta-Policy/Sub-Policy optimization so that reported results
-reflect converged rather than diverging training; and third, extending
+Addressing these limitations requires, first, extending the evaluation
+campaign outlined in Section~\ref{sec5} to longer episodes, more
+random seeds, and the remaining scenarios beyond Cologne8, with
+variability estimates rather than the reduced-scale runs reported
+here; second, stabilizing the joint Meta-Policy/Sub-Policy optimization
+over longer training horizons so that reported results reflect
+converged rather than diverging training; and third, extending
 validation beyond simulation toward hardware-in-the-loop or
 closed-course testing with a real signal controller, which would
 expose the framework to sensing noise and driver behavior that SUMO

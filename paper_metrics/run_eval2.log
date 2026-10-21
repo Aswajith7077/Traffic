@@ -1,0 +1,231 @@
+>>> evaluating with_emv (algorithm)
+t Queue Total: 137.00, Completed Vehicles: 47
+Eval Step 250/1200 - Current Queue Total: 135.00, Completed Vehicles: 67
+Eval Step 300/1200 - Current Queue Total: 136.00, Completed Vehicles: 90
+Eval Step 350/1200 - Current Queue Total: 112.00, Completed Vehicles: 121
+Eval Step 400/1200 - Current Queue Total: 146.00, Completed Vehicles: 135
+Eval Step 450/1200 - Current Queue Total: 166.00, Completed Vehicles: 160
+Eval Step 500/1200 - Current Queue Total: 146.00, Completed Vehicles: 182
+Eval Step 550/1200 - Current Queue Total: 181.00, Completed Vehicles: 205
+Eval Step 600/1200 - Current Queue Total: 207.00, Completed Vehicles: 233
+Eval Step 650/1200 - Current Queue Total: 289.00, Completed Vehicles: 244
+Eval Step 700/1200 - Current Queue Total: 318.00, Completed Vehicles: 258
+Eval Step 750/1200 - Current Queue Total: 378.00, Completed Vehicles: 279
+Eval Step 800/1200 - Current Queue Total: 424.00, Completed Vehicles: 307
+Eval Step 850/1200 - Current Queue Total: 477.00, Completed Vehicles: 347
+Eval Step 900/1200 - Current Queue Total: 449.00, Completed Vehicles: 380
+Eval Step 950/1200 - Current Queue Total: 463.00, Completed Vehicles: 415
+Eval Step 1000/1200 - Current Queue Total: 470.00, Completed Vehicles: 458
+Eval Step 1050/1200 - Current Queue Total: 468.00, Completed Vehicles: 495
+Eval Step 1100/1200 - Current Queue Total: 445.00, Completed Vehicles: 538
+Eval Step 1150/1200 - Current Queue Total: 443.00, Completed Vehicles: 586
+Eval Step 1200/1200 - Current Queue Total: 423.00, Completed Vehicles: 609
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 609
+Throughput                 : 0.5075 vehicles/step
+Average Queue Length       : 277.55 vehicles
+Average Waiting Time       : 67.26 seconds
+Average Travel Time (ATT)  : 167.06 seconds
+Average Delay Time (ADT)   : 112.95 seconds
+Peak Total Queue Length    : 519.00 vehicles
+Jain Index (vehicle waits) : 0.6913
+Mean Intersection Jain     : 0.9012
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9012 (n=6736)
+Max / P95 Vehicle Wait     : 282.00 / 196.00 seconds
+Vehicles with wait >= 90s : 41.87%
+Max Intersection Timer     : 151.00 seconds
+Starvation/EMV Overrides   : 883
+EMV Response Time (mean/P95): 52.75 / 93.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> evaluating without_emv (algorithm)
+ Queue Total: 148.00, Completed Vehicles: 45
+Eval Step 250/1200 - Current Queue Total: 149.00, Completed Vehicles: 69
+Eval Step 300/1200 - Current Queue Total: 125.00, Completed Vehicles: 90
+Eval Step 350/1200 - Current Queue Total: 106.00, Completed Vehicles: 120
+Eval Step 400/1200 - Current Queue Total: 121.00, Completed Vehicles: 137
+Eval Step 450/1200 - Current Queue Total: 125.00, Completed Vehicles: 165
+Eval Step 500/1200 - Current Queue Total: 130.00, Completed Vehicles: 190
+Eval Step 550/1200 - Current Queue Total: 158.00, Completed Vehicles: 210
+Eval Step 600/1200 - Current Queue Total: 214.00, Completed Vehicles: 231
+Eval Step 650/1200 - Current Queue Total: 246.00, Completed Vehicles: 249
+Eval Step 700/1200 - Current Queue Total: 305.00, Completed Vehicles: 268
+Eval Step 750/1200 - Current Queue Total: 384.00, Completed Vehicles: 285
+Eval Step 800/1200 - Current Queue Total: 410.00, Completed Vehicles: 308
+Eval Step 850/1200 - Current Queue Total: 456.00, Completed Vehicles: 344
+Eval Step 900/1200 - Current Queue Total: 458.00, Completed Vehicles: 384
+Eval Step 950/1200 - Current Queue Total: 479.00, Completed Vehicles: 416
+Eval Step 1000/1200 - Current Queue Total: 470.00, Completed Vehicles: 453
+Eval Step 1050/1200 - Current Queue Total: 467.00, Completed Vehicles: 498
+Eval Step 1100/1200 - Current Queue Total: 453.00, Completed Vehicles: 541
+Eval Step 1150/1200 - Current Queue Total: 411.00, Completed Vehicles: 576
+Eval Step 1200/1200 - Current Queue Total: 376.00, Completed Vehicles: 621
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 621
+Throughput                 : 0.5175 vehicles/step
+Average Queue Length       : 268.98 vehicles
+Average Waiting Time       : 64.62 seconds
+Average Travel Time (ATT)  : 166.41 seconds
+Average Delay Time (ADT)   : 112.40 seconds
+Peak Total Queue Length    : 530.00 vehicles
+Jain Index (vehicle waits) : 0.6949
+Mean Intersection Jain     : 0.9035
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9035 (n=6737)
+Max / P95 Vehicle Wait     : 290.00 / 188.00 seconds
+Vehicles with wait >= 90s : 42.67%
+Max Intersection Timer     : 114.00 seconds
+Starvation/EMV Overrides   : 827
+EMV Response Time (mean/P95): 56.25 / 111.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> evaluating hilight_ablation (algorithm)
+t Queue Total: 137.00, Completed Vehicles: 47
+Eval Step 250/1200 - Current Queue Total: 135.00, Completed Vehicles: 67
+Eval Step 300/1200 - Current Queue Total: 136.00, Completed Vehicles: 90
+Eval Step 350/1200 - Current Queue Total: 112.00, Completed Vehicles: 121
+Eval Step 400/1200 - Current Queue Total: 145.00, Completed Vehicles: 135
+Eval Step 450/1200 - Current Queue Total: 141.00, Completed Vehicles: 164
+Eval Step 500/1200 - Current Queue Total: 122.00, Completed Vehicles: 188
+Eval Step 550/1200 - Current Queue Total: 133.00, Completed Vehicles: 219
+Eval Step 600/1200 - Current Queue Total: 181.00, Completed Vehicles: 242
+Eval Step 650/1200 - Current Queue Total: 273.00, Completed Vehicles: 259
+Eval Step 700/1200 - Current Queue Total: 293.00, Completed Vehicles: 278
+Eval Step 750/1200 - Current Queue Total: 371.00, Completed Vehicles: 294
+Eval Step 800/1200 - Current Queue Total: 409.00, Completed Vehicles: 314
+Eval Step 850/1200 - Current Queue Total: 463.00, Completed Vehicles: 353
+Eval Step 900/1200 - Current Queue Total: 463.00, Completed Vehicles: 393
+Eval Step 950/1200 - Current Queue Total: 420.00, Completed Vehicles: 423
+Eval Step 1000/1200 - Current Queue Total: 492.00, Completed Vehicles: 460
+Eval Step 1050/1200 - Current Queue Total: 467.00, Completed Vehicles: 503
+Eval Step 1100/1200 - Current Queue Total: 434.00, Completed Vehicles: 550
+Eval Step 1150/1200 - Current Queue Total: 429.00, Completed Vehicles: 598
+Eval Step 1200/1200 - Current Queue Total: 412.00, Completed Vehicles: 625
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 625
+Throughput                 : 0.5208 vehicles/step
+Average Queue Length       : 266.85 vehicles
+Average Waiting Time       : 62.64 seconds
+Average Travel Time (ATT)  : 160.43 seconds
+Average Delay Time (ADT)   : 106.16 seconds
+Peak Total Queue Length    : 525.00 vehicles
+Jain Index (vehicle waits) : 0.7099
+Mean Intersection Jain     : 0.9080
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9080 (n=6761)
+Max / P95 Vehicle Wait     : 284.00 / 197.00 seconds
+Vehicles with wait >= 90s : 38.88%
+Max Intersection Timer     : 140.00 seconds
+Starvation/EMV Overrides   : 827
+EMV Response Time (mean/P95): 54.25 / 98.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> evaluating fixed (fixed)
+Current Queue Total: 108.00, Completed Vehicles: 52
+Eval Step 250/1200 - Current Queue Total: 86.00, Completed Vehicles: 73
+Eval Step 300/1200 - Current Queue Total: 88.00, Completed Vehicles: 100
+Eval Step 350/1200 - Current Queue Total: 72.00, Completed Vehicles: 129
+Eval Step 400/1200 - Current Queue Total: 101.00, Completed Vehicles: 150
+Eval Step 450/1200 - Current Queue Total: 153.00, Completed Vehicles: 168
+Eval Step 500/1200 - Current Queue Total: 172.00, Completed Vehicles: 189
+Eval Step 550/1200 - Current Queue Total: 176.00, Completed Vehicles: 213
+Eval Step 600/1200 - Current Queue Total: 219.00, Completed Vehicles: 235
+Eval Step 650/1200 - Current Queue Total: 240.00, Completed Vehicles: 263
+Eval Step 700/1200 - Current Queue Total: 260.00, Completed Vehicles: 290
+Eval Step 750/1200 - Current Queue Total: 310.00, Completed Vehicles: 316
+Eval Step 800/1200 - Current Queue Total: 376.00, Completed Vehicles: 341
+Eval Step 850/1200 - Current Queue Total: 450.00, Completed Vehicles: 377
+Eval Step 900/1200 - Current Queue Total: 449.00, Completed Vehicles: 408
+Eval Step 950/1200 - Current Queue Total: 447.00, Completed Vehicles: 447
+Eval Step 1000/1200 - Current Queue Total: 477.00, Completed Vehicles: 494
+Eval Step 1050/1200 - Current Queue Total: 468.00, Completed Vehicles: 525
+Eval Step 1100/1200 - Current Queue Total: 473.00, Completed Vehicles: 560
+Eval Step 1150/1200 - Current Queue Total: 444.00, Completed Vehicles: 612
+Eval Step 1200/1200 - Current Queue Total: 390.00, Completed Vehicles: 654
+
+==================================================
+EVALUATION METRICS SUMMARY (fixed)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 654
+Throughput                 : 0.5450 vehicles/step
+Average Queue Length       : 258.98 vehicles
+Average Waiting Time       : 58.75 seconds
+Average Travel Time (ATT)  : 155.90 seconds
+Average Delay Time (ADT)   : 103.18 seconds
+Peak Total Queue Length    : 519.00 vehicles
+Jain Index (vehicle waits) : 0.7326
+Mean Intersection Jain     : 0.9390
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9390 (n=6928)
+Max / P95 Vehicle Wait     : 205.00 / 167.00 seconds
+Vehicles with wait >= 90s : 28.44%
+Max Intersection Timer     : 116.00 seconds
+Starvation/EMV Overrides   : 301
+EMV Response Time (mean/P95): 48.25 / 79.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> evaluating max_pressure (max_pressure)
+ - Current Queue Total: 52.00, Completed Vehicles: 75
+Eval Step 250/1200 - Current Queue Total: 35.00, Completed Vehicles: 95
+Eval Step 300/1200 - Current Queue Total: 35.00, Completed Vehicles: 120
+Eval Step 350/1200 - Current Queue Total: 43.00, Completed Vehicles: 139
+Eval Step 400/1200 - Current Queue Total: 73.00, Completed Vehicles: 153
+Eval Step 450/1200 - Current Queue Total: 114.00, Completed Vehicles: 181
+Eval Step 500/1200 - Current Queue Total: 112.00, Completed Vehicles: 206
+Eval Step 550/1200 - Current Queue Total: 114.00, Completed Vehicles: 242
+Eval Step 600/1200 - Current Queue Total: 96.00, Completed Vehicles: 277
+Eval Step 650/1200 - Current Queue Total: 108.00, Completed Vehicles: 314
+Eval Step 700/1200 - Current Queue Total: 120.00, Completed Vehicles: 342
+Eval Step 750/1200 - Current Queue Total: 148.00, Completed Vehicles: 370
+Eval Step 800/1200 - Current Queue Total: 194.00, Completed Vehicles: 401
+Eval Step 850/1200 - Current Queue Total: 274.00, Completed Vehicles: 440
+Eval Step 900/1200 - Current Queue Total: 251.00, Completed Vehicles: 484
+Eval Step 950/1200 - Current Queue Total: 250.00, Completed Vehicles: 526
+Eval Step 1000/1200 - Current Queue Total: 220.00, Completed Vehicles: 567
+Eval Step 1050/1200 - Current Queue Total: 234.00, Completed Vehicles: 604
+Eval Step 1100/1200 - Current Queue Total: 222.00, Completed Vehicles: 648
+Eval Step 1150/1200 - Current Queue Total: 225.00, Completed Vehicles: 697
+Eval Step 1200/1200 - Current Queue Total: 220.00, Completed Vehicles: 734
+
+==================================================
+EVALUATION METRICS SUMMARY (max_pressure)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 734
+Throughput                 : 0.6117 vehicles/step
+Average Queue Length       : 138.02 vehicles
+Average Waiting Time       : 11.95 seconds
+Average Travel Time (ATT)  : 96.54 seconds
+Average Delay Time (ADT)   : 43.04 seconds
+Peak Total Queue Length    : 301.00 vehicles
+Jain Index (vehicle waits) : 0.9396
+Mean Intersection Jain     : 0.9935
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9935 (n=6359)
+Max / P95 Vehicle Wait     : 58.00 / 39.00 seconds
+Vehicles with wait >= 90s : 0.00%
+Max Intersection Timer     : 56.00 seconds
+Starvation/EMV Overrides   : 27
+EMV Response Time (mean/P95): 42.50 / 53.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+EVAL DONE

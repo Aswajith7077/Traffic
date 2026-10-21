@@ -8,6 +8,8 @@ if "SUMO_HOME" in os.environ:
 else:
     sys.exit("Environment variable SUMO_HOME not declared")
 
+import math
+import random
 from collections import defaultdict, deque
 
 import sumolib.net
@@ -16,6 +18,12 @@ import traci
 from schema import TraciConfig
 from sumolib import checkBinary
 from utils.compute_phase_history import compute_phase_entropy
+
+EMV_TYPE_ID = "emergency"
+EMV_BIAS_DECAY = 0.5  # time-decay rate per intersection hop, Section 3.2
+ACCIDENT_PROB_PER_STEP = 0.002  # ~1 incident every 500s on average, Section 3.3
+ACCIDENT_MIN_DURATION = 30
+ACCIDENT_MAX_DURATION = 120
 
 
 class TraciService:
@@ -49,6 +57,10 @@ class TraciService:
         self.phase_served_lanes = {}
         self._incoming_lanes_cache = {}
         self.override_count = 0
+
+        # Accident/incident injection (Section 3.3): at most one active
+        # incident at a time, a random lane forced to ~0 speed for a window.
+        self._active_accident = None
 
     def __set_config_path(self, config_path):
         if not config_path.endswith(".sumocfg"):
@@ -142,7 +154,40 @@ class TraciService:
         self.start_simulation()
 
     def step(self):
+        self.maybe_inject_accident()
         traci.simulationStep()
+
+    @property
+    def in_incident(self):
+        return self._active_accident is not None
+
+    def maybe_inject_accident(self):
+        """Random lane-closure incidents (Section 3.3), gated by config.use_accidents.
+        At most one active incident at a time; it self-resolves after a random
+        duration, restoring the lane's original speed limit."""
+        if not self.config.use_accidents:
+            return
+
+        if self._active_accident is not None:
+            self._active_accident["remaining"] -= 1
+            if self._active_accident["remaining"] <= 0:
+                traci.lane.setMaxSpeed(self._active_accident["lane"], self._active_accident["original_speed"])
+                self._active_accident = None
+            return
+
+        if random.random() < ACCIDENT_PROB_PER_STEP and self.edge_ids:
+            edge = random.choice(list(self.edge_ids))
+            lane_id = f"{edge}_0"
+            try:
+                original_speed = traci.lane.getMaxSpeed(lane_id)
+            except traci.exceptions.TraCIException:
+                return
+            traci.lane.setMaxSpeed(lane_id, 0.1)
+            self._active_accident = {
+                "lane": lane_id,
+                "original_speed": original_speed,
+                "remaining": random.randint(ACCIDENT_MIN_DURATION, ACCIDENT_MAX_DURATION),
+            }
 
     def compute_intersection_pressure(self, tl_id):
         pressure = 0.0
@@ -275,6 +320,66 @@ class TraciService:
         jain = self.compute_jain_index([self.service_score(w) for w in waits])
         return jain, var, max(waits)
 
+    def _active_emv_ids(self):
+        return [v for v in traci.vehicle.getIDList() if traci.vehicle.getTypeID(v) == EMV_TYPE_ID]
+
+    def _emv_phase(self, tls_id, valid_phases, current_phase):
+        """Local EMV preemption (Section 5.2's baseline: EMVs pre-empted locally
+        at each intersection, with no network-wide route coordination). Active
+        regardless of `use_emv_routing` — the city-wide extension only adds the
+        anticipatory bias in `compute_emv_bias`/observations on top of this."""
+        incoming = set(self._get_incoming_lanes(tls_id))
+        for veh_id in self._active_emv_ids():
+            try:
+                lane = traci.vehicle.getLaneID(veh_id)
+            except traci.exceptions.TraCIException:
+                continue
+            if lane not in incoming:
+                continue
+            candidates = ([current_phase] if current_phase in valid_phases else []) + [
+                p for p in valid_phases if p != current_phase
+            ]
+            for phase in candidates:
+                if lane in self.phase_served_lanes[tls_id].get(phase, ()):
+                    return phase
+        return None
+
+    def compute_emv_bias(self):
+        """Time-decaying, per-intersection anticipatory bias along each active
+        EMV's route to its destination (Section 3.2, city-wide multi-EMV
+        routing). Arbitration across concurrent EMVs takes the max bias per
+        intersection rather than summing, so one intersection can't be pulled
+        toward two different EMVs' corridors at once.
+
+        Returns:
+            dict[tls_id -> float in (0, 1]], intersections with no upcoming EMV omitted.
+        """
+        bias = defaultdict(float)
+        if self._net is None:
+            return bias
+
+        for veh_id in self._active_emv_ids():
+            try:
+                route = traci.vehicle.getRoute(veh_id)
+                route_index = traci.vehicle.getRouteIndex(veh_id)
+            except traci.exceptions.TraCIException:
+                continue
+            if route_index < 0:
+                continue
+
+            for hop, edge_id in enumerate(route[route_index:]):
+                try:
+                    node_id = self._net.getEdge(edge_id).getToNode().getID()
+                except (KeyError, traci.exceptions.TraCIException):
+                    continue
+                if node_id not in self.tl_ids:
+                    continue
+                decay = math.exp(-EMV_BIAS_DECAY * hop)
+                if decay > bias[node_id]:
+                    bias[node_id] = decay
+
+        return bias
+
     def _starved_phase(self, tls_id, valid_phases, current_phase):
         """Valid phase serving the longest-waiting vehicle at/over W_max, else None.
         The current phase is preferred when it already serves that vehicle."""
@@ -353,14 +458,22 @@ class TraciService:
 
         current_phase = traci.trafficlight.getPhase(tls_id)
 
-        # Fairness safeguard (Section 4.1): a vehicle that has reached W_max overrides the
-        # policy's choice with a phase that serves it. The override only changes the
+        # EMV local preemption (Section 3.2/5.2) takes priority over the fairness
+        # starvation override below — "emergency vehicles require substantially
+        # higher priority than regular traffic" (Section 4.3). Fairness safeguard
+        # (Section 4.1): a vehicle that has reached W_max overrides the policy's
+        # choice with a phase that serves it. Either override only changes the
         # *requested* phase; min-green and yellow clearance below still apply.
         if not self.in_transition[tls_id]:
-            starved_phase = self._starved_phase(tls_id, valid_phases, current_phase)
-            if starved_phase is not None and starved_phase != safe_phase:
-                safe_phase = starved_phase
+            emv_phase = self._emv_phase(tls_id, valid_phases, current_phase)
+            if emv_phase is not None and emv_phase != safe_phase:
+                safe_phase = emv_phase
                 self.override_count += 1
+            else:
+                starved_phase = self._starved_phase(tls_id, valid_phases, current_phase)
+                if starved_phase is not None and starved_phase != safe_phase:
+                    safe_phase = starved_phase
+                    self.override_count += 1
 
         if self.in_transition[tls_id]:
             self.yellow_timer[tls_id] += 1
@@ -466,10 +579,15 @@ class TraciService:
 
         return adj_list
 
-    def get_observations(self):
+    def get_observations(self, emv_bias=None):
         """
+        emv_bias: optional dict[tls_id -> float], from `compute_emv_bias()`
+        (Section 3.2, city-wide EMV routing). Appended as an 11th per-
+        intersection feature, 0.0 for every intersection when omitted/off
+        (`use_emv_routing=False`), so OBS_DIM stays fixed either way.
+
         Returns:
-        tensor of shape (num_clusters, 10)
+        tensor of shape (num_clusters, 11)
         """
 
         states = []
@@ -514,6 +632,7 @@ class TraciService:
                     pressure,
                     congestion_ratio,
                     delay,
+                    (emv_bias or {}).get(tl_id, 0.0),
                 ],
                 dtype=torch.float32,
             )

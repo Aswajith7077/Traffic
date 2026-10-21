@@ -1,0 +1,43 @@
+{
+  "with_emv": [
+    {
+      "seed": 0,
+      "run_dir": "../models/cologne8/run_20261021_202002_7311",
+      "use_emv_routing": true
+    },
+    {
+      "seed": 1,
+      "run_dir": "../models/cologne8/run_20261021_203132_3201",
+      "use_emv_routing": true
+    },
+    {
+      "seed": 2,
+      "run_dir": "../models/cologne8/run_20261021_204240_1926",
+      "use_emv_routing": true
+    }
+  ],
+  "without_emv": [
+    {
+      "seed": 0,
+      "run_dir": "../models/cologne8/run_20261021_205353_7311",
+      "use_emv_routing": false
+    },
+    {
+      "seed": 1,
+      "run_dir": "../models/cologne8/run_20261021_210457_3201",
+      "use_emv_routing": false
+    },
+    {
+      "seed": 2,
+      "run_dir": "../models/cologne8/run_20261021_211607_1926",
+      "use_emv_routing": false
+    }
+  ],
+  "hilight_ablation": [
+    {
+      "seed": 0,
+      "run_dir": "../models/cologne8/run_20261021_212652_7311",
+      "use_emv_routing": false
+    }
+  ]
+}

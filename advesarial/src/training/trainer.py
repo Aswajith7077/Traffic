@@ -7,7 +7,7 @@ import torch
 from agents import ActorCritic
 from config import config
 from environment import Environment
-from schema import TraciConfig, TransformerEncoderConfig
+from schema import RewardConfig, TraciConfig, TransformerEncoderConfig
 from services import TraciService
 from torch.distributions import Categorical
 from utils import RegionalStateBuffer
@@ -21,7 +21,7 @@ from .rollout import RolloutBuffer
 # Table 5 hyperparameters, plus a couple of PPO-mechanics defaults the paper's
 # tables don't specify (ppo_epochs, temporal_window/meta_update_interval come
 # from the originally-pasted spec's Table-5-adjacent config, not this table).
-OBS_DIM = 10  # this repo's per-intersection observation size (see report: paper's 66 not reconstructed)
+OBS_DIM = 11  # 10 traffic features + 1 EMV-routing bias feature (Section 3.2, 0.0 when unused)
 D_REG = 4  # regional-state dim, Appendix A
 NUM_ACTIONS = 8
 TEMPORAL_WINDOW = 20
@@ -43,14 +43,14 @@ PPO_EPOCHS = 4  # not paper-specified; a standard PPO default
 
 
 class Trainer:
-    def __init__(self, scenario, sumocfg_path, use_gui=False, delay=0.0):
+    def __init__(self, scenario, sumocfg_path, use_gui=False, delay=0.0, reward_config: RewardConfig = None):
         self.scenario = scenario
 
         traci_config = TraciConfig(config_path=sumocfg_path, use_gui=use_gui, delay=delay)
         self.traci_service = TraciService(traci_config)
         self.traci_service.start_simulation()
 
-        self.environment = Environment(traci_service=self.traci_service)
+        self.environment = Environment(traci_service=self.traci_service, reward_config=reward_config)
         self.adjacency_list = self.traci_service.get_adjacency_list()
         self.intersections = self.traci_service.get_all_intersections()
         self.action_mask = self.traci_service.get_action_mask(NUM_ACTIONS)
@@ -100,6 +100,7 @@ class Trainer:
         self.meta_losses = []
         self.sub_loss_history = []
         self.rewards_history = []
+        self.reward_components_history = []  # [{"r_eff":..,"r_fair":..,"r_emv":..}, ...], one per step
 
     def _normalize_obs(self, obs):
         batch_mean = obs.mean(dim=0)
@@ -110,6 +111,12 @@ class Trainer:
 
         normalized = (obs - self.running_mean) / (torch.sqrt(self.running_var) + 1e-8)
         return torch.clamp(normalized, -5, 5)
+
+    def _get_observations(self):
+        """get_observations(), with the city-wide EMV routing bias (Section 3.2)
+        attached when `use_emv_routing` is on; 0.0 everywhere otherwise."""
+        emv_bias = self.traci_service.compute_emv_bias() if self.traci_service.config.use_emv_routing else None
+        return self.traci_service.get_observations(emv_bias)
 
     def _encode_step(self, obs_t, f_g_t):
         """local_encoder -> GAC -> fuse with F_g. Kept differentiable so the
@@ -214,7 +221,7 @@ class Trainer:
     def _step(self):
         f_g, goal = self._meta_forward()
 
-        obs = self.traci_service.get_observations()
+        obs = self._get_observations()
         obs = self._normalize_obs(obs)
 
         with torch.no_grad():
@@ -230,6 +237,7 @@ class Trainer:
         _, reward, done = self.environment.step(action, goal=goal_pair)
         if not isinstance(reward, torch.Tensor):
             reward = torch.tensor(reward, dtype=torch.float32)
+        self.reward_components_history.append(dict(self.environment.last_reward_components))
 
         w_global_t, q_global_t = self.traci_service.compute_global_state_now()
         w_global_sum = w_global_t.sum()

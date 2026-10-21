@@ -1,0 +1,301 @@
+>>> training with_emv seed=0 (w1=0.6, w2=0.3, w3=0.1, emv=True)
+33.44s
+ TraCI-Duration: 131.33s
+ Real time factor: 8.9926
+ UPS: 889.690729
+Vehicles:
+ Inserted: 800 (Loaded: 838)
+ Running: 149
+ Waiting: 27
+ Emergency Braking: 1
+DijkstraRouter answered 884 queries and explored 42.42 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.05ms on average).
+Loading configuration ... done.
+***Starting server on port 46167 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 133.47s
+ TraCI-Duration: 131.22s
+ Real time factor: 8.99058
+ UPS: 915.690814
+Vehicles:
+ Inserted: 813 (Loaded: 838)
+ Running: 152
+ Waiting: 14
+ Emergency Braking: 1
+DijkstraRouter answered 858 queries and explored 46.02 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_202002_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/with_emv_seed0.json
+RUN_DIR ../models/cologne8/run_20261021_202002_7311
+
+>>> training with_emv seed=1 (w1=0.6, w2=0.3, w3=0.1, emv=True)
+ormance:
+ Duration: 130.49s
+ TraCI-Duration: 128.62s
+ Real time factor: 9.19597
+ UPS: 938.065169
+Vehicles:
+ Inserted: 801 (Loaded: 838)
+ Running: 162
+ Waiting: 26
+DijkstraRouter answered 881 queries and explored 44.72 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.05ms on average).
+Loading configuration ... done.
+***Starting server on port 44049 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (16ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 133.75s
+ TraCI-Duration: 131.50s
+ Real time factor: 8.97216
+ UPS: 946.495996
+Vehicles:
+ Inserted: 802 (Loaded: 838)
+ Running: 166
+ Waiting: 25
+ Emergency Braking: 1
+DijkstraRouter answered 897 queries and explored 45.23 edges on average.
+DijkstraRouter spent 0.05s answering queries (0.05ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_203132_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/with_emv_seed1.json
+RUN_DIR ../models/cologne8/run_20261021_203132_3201
+
+>>> training with_emv seed=2 (w1=0.6, w2=0.3, w3=0.1, emv=True)
+0.85s
+ TraCI-Duration: 128.93s
+ Real time factor: 9.17074
+ UPS: 921.185165
+Vehicles:
+ Inserted: 807 (Loaded: 838)
+ Running: 149
+ Waiting: 20
+ Emergency Braking: 2
+DijkstraRouter answered 869 queries and explored 46.06 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.05ms on average).
+Loading configuration ... done.
+***Starting server on port 42195 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (18ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 137.55s
+ TraCI-Duration: 135.29s
+ Real time factor: 8.72385
+ UPS: 961.106184
+Vehicles:
+ Inserted: 798 (Loaded: 838)
+ Running: 181
+ Waiting: 29
+ Emergency Braking: 2
+DijkstraRouter answered 887 queries and explored 43.58 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.03ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_204240_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/with_emv_seed2.json
+RUN_DIR ../models/cologne8/run_20261021_204240_1926
+
+>>> training without_emv seed=0 (w1=0.6, w2=0.3, w3=0.1, emv=False)
+.29s
+ TraCI-Duration: 127.40s
+ Real time factor: 9.2816
+ UPS: 918.283213
+Vehicles:
+ Inserted: 800 (Loaded: 838)
+ Running: 149
+ Waiting: 27
+ Emergency Braking: 1
+DijkstraRouter answered 884 queries and explored 42.42 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+Loading configuration ... done.
+***Starting server on port 37457 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 130.70s
+ TraCI-Duration: 128.45s
+ Real time factor: 9.1814
+ UPS: 935.125747
+Vehicles:
+ Inserted: 813 (Loaded: 838)
+ Running: 152
+ Waiting: 14
+ Emergency Braking: 1
+DijkstraRouter answered 858 queries and explored 46.02 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.05ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_205353_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/without_emv_seed0.json
+RUN_DIR ../models/cologne8/run_20261021_205353_7311
+
+>>> training without_emv seed=1 (w1=0.6, w2=0.3, w3=0.1, emv=False)
+ance:
+ Duration: 130.82s
+ TraCI-Duration: 128.95s
+ Real time factor: 9.17319
+ UPS: 935.741805
+Vehicles:
+ Inserted: 801 (Loaded: 838)
+ Running: 162
+ Waiting: 26
+DijkstraRouter answered 881 queries and explored 44.72 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+Loading configuration ... done.
+***Starting server on port 40447 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 132.75s
+ TraCI-Duration: 130.52s
+ Real time factor: 9.03928
+ UPS: 953.575787
+Vehicles:
+ Inserted: 802 (Loaded: 838)
+ Running: 166
+ Waiting: 25
+ Emergency Braking: 1
+DijkstraRouter answered 897 queries and explored 45.23 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_210457_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/without_emv_seed1.json
+RUN_DIR ../models/cologne8/run_20261021_210457_3201
+
+>>> training without_emv seed=2 (w1=0.6, w2=0.3, w3=0.1, emv=False)
+s
+ TraCI-Duration: 121.78s
+ Real time factor: 9.70795
+ UPS: 975.147642
+Vehicles:
+ Inserted: 807 (Loaded: 838)
+ Running: 149
+ Waiting: 20
+ Emergency Braking: 2
+DijkstraRouter answered 869 queries and explored 46.06 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.03ms on average).
+Loading configuration ... done.
+***Starting server on port 37871 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 127.21s
+ TraCI-Duration: 125.04s
+ Real time factor: 9.43329
+ UPS: 1039.266090
+Vehicles:
+ Inserted: 798 (Loaded: 838)
+ Running: 181
+ Waiting: 29
+ Emergency Braking: 2
+DijkstraRouter answered 887 queries and explored 43.58 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_211607_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/without_emv_seed2.json
+RUN_DIR ../models/cologne8/run_20261021_211607_1926
+
+>>> training hilight_ablation seed=0 (w1=1.0, w2=0.0, w3=0.0, emv=False)
+raCI-Duration: 121.96s
+ Real time factor: 9.69595
+ UPS: 959.277005
+Vehicles:
+ Inserted: 800 (Loaded: 838)
+ Running: 149
+ Waiting: 27
+ Emergency Braking: 1
+DijkstraRouter answered 884 queries and explored 42.42 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+Loading configuration ... done.
+***Starting server on port 40939 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (16ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 125.27s
+ TraCI-Duration: 123.16s
+ Real time factor: 9.57923
+ UPS: 975.644802
+Vehicles:
+ Inserted: 813 (Loaded: 838)
+ Running: 152
+ Waiting: 14
+ Emergency Braking: 1
+DijkstraRouter answered 858 queries and explored 46.02 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.03ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261021_212652_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/hilight_ablation_seed0.json
+RUN_DIR ../models/cologne8/run_20261021_212652_7311
+
+DONE -> /home/aswajiths/Documents/Traffic/paper_metrics/train_manifest.json

@@ -19,6 +19,7 @@ dependencies = [
     "sumolib>=1.27.1",
     "torch>=2.13.0",
     "traci>=1.27.1",
+    "seaborn>=0.13.2",
 ]
 
 [project.scripts]

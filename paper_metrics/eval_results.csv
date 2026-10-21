@@ -1,0 +1,6 @@
+timestamp,label,controller,scenario,model_dir,use_emv_routing,use_accidents,steps,completed_vehicles,avg_queue,peak_queue,avg_waiting_time,avg_travel_time,avg_delay_time,max_wait,p95_wait,frac_over_wmax,jain_network,jain_mean_intersection,jain_intersection_incident,jain_intersection_normal,throughput_veh_per_step,emv_count,emv_avg_response_time,emv_p95_response_time,starvation_overrides
+20261021_213914,with_emv,algorithm,cologne8,../models/cologne8/run_20261021_202002_7311,True,False,1200,609,277.5475,519,67.2611,167.064,112.9461,282.0,196.0,0.4187,0.6913,0.9012,1.0,0.9012,0.5075,4,52.75,93.0,883
+20261021_214020,without_emv,algorithm,cologne8,../models/cologne8/run_20261021_205353_7311,False,False,1200,621,268.975,530,64.6167,166.409,112.3978,290.0,188.0,0.4267,0.6949,0.9035,1.0,0.9035,0.5175,4,56.25,111.0,827
+20261021_214125,hilight_ablation,algorithm,cologne8,../models/cologne8/run_20261021_212652_7311,False,False,1200,625,266.845,525,62.6384,160.4288,106.1608,284.0,197.0,0.3888,0.7099,0.908,1.0,0.908,0.5208,4,54.25,98.0,827
+20261021_214200,fixed,fixed,cologne8,,False,False,1200,654,258.9758,519,58.7492,155.9021,103.1779,205.0,167.0,0.2844,0.7326,0.939,1.0,0.939,0.545,4,48.25,79.0,301
+20261021_214227,max_pressure,max_pressure,cologne8,,False,False,1200,734,138.0175,301,11.9482,96.5436,43.0393,58.0,39.0,0.0,0.9396,0.9935,1.0,0.9935,0.6117,4,42.5,53.0,27

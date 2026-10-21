@@ -1,7 +1,7 @@
 <configuration>
   <input>
     <net-file value="cologne8.net.xml" />
-	<route-files value="cologne8.rou.xml" />
+	<route-files value="cologne8.rou.xml,cologne8_emv.rou.xml" />
   </input>
   <time>
     <begin value="25200" />

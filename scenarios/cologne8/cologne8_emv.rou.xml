@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Emergency-vehicle trips for the multi-EMV routing extension (Section 3.2).
+     Loaded alongside cologne8.rou.xml via the route-files list in the
+     sumocfg; SUMO merges multiple route files and sorts by departure
+     automatically. vClass="emergency" gets SUMO's own emergency-vehicle
+     physics/right-of-way; the vType id "emergency" is also what
+     TraciService checks (getTypeID() == "emergency") for EMV detection,
+     preemption, and the R_emergency reward (Eq 30). -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/routes_file.xsd">
+	<vType id="emergency" vClass="emergency" speedFactor="1.3" length="6.0" minGap="1.0" guiShape="emergency"/>
+	<trip id="emv_0" type="emergency" depart="25260.00" from="-23283579#1" to="23283436"/>
+	<trip id="emv_1" type="emergency" depart="25620.00" from="-28675510#11" to="28675510#7"/>
+	<trip id="emv_2" type="emergency" depart="25980.00" from="22917421#3" to="-186623965#14"/>
+	<trip id="emv_3" type="emergency" depart="26340.00" from="-186623965#18" to="-22917421#4"/>
+	<trip id="emv_4" type="emergency" depart="26700.00" from="25166682#0" to="28675510#7"/>
+	<trip id="emv_5" type="emergency" depart="27060.00" from="-28675510#11" to="8716827#0"/>
+</routes>
