@@ -41,6 +41,13 @@ class Environment:
         self.reward_var = 1.0
         self.reward_alpha = 0.01
 
+        # Per-component running stats (R_eff, R_fair, R_emergency), so w1/w2/w3
+        # control each component's actual relative influence instead of being
+        # overwhelmed by whichever raw component happens to have the largest
+        # native units -- see
+        # .claude/reasoning/training-loss/reward-component-dominance.md.
+        self._component_stats = {name: [0.0, 1.0] for name in ("eff", "fair", "emv")}
+
         # Per-component means from the most recent _compute_local_reward() call,
         # for logging (e.g. the reward_components.png figure) without having to
         # recompute R_eff/R_fair/R_emergency a second time.
@@ -82,8 +89,11 @@ class Environment:
 
         G_w, G_q = goal
         W_global, Q_global = self.traci_service.compute_global_state_now()
-        W_global = W_global.sum()
-        Q_global = Q_global.sum()
+        # Mean, not sum, so this stays on the same scale as the goal-network
+        # output regardless of network size -- see
+        # .claude/reasoning/training-loss/large-loss-magnitudes.md.
+        W_global = W_global.mean()
+        Q_global = Q_global.mean()
 
         return -(self.beta_q * (W_global - G_q) + self.beta_w * (Q_global - G_w))
 
@@ -119,13 +129,19 @@ class Environment:
         r_fair = self._compute_fairness_reward()
         r_emv = self._compute_emv_reward()
 
+        # Logged/plotted (fig:reward) at raw scale -- the point of that figure
+        # is to show the native-unit disparity between components.
         self.last_reward_components = {
             "r_eff": r_eff.mean().item(),
             "r_fair": r_fair.mean().item(),
             "r_emv": r_emv.mean().item(),
         }
 
-        return self.w1 * r_eff + self.w2 * r_fair + self.w3 * r_emv
+        r_eff_n = self._normalize_component("eff", r_eff)
+        r_fair_n = self._normalize_component("fair", r_fair)
+        r_emv_n = self._normalize_component("emv", r_emv)
+
+        return self.w1 * r_eff_n + self.w2 * r_fair_n + self.w3 * r_emv_n
 
     def _compute_reward(self, goal=None):
         r_i = self._compute_local_reward()  # (N,)
@@ -137,20 +153,47 @@ class Environment:
         return normalized_reward
 
     def _normalize_reward(self, reward):
-        # Running mean/var normalization (scalar EMA over the batch of N
-        # per-agent rewards) for training stability. Not part of the paper's
-        # formula, but a standard, low-risk addition for PPO/GAE.
+        # Running mean/var normalization (EMA over steps) for training
+        # stability. Not part of the paper's formula, but a standard,
+        # low-risk addition for PPO/GAE.
+        #
+        # reward_var must track the variance of individual rewards, not the
+        # variance of the step-to-step batch mean -- the two differ whenever
+        # the N per-agent rewards agree with each other within a step (low
+        # within-batch spread) while still drifting in absolute scale across
+        # steps. Combine the within-batch variance with the squared drift of
+        # the batch mean from the running mean (parallel/combined variance
+        # decomposition), matching the batch_var pattern _normalize_obs()
+        # already uses. See
+        # .claude/reasoning/training-loss/sharp-spikes.md.
         batch_mean = reward.mean().item()
-        self.reward_mean = (1 - self.reward_alpha) * self.reward_mean + self.reward_alpha * batch_mean
-        self.reward_var = (1 - self.reward_alpha) * self.reward_var + self.reward_alpha * (
-            batch_mean - self.reward_mean
-        ) ** 2
+        batch_var = reward.var(unbiased=False).item() if reward.numel() > 1 else 0.0
+        diff = batch_mean - self.reward_mean
+        self.reward_mean = self.reward_mean + self.reward_alpha * diff
+        self.reward_var = (1 - self.reward_alpha) * self.reward_var + self.reward_alpha * (batch_var + diff**2)
         normalized_reward = (reward - self.reward_mean) / (self.reward_var**0.5 + 1e-8)
 
         return normalized_reward
+
+    def _normalize_component(self, name, values):
+        """Same running mean/var EMA as _normalize_reward (identical formula,
+        separate per-component state), applied to R_eff/R_fair/R_emergency
+        individually before combining with w1/w2/w3 -- without this, w1/w2/w3
+        can't actually control each component's relative influence, since
+        they start on wildly different native scales (R_eff in the hundreds,
+        R_fair/R_emergency O(1))."""
+        mean, var = self._component_stats[name]
+        batch_mean = values.mean().item()
+        batch_var = values.var(unbiased=False).item() if values.numel() > 1 else 0.0
+        diff = batch_mean - mean
+        mean = mean + self.reward_alpha * diff
+        var = (1 - self.reward_alpha) * var + self.reward_alpha * (batch_var + diff**2)
+        self._component_stats[name] = [mean, var]
+        return (values - mean) / (var**0.5 + 1e-8)
 
     def reset(self):
         self.t = 0
         self.reward_mean = 0.0
         self.reward_var = 1.0
+        self._component_stats = {name: [0.0, 1.0] for name in ("eff", "fair", "emv")}
         return self.traci_service.get_observations()

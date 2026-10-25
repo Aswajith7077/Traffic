@@ -21,6 +21,12 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--episodes", type=int, default=1)
     parser.add_argument("--episode-steps", type=int, default=1200)
+    parser.add_argument(
+        "--bc-steps",
+        type=int,
+        default=int(os.environ.get("BC_STEPS", "1200")),
+        help="Behavior-cloning warm-start steps (imitate Max Pressure) before PPO fine-tuning. 0 disables it.",
+    )
     parser.add_argument("--out-dir", default="../paper_metrics/raw")
     args = parser.parse_args()
 
@@ -44,6 +50,12 @@ def main():
     )
     run_dir = trainer.create_run_dir()
     try:
+        bc_losses = []
+        if args.bc_steps > 0:
+            bc_losses = trainer.pretrain_behavior_cloning(args.bc_steps)
+            print(f"BC pretrain: {args.bc_steps} steps, final loss={bc_losses[-1]:.4f}", flush=True)
+            trainer.reset_episode()
+
         for _ in range(args.episodes):
             trainer.run_episode(args.episode_steps)
         trainer.save_checkpoint(run_dir, args.episodes)
@@ -55,6 +67,7 @@ def main():
         "config_name": args.config_name,
         "seed": args.seed,
         "run_dir": run_dir,
+        "bc_losses": bc_losses,
         "meta_losses": trainer.meta_losses,
         "sub_loss_history": trainer.sub_loss_history,
         "rewards_history": trainer.rewards_history,

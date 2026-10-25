@@ -669,8 +669,17 @@ class TraciService:
             max_speed = traci.lane.getMaxSpeed(lane)
             if max_speed > 0:
                 ideal_time = length / max_speed
+                # length / max(mean_speed, 0.1) blows up as mean_speed -> the
+                # 0.1 floor (a near-stopped lane can contribute thousands of
+                # "seconds" from one lane alone), swamping queue_length/
+                # waiting_time/pressure (O(1)-O(10)) and effectively zeroing
+                # out R_fair/R_emergency's influence despite w1/w2/w3 --
+                # see .claude/reasoning/training-loss/reward-component-dominance.md.
+                # Capped at 5x free-flow time: still the harshest term for a
+                # genuinely stalled lane, but bounded to the same order of
+                # magnitude as the other components instead of unbounded.
                 actual_time = length / max(mean_speed, 0.1)
-                delay_time += max(actual_time - ideal_time, 0.0)
+                delay_time += min(max(actual_time - ideal_time, 0.0), 5.0 * ideal_time)
 
         speed_score /= len(lanes) if len(lanes) > 0 else 1
 

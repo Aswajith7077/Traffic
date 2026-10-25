@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.28)  21 OCT 2026 21:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.28)  22 OCT 2026 14:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -981,41 +981,39 @@ Overfull \hbox (1.83015pt too wide) in paragraph at lines 961--965
 File: ../../paper_metrics/architecture_diagram.png Graphic file (type png)
 <use ../../paper_metrics/architecture_diagram.png>
 Package pdftex.def Info: ../../paper_metrics/architecture_diagram.png  used on 
-input line 1012.
+input line 1009.
 (pdftex.def)             Requested size: 468.0pt x 93.59789pt.
 [10 <../../paper_metrics/architecture_diagram.png>] [11] [12]
 LaTeX Font Info:    Trying to load font information for TS1+txr on input line 1
-246.
+243.
 
 (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txr.fd
 File: ts1txr.fd 2000/12/15 v3.1
 ) [13]
-Overfull \hbox (8.79002pt too wide) in paragraph at lines 1321--1329
+Overfull \hbox (8.79002pt too wide) in paragraph at lines 1318--1326
  [][] 
  []
 
-<../../paper_metrics/with_emv.png, id=356, 578.16pt x 361.35pt>
+<../../paper_metrics/with_emv.png, id=357, 578.16pt x 361.35pt>
 File: ../../paper_metrics/with_emv.png Graphic file (type png)
 <use ../../paper_metrics/with_emv.png>
 Package pdftex.def Info: ../../paper_metrics/with_emv.png  used on input line 1
-354.
+351.
 (pdftex.def)             Requested size: 224.638pt x 140.3966pt.
-<../../paper_metrics/without_emv.png, id=357, 578.16pt x 361.35pt>
+<../../paper_metrics/without_emv.png, id=358, 578.16pt x 361.35pt>
 File: ../../paper_metrics/without_emv.png Graphic file (type png)
 <use ../../paper_metrics/without_emv.png>
 Package pdftex.def Info: ../../paper_metrics/without_emv.png  used on input lin
-e 1359.
+e 1356.
 (pdftex.def)             Requested size: 224.638pt x 140.3966pt.
-[14 <../../paper_metrics/with_emv.png> <../../paper_metrics/without_emv.png>]
-<../../paper_metrics/reward_components.png, id=374, 650.43pt x 397.485pt>
+<../../paper_metrics/reward_components.png, id=367, 650.43pt x 397.485pt>
 File: ../../paper_metrics/reward_components.png Graphic file (type png)
 <use ../../paper_metrics/reward_components.png>
 Package pdftex.def Info: ../../paper_metrics/reward_components.png  used on inp
-ut line 1409.
+ut line 1406.
 (pdftex.def)             Requested size: 468.0pt x 286.00702pt.
-
-[15 <../../paper_metrics/reward_components.png>] [16] [17] [18] [19]
-(./main.aux)
+[14 <../../paper_metrics/with_emv.png> <../../paper_metrics/without_emv.png>]
+[15 <../../paper_metrics/reward_components.png>] [16] [17] [18] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -1024,13 +1022,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: DCC3FA9BF2DF4F9A94FB1E7502B31453;6321.
  ) 
 Here is how much of TeX's memory you used:
- 15272 strings out of 469438
- 227271 string characters out of 5468410
- 654398 words of memory out of 5000000
- 43544 multiletter control sequences out of 15000+600000
+ 15269 strings out of 469438
+ 227206 string characters out of 5468410
+ 652398 words of memory out of 5000000
+ 43542 multiletter control sequences out of 15000+600000
  677287 words of font info for 133 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 75i,9n,79p,541b,726s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,79p,541b,636s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/aswajiths/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt0800
 .600pk> </home/aswajiths/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ect
 t1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/
@@ -1042,10 +1040,10 @@ s/type1/public/txfonts/txex.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (19 pages, 889041 bytes).
+Output written on main.pdf (18 pages, 888926 bytes).
 PDF statistics:
- 568 PDF objects out of 1000 (max. 8388607)
- 464 compressed objects within 5 object streams
- 133 named destinations out of 1000 (max. 500000)
+ 562 PDF objects out of 1000 (max. 8388607)
+ 459 compressed objects within 5 object streams
+ 132 named destinations out of 1000 (max. 500000)
  287 words of extra memory for PDF output out of 10000 (max. 10000000)
 

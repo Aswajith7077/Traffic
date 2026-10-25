@@ -991,12 +991,9 @@ The complete architecture can therefore be expressed as the following
 hierarchical mapping:
 
 \begin{equation}
-\begin{aligned}
 G \rightarrow \mathcal{R} \rightarrow \text{Meta-Policy} \rightarrow
-F_g, (G_w, G_q) \\
-\rightarrow \text{Sub-Policies} \rightarrow \text{Signal Actions}
+F_g, (G_w, G_q) \rightarrow \text{Sub-Policies} \rightarrow \text{Signal Actions}
 \rightarrow \text{Traffic Environment}.
-\end{aligned}
 \end{equation}
 
 This design separates regional coordination, temporal network
@@ -1493,6 +1490,59 @@ correcting it. Figure~\ref{fig:emv-compare} (Section~\ref{subsec6-1})
 shows why Table~\ref{tab:emv-routing} is the metric that isolates
 city-wide EMV routing's contribution rather than the Actor-Critic loss
 curve alone.
+
+\subsection{Regional Partitioning Across Scenarios}\label{subsec6-4}
+
+Section~\ref{subsec3-1} and Figure~\ref{fig:clusters} showed Cologne8's
+partition; Figure~\ref{fig:clusters-all} shows the same before/after
+regional-abstraction view for the remaining four scenarios in the
+evaluation (Table~\ref{tab:baseline-comparison}). Each panel uses
+the production DBSCAN partition when it splits the network into more
+than one region, and falls back to Leiden when DBSCAN collapses to a
+single region on that network size -- the same convention and the same
+underlying reason as Cologne8 (Section~\ref{subsec6-3}): a one-region
+partition is visually indistinguishable from the "before" panel and
+would not demonstrate the clustering. arterial4x4 and grid4x4 (both
+16 intersections on a regular grid) collapse under DBSCAN the same way
+Cologne8 does and are therefore shown with Leiden's 5-way split;
+ingolstadt21 and Manhattan both retain DBSCAN's own partition (2 and 8
+regions respectively), consistent with DBSCAN being tuned for coarser,
+spatially compact regions on denser or larger networks
+(AGENTS.md; Section~\ref{subsec3-1}).
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_arterial4x4.png}
+\includegraphics[width=\textwidth]{after_cluster_arterial4x4.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_grid4x4.png}
+\includegraphics[width=\textwidth]{after_cluster_grid4x4.png}
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_ingolstadt21.png}
+\includegraphics[width=\textwidth]{after_cluster_ingolstadt21.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_manhattan.png}
+\includegraphics[width=\textwidth]{after_cluster_manhattan.png}
+\end{minipage}
+\caption{Signalized intersections before regional abstraction (top of
+each pair) and after clustering, same color = same cluster (bottom of
+each pair), for arterial4x4 and grid4x4 (Leiden, both DBSCAN-collapsed)
+and ingolstadt21 and Manhattan (DBSCAN).}
+\label{fig:clusters-all}
+\end{figure}
 
 
 % ===============================================================

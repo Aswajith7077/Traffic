@@ -2466,3 +2466,528 @@ emv_avg_response_time: 42.5
 emv_p95_response_time: 53.0
 starvation_overrides: 27
 
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 263.6101
+Latest Sub L_AC: 85.0598
+Latest Alignment Loss: 17.4713
+Latest Reward: -0.1712
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 16.4740
+Latest Sub L_AC: 150.4690
+Latest Alignment Loss: 25.7029
+Latest Reward: 0.0283
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 193.4195
+Latest Sub L_AC: 124.9967
+Latest Alignment Loss: 15.4704
+Latest Reward: 0.2166
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 263.6101
+Latest Sub L_AC: 85.1919
+Latest Alignment Loss: 17.4713
+Latest Reward: -0.1712
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 183.8666
+Latest Sub L_AC: 144.0263
+Latest Alignment Loss: 20.0905
+Latest Reward: 0.0695
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 85.0477
+Latest Sub L_AC: 124.5955
+Latest Alignment Loss: 16.0230
+Latest Reward: 0.2152
+
+--- Evaluation Snapshot: 20261025_204331 (algorithm) ---
+timestamp: 20261025_204331
+label: cologne8_with_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261025_193603_7311
+use_emv_routing: True
+use_accidents: False
+steps: 1200
+completed_vehicles: 616
+avg_queue: 273.3333
+peak_queue: 502
+avg_waiting_time: 67.5974
+avg_travel_time: 167.6006
+avg_delay_time: 113.2713
+max_wait: 289.0
+p95_wait: 192.0
+frac_over_wmax: 0.4286
+jain_network: 0.6872
+jain_mean_intersection: 0.9043
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9043
+throughput_veh_per_step: 0.5133
+emv_count: 4
+emv_avg_response_time: 49.25
+emv_p95_response_time: 84.0
+starvation_overrides: 862
+
+--- Evaluation Snapshot: 20261025_204438 (algorithm) ---
+timestamp: 20261025_204438
+label: cologne8_without_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261025_201016_7311
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 628
+avg_queue: 264.3533
+peak_queue: 498
+avg_waiting_time: 66.5796
+avg_travel_time: 163.5955
+avg_delay_time: 109.643
+max_wait: 238.0
+p95_wait: 197.0
+frac_over_wmax: 0.4172
+jain_network: 0.6861
+jain_mean_intersection: 0.9049
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9049
+throughput_veh_per_step: 0.5233
+emv_count: 4
+emv_avg_response_time: 51.25
+emv_p95_response_time: 88.0
+starvation_overrides: 846
+
+--- Evaluation Snapshot: 20261025_204513 (fixed) ---
+timestamp: 20261025_204513
+label: cologne8_fixed
+controller: fixed
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 654
+avg_queue: 258.9758
+peak_queue: 519
+avg_waiting_time: 58.7492
+avg_travel_time: 155.9021
+avg_delay_time: 103.1779
+max_wait: 205.0
+p95_wait: 167.0
+frac_over_wmax: 0.2844
+jain_network: 0.7326
+jain_mean_intersection: 0.939
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.939
+throughput_veh_per_step: 0.545
+emv_count: 4
+emv_avg_response_time: 48.25
+emv_p95_response_time: 79.0
+starvation_overrides: 301
+
+--- Evaluation Snapshot: 20261025_204540 (max_pressure) ---
+timestamp: 20261025_204540
+label: cologne8_max_pressure
+controller: max_pressure
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 734
+avg_queue: 138.0175
+peak_queue: 301
+avg_waiting_time: 11.9482
+avg_travel_time: 96.5436
+avg_delay_time: 43.0393
+max_wait: 58.0
+p95_wait: 39.0
+frac_over_wmax: 0.0
+jain_network: 0.9396
+jain_mean_intersection: 0.9935
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9935
+throughput_veh_per_step: 0.6117
+emv_count: 4
+emv_avg_response_time: 42.5
+emv_p95_response_time: 53.0
+starvation_overrides: 27
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 21052.9453
+Latest Sub L_AC: 163.8726
+Latest Alignment Loss: 56.9464
+Latest Reward: -0.0742
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 82221.3828
+Latest Sub L_AC: 160.6284
+Latest Alignment Loss: 102.1478
+Latest Reward: -0.1466
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 104386.4609
+Latest Sub L_AC: 218.0066
+Latest Alignment Loss: 84.6383
+Latest Reward: -0.3712
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 290.1599
+Latest Sub L_AC: 123.8782
+Latest Alignment Loss: 12.6986
+Latest Reward: 0.1530
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 174.5938
+Latest Sub L_AC: 141.4094
+Latest Alignment Loss: 26.7878
+Latest Reward: 1.0999
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 236.9995
+Latest Sub L_AC: 206.7854
+Latest Alignment Loss: 26.0928
+Latest Reward: 0.6602
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 290.1599
+Latest Sub L_AC: 123.8482
+Latest Alignment Loss: 12.6986
+Latest Reward: 0.1530
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 10.9808
+Latest Sub L_AC: 41.2347
+Latest Alignment Loss: 16.0154
+Latest Reward: 0.9224
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 150.4604
+Latest Sub L_AC: 118.1349
+Latest Alignment Loss: 17.4463
+Latest Reward: 0.4485
+
+--- Evaluation Snapshot: 20261025_231909 (algorithm) ---
+timestamp: 20261025_231909
+label: cologne8_with_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261025_221024_7311
+use_emv_routing: True
+use_accidents: False
+steps: 1200
+completed_vehicles: 643
+avg_queue: 235.05
+peak_queue: 446
+avg_waiting_time: 51.4152
+avg_travel_time: 147.3515
+avg_delay_time: 93.7725
+max_wait: 301.0
+p95_wait: 167.0
+frac_over_wmax: 0.3126
+jain_network: 0.7389
+jain_mean_intersection: 0.9067
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9067
+throughput_veh_per_step: 0.5358
+emv_count: 4
+emv_avg_response_time: 80.5
+emv_p95_response_time: 205.0
+starvation_overrides: 767
+
+--- Evaluation Snapshot: 20261025_232016 (algorithm) ---
+timestamp: 20261025_232016
+label: cologne8_without_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261025_224503_7311
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 638
+avg_queue: 229.8683
+peak_queue: 445
+avg_waiting_time: 50.605
+avg_travel_time: 142.9498
+avg_delay_time: 89.8742
+max_wait: 293.0
+p95_wait: 158.0
+frac_over_wmax: 0.3041
+jain_network: 0.7429
+jain_mean_intersection: 0.9089
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9089
+throughput_veh_per_step: 0.5317
+emv_count: 4
+emv_avg_response_time: 73.25
+emv_p95_response_time: 169.0
+starvation_overrides: 753
+
+--- Evaluation Snapshot: 20261025_232053 (fixed) ---
+timestamp: 20261025_232053
+label: cologne8_fixed
+controller: fixed
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 654
+avg_queue: 258.9758
+peak_queue: 519
+avg_waiting_time: 58.7492
+avg_travel_time: 155.9021
+avg_delay_time: 103.1779
+max_wait: 205.0
+p95_wait: 167.0
+frac_over_wmax: 0.2844
+jain_network: 0.7326
+jain_mean_intersection: 0.939
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.939
+throughput_veh_per_step: 0.545
+emv_count: 4
+emv_avg_response_time: 48.25
+emv_p95_response_time: 79.0
+starvation_overrides: 301
+
+--- Evaluation Snapshot: 20261025_232121 (max_pressure) ---
+timestamp: 20261025_232121
+label: cologne8_max_pressure
+controller: max_pressure
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 734
+avg_queue: 138.0175
+peak_queue: 301
+avg_waiting_time: 11.9482
+avg_travel_time: 96.5436
+avg_delay_time: 43.0393
+max_wait: 58.0
+p95_wait: 39.0
+frac_over_wmax: 0.0
+jain_network: 0.9396
+jain_mean_intersection: 0.9935
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9935
+throughput_veh_per_step: 0.6117
+emv_count: 4
+emv_avg_response_time: 42.5
+emv_p95_response_time: 53.0
+starvation_overrides: 27
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 1038.2469
+Latest Sub L_AC: 218.5690
+Latest Alignment Loss: 15.1557
+Latest Reward: 0.9362
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 68.8665
+Latest Sub L_AC: 106.2632
+Latest Alignment Loss: 9.0672
+Latest Reward: 0.7922
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 34.7639
+Latest Sub L_AC: 122.4047
+Latest Alignment Loss: 8.5558
+Latest Reward: 0.1757
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 216.5978
+Latest Sub L_AC: 194.2892
+Latest Alignment Loss: 11.0139
+Latest Reward: 0.8121
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 375.3854
+Latest Sub L_AC: 138.3746
+Latest Alignment Loss: 13.7382
+Latest Reward: 0.6398
+
+--- Training Snapshot: cologne8 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 158.9326
+Latest Sub L_AC: 168.5189
+Latest Alignment Loss: 24.4181
+Latest Reward: 0.2710
+
+--- Evaluation Snapshot: 20261026_004243 (algorithm) ---
+timestamp: 20261026_004243
+label: cologne8_with_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261025_233224_7311
+use_emv_routing: True
+use_accidents: False
+steps: 1200
+completed_vehicles: 669
+avg_queue: 234.105
+peak_queue: 464
+avg_waiting_time: 55.7952
+avg_travel_time: 148.0957
+avg_delay_time: 96.2564
+max_wait: 273.0
+p95_wait: 181.0
+frac_over_wmax: 0.3019
+jain_network: 0.738
+jain_mean_intersection: 0.9163
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9163
+throughput_veh_per_step: 0.5575
+emv_count: 4
+emv_avg_response_time: 54.0
+emv_p95_response_time: 80.0
+starvation_overrides: 664
+
+--- Evaluation Snapshot: 20261026_004346 (algorithm) ---
+timestamp: 20261026_004346
+label: cologne8_without_emv
+controller: algorithm
+scenario: cologne8
+model_dir: ../models/cologne8/run_20261026_000727_7311
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 690
+avg_queue: 210.6442
+peak_queue: 393
+avg_waiting_time: 43.7754
+avg_travel_time: 135.5783
+avg_delay_time: 82.5931
+max_wait: 215.0
+p95_wait: 175.0
+frac_over_wmax: 0.2087
+jain_network: 0.7893
+jain_mean_intersection: 0.9384
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9384
+throughput_veh_per_step: 0.575
+emv_count: 4
+emv_avg_response_time: 49.0
+emv_p95_response_time: 83.0
+starvation_overrides: 385
+
+--- Evaluation Snapshot: 20261026_004422 (fixed) ---
+timestamp: 20261026_004422
+label: cologne8_fixed
+controller: fixed
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 654
+avg_queue: 258.9758
+peak_queue: 519
+avg_waiting_time: 58.7492
+avg_travel_time: 155.9021
+avg_delay_time: 103.1779
+max_wait: 205.0
+p95_wait: 167.0
+frac_over_wmax: 0.2844
+jain_network: 0.7326
+jain_mean_intersection: 0.939
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.939
+throughput_veh_per_step: 0.545
+emv_count: 4
+emv_avg_response_time: 48.25
+emv_p95_response_time: 79.0
+starvation_overrides: 301
+
+--- Evaluation Snapshot: 20261026_004450 (max_pressure) ---
+timestamp: 20261026_004450
+label: cologne8_max_pressure
+controller: max_pressure
+scenario: cologne8
+model_dir: 
+use_emv_routing: False
+use_accidents: False
+steps: 1200
+completed_vehicles: 734
+avg_queue: 138.0175
+peak_queue: 301
+avg_waiting_time: 11.9482
+avg_travel_time: 96.5436
+avg_delay_time: 43.0393
+max_wait: 58.0
+p95_wait: 39.0
+frac_over_wmax: 0.0
+jain_network: 0.9396
+jain_mean_intersection: 0.9935
+jain_intersection_incident: 1.0
+jain_intersection_normal: 0.9935
+throughput_veh_per_step: 0.6117
+emv_count: 4
+emv_avg_response_time: 42.5
+emv_p95_response_time: 53.0
+starvation_overrides: 27
+

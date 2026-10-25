@@ -4,7 +4,9 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 import torch
+import torch.nn.functional as F
 from agents import ActorCritic
+from baselines import MaxPressureController
 from config import config
 from environment import Environment
 from schema import RewardConfig, TraciConfig, TransformerEncoderConfig
@@ -127,6 +129,57 @@ class Trainer:
         f_g_b = f_g_t.unsqueeze(0).repeat(z.size(0), 1)  # (N, d_reg)
         return torch.cat([z, f_g_b], dim=1)  # (N, fused_dim)
 
+    def pretrain_behavior_cloning(self, steps):
+        """Warm-start the Sub-Policy by imitating Max Pressure's phase choices
+        for `steps` environment steps (supervised cross-entropy on the
+        actor's logits), before PPO fine-tuning takes over. Only
+        local_encoder/GAT/actor_critic are updated (same param group as
+        sub_optimizer) -- the Meta-Policy is left at its random init, since
+        Max Pressure has no notion of a subgoal to imitate.
+
+        Rationale: from-scratch policy-gradient RL needs far more than the
+        ~5-episode reduced-scale budget to match a strong, zero-training
+        reactive heuristic like Max Pressure (see
+        .claude/reasoning/training-loss/ for the related reward/loss-scale
+        fixes). Imitating the heuristic's actions first gives the policy a
+        competitive starting point; PPO then only has to improve on it
+        (including on fairness/EMV, which Max Pressure ignores entirely)
+        rather than discover competitive signal-timing behavior from zero.
+        """
+        mp = MaxPressureController(self.traci_service)
+        bc_losses = []
+        for _ in range(steps):
+            f_g, _ = self._meta_forward()
+            obs = self._normalize_obs(self._get_observations())
+            final_state = self._encode_step(obs, f_g)
+            action_probs, _, _ = self.actor_critic(final_state, action_mask=self.action_mask)
+
+            labels = []
+            for tls in self.intersections:
+                valid = self.traci_service.valid_phases[tls]
+                label = mp._best_phase(tls, valid)
+                labels.append(label)
+                self.traci_service.set_phase(tls, label)
+            labels = torch.tensor(labels, dtype=torch.long)
+
+            bc_loss = F.nll_loss(torch.log(action_probs + 1e-8), labels)
+
+            self.sub_optimizer.zero_grad()
+            bc_loss.backward()
+            torch.nn.utils.clip_grad_norm_(
+                list(self.local_encoder.parameters())
+                + list(self.gat.parameters())
+                + list(self.actor_critic.parameters()),
+                max_norm=MAX_GRAD_NORM,
+            )
+            self.sub_optimizer.step()
+            bc_losses.append(bc_loss.item())
+
+            self.traci_service.step()
+            self.traci_service.update_wait_timers()
+
+        return bc_losses
+
     def _meta_forward(self):
         regional_state = self.traci_service.get_regional_state(self.clusters)
         self.regional_buffer.push(regional_state)
@@ -240,8 +293,11 @@ class Trainer:
         self.reward_components_history.append(dict(self.environment.last_reward_components))
 
         w_global_t, q_global_t = self.traci_service.compute_global_state_now()
-        w_global_sum = w_global_t.sum()
-        q_global_sum = q_global_t.sum()
+        # Mean (not sum) across intersections, so the goal target stays on the
+        # same scale regardless of network size (8 TLS on cologne8 vs 21 on
+        # ingolstadt21) -- see .claude/reasoning/training-loss/large-loss-magnitudes.md.
+        w_global_mean = w_global_t.mean()
+        q_global_mean = q_global_t.mean()
         r_g = self.environment.compute_goal_reward(goal_pair)
 
         self.rollout_buffer.add(
@@ -253,13 +309,13 @@ class Trainer:
             reward=reward.detach(),
             done=torch.full((len(self.intersections),), float(done)),
             goal=goal_detached.squeeze(0),
-            w_global=w_global_sum.detach(),
-            q_global=q_global_sum.detach(),
+            w_global=w_global_mean.detach(),
+            q_global=q_global_mean.detach(),
         )
 
         self.step_count += 1
         if self.step_count % META_UPDATE_INTERVAL == 0:
-            self._update_meta(goal, w_global_sum, q_global_sum, r_g)
+            self._update_meta(goal, w_global_mean, q_global_mean, r_g)
 
         if len(self.rollout_buffer) >= ROLLOUT_LENGTH or done:
             self._update_sub()
