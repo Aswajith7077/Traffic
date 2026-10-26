@@ -3912,3 +3912,30 @@ emv_avg_response_time: 42.5
 emv_p95_response_time: 53.0
 starvation_overrides: 27
 
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 47740.0977
+Latest Sub L_AC: 226.2495
+Latest Alignment Loss: 87.5322
+Latest Reward: -1.0554
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 12987.3125
+Latest Sub L_AC: 267.3857
+Latest Alignment Loss: 79.7322
+Latest Reward: 0.0555
+
+--- Training Snapshot: arterial4x4 run_5 ---
+Cluster Method: dbscan
+Episode: 5
+Steps taken: 6000
+Latest Meta Loss: 1898.6968
+Latest Sub L_AC: 120.2336
+Latest Alignment Loss: 34.7797
+Latest Reward: 0.3290
+

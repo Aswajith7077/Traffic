@@ -73,18 +73,17 @@
 \title{FairLight: City-Wide Emergency Vehicle Route Prioritization
 via Envy-Free Hierarchical Multi-Agent Actor--Critic}
 
-\author{Dr G Poonthalir\corref{cor1}}
-\author{A Sree Ram}
+\author{A Sree Ram\corref{cor1}}
+\ead{22pt01@psgtech.ac.in}
+\author{Dr G Poonthalir}
 \author{Aswajith S}
 
 \cortext[cor1]{Corresponding author}
 
-\affiliation{organization={},
-            addressline={},
-            city={},
-            postcode={},
-            state={},
-            country={}}
+\affiliation{organization={Department of Applied Mathematics and Computational Sciences, PSG College of Technology},
+            city={Coimbatore},
+            state={Tamil Nadu},
+            country={India}}
 
 % ===============================================================
 % ABSTRACT
@@ -1524,6 +1523,72 @@ and Figures~\ref{fig:clusters-all-1}/\ref{fig:clusters-all-2}
 (Section~\ref{subsec6-4}) repeat this view for the other four
 scenarios.
 
+\begin{figure}[H]
+\centering
+
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_arterial4x4.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{after_cluster_arterial4x4.png}
+\end{minipage}
+
+\vspace{0.5em}
+
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_grid4x4.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{after_cluster_grid4x4.png}
+\end{minipage}
+
+\caption{Each row is one scenario (top: arterial4x4, bottom: grid4x4):
+signalized intersections before regional abstraction (left column) and
+after Leiden clustering, same color = same cluster (right column) --
+both scenarios collapse to a single region under DBSCAN, so Leiden is
+shown instead (Section~\ref{subsec6-4}).}
+\label{fig:clusters-all-1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_ingolstadt21.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{after_cluster_ingolstadt21.png}
+\end{minipage}
+
+\vspace{0.5em}
+
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{before_cluster_manhattan.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{after_cluster_manhattan.png}
+\end{minipage}
+
+\caption{Each row is one scenario (top: ingolstadt21, bottom:
+Manhattan): signalized intersections before regional abstraction (left
+column) and after DBSCAN clustering, same color = same cluster (right
+column) -- both scenarios retain DBSCAN's own partition
+(Section~\ref{subsec6-4}).}
+\label{fig:clusters-all-2}
+\end{figure}
+
 \paragraph{Algorithmic fixes and their effect on training stability.}
 Three distinct issues were identified and corrected in this revision's
 training loop, each verified against the previously documented,
@@ -1610,73 +1675,6 @@ ingolstadt21 and Manhattan both retain DBSCAN's own partition (2 and 8
 regions respectively), consistent with DBSCAN being tuned for coarser,
 spatially compact regions on denser or larger networks
 (Section~\ref{subsec3-1}).
-
-\begin{figure}[H]
-\centering
-
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{before_cluster_arterial4x4.png}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{after_cluster_arterial4x4.png}
-\end{minipage}
-
-\vspace{0.5em}
-
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{before_cluster_grid4x4.png}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{after_cluster_grid4x4.png}
-\end{minipage}
-
-\caption{Each row is one scenario (top: arterial4x4, bottom: grid4x4):
-signalized intersections before regional abstraction (left column) and
-after Leiden clustering, same color = same cluster (right column) --
-both scenarios collapse to a single region under DBSCAN, so Leiden is
-shown instead (Section~\ref{subsec6-4}).}
-\label{fig:clusters-all-1}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{before_cluster_ingolstadt21.png}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{after_cluster_ingolstadt21.png}
-\end{minipage}
-
-\vspace{0.5em}
-
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{before_cluster_manhattan.png}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\textwidth}
-\centering
-\includegraphics[width=\textwidth]{after_cluster_manhattan.png}
-\end{minipage}
-
-\caption{Each row is one scenario (top: ingolstadt21, bottom:
-Manhattan): signalized intersections before regional abstraction (left
-column) and after DBSCAN clustering, same color = same cluster (right
-column) -- both scenarios retain DBSCAN's own partition
-(Section~\ref{subsec6-4}).}
-\label{fig:clusters-all-2}
-\end{figure}
-
 
 % ===============================================================
 % CONCLUSION

@@ -437,3 +437,126 @@ Metrics row appended to ../paper_metrics/eval_results.csv
 
 DONE scenario=cologne8
 >>> [arterial4x4] training with_emv seed=0 (emv=True)
+865
+Vehicles:
+ Inserted: 554 (Loaded: 1002)
+ Running: 250
+ Waiting: 414
+ Emergency Stops: 2
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 74.75 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 40253 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (14ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 310.84s
+ TraCI-Duration: 307.64s
+ Real time factor: 3.86051
+ UPS: 453.567752
+Vehicles:
+ Inserted: 550 (Loaded: 1002)
+ Running: 250
+ Waiting: 418
+ Emergency Braking: 1
+DijkstraRouter answered 4 queries and explored 75.75 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_215615_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed0.json
+RUN_DIR ../models/arterial4x4/run_20261026_215615_7311
+
+>>> [arterial4x4] training with_emv seed=1 (emv=True)
+291
+Vehicles:
+ Inserted: 538 (Loaded: 1002)
+ Running: 240
+ Waiting: 430
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 74.25 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 41635 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (14ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 324.90s
+ TraCI-Duration: 321.08s
+ Real time factor: 3.69346
+ UPS: 414.211801
+Vehicles:
+ Inserted: 547 (Loaded: 1002)
+ Running: 246
+ Waiting: 421
+ Emergency Stops: 2
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 73.50 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.25ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_222653_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed1.json
+RUN_DIR ../models/arterial4x4/run_20261026_222653_3201
+
+>>> [arterial4x4] training with_emv seed=2 (emv=True)
+.38s
+ Real time factor: 4.2704
+ UPS: 427.211001
+Vehicles:
+ Inserted: 494 (Loaded: 1002)
+ Running: 181
+ Waiting: 474
+DijkstraRouter answered 5 queries and explored 75.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 43403 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (13ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 283.66s
+ TraCI-Duration: 280.47s
+ Real time factor: 4.23042
+ UPS: 395.695551
+Vehicles:
+ Inserted: 502 (Loaded: 1002)
+ Running: 184
+ Waiting: 466
+ Emergency Stops: 1
+DijkstraRouter answered 5 queries and explored 72.80 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.20ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_225527_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed2.json
+RUN_DIR ../models/arterial4x4/run_20261026_225527_1926
+
+>>> [arterial4x4] training without_emv seed=0 (emv=False)
