@@ -149,6 +149,13 @@ def evaluate(
     print("Initializing environment...")
     if config_path is None:
         config_path = f"../scenarios/{SCENARIO}/{SCENARIO}.sumocfg"
+        # Only cologne8's own sumocfg ships EMVs; the other 4 scenarios get
+        # them from a separate, additively-generated sumocfg instead of
+        # editing their original, working files (see scenarios/*/emv/).
+        repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Traffic
+        emv_sumocfg_abs = os.path.join(repo_root, "scenarios", SCENARIO, "emv", f"{SCENARIO}_emv.sumocfg")
+        if os.environ.get("USE_EMV_ROUTING") == "1" and os.path.exists(emv_sumocfg_abs):
+            config_path = f"../scenarios/{SCENARIO}/emv/{SCENARIO}_emv.sumocfg"
 
     trainer = Trainer(scenario=SCENARIO, sumocfg_path=config_path, use_gui=use_gui, delay=delay)
 

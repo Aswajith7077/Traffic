@@ -16,10 +16,18 @@ class RewardConfig(BaseModel):
     weight... followed by fairness then emergency responsiveness") while staying
     overridable per-run via env vars, since these are tunable hyperparameters,
     not fixed constants.
+
+    w1/w2 moved from 0.6/0.3 to 0.5/0.4 (still w1 > w2, per Eq 24) after
+    .claude/reports/fairness_implementation.md found Algorithm had the worst
+    Jain's Index of all three methods in 3 of 4 scenarios even after the
+    per-component reward normalization fix -- raising fairness's share of the
+    combined reward is the direct lever for that, now that normalization
+    means w2 actually controls its relative influence (previously it did not
+    -- see .claude/reasoning/training-loss/reward-component-dominance.md).
     """
 
-    w1: float = Field(default_factory=lambda: _env_float("REWARD_W1", 0.6))  # R_eff weight
-    w2: float = Field(default_factory=lambda: _env_float("REWARD_W2", 0.3))  # R_fair weight
+    w1: float = Field(default_factory=lambda: _env_float("REWARD_W1", 0.5))  # R_eff weight
+    w2: float = Field(default_factory=lambda: _env_float("REWARD_W2", 0.4))  # R_fair weight
     w3: float = Field(default_factory=lambda: _env_float("REWARD_W3", 0.1))  # R_emergency weight
     beta_q: float = Field(default_factory=lambda: _env_float("BETA_Q", 0.5))
     beta_w: float = Field(default_factory=lambda: _env_float("BETA_W", 0.5))

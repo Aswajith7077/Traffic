@@ -1,0 +1,170 @@
+>>> [arterial4x4] training with_emv seed=0 (emv=True)
+r: 4.1869
+ UPS: 510.721962
+Vehicles:
+ Inserted: 527 (Loaded: 1002)
+ Running: 223
+ Waiting: 441
+ Emergency Stops: 1
+ Emergency Braking: 1
+DijkstraRouter answered 3 queries and explored 75.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 43901 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (7ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 277.94s
+ TraCI-Duration: 275.00s
+ Real time factor: 4.31748
+ UPS: 521.594589
+Vehicles:
+ Inserted: 510 (Loaded: 1002)
+ Running: 218
+ Waiting: 458
+DijkstraRouter answered 4 queries and explored 75.50 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_115158_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed0.json
+RUN_DIR ../models/arterial4x4/run_20261026_115158_7311
+
+>>> [arterial4x4] training with_emv seed=1 (emv=True)
+rted: 537 (Loaded: 1002)
+ Running: 247
+ Waiting: 431
+ Emergency Stops: 1
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 72.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 38655 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (8ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 298.42s
+ TraCI-Duration: 295.43s
+ Real time factor: 4.02115
+ UPS: 518.343152
+Vehicles:
+ Inserted: 546 (Loaded: 1002)
+ Running: 268
+ Waiting: 422
+ Emergency Stops: 1
+ Emergency Braking: 1
+DijkstraRouter answered 4 queries and explored 74.50 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_121859_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed1.json
+RUN_DIR ../models/arterial4x4/run_20261026_121859_3201
+
+>>> [arterial4x4] training with_emv seed=2 (emv=True)
+3.92306
+ UPS: 456.807156
+Vehicles:
+ Inserted: 493 (Loaded: 1002)
+ Running: 211
+ Waiting: 475
+ Emergency Braking: 1
+DijkstraRouter answered 5 queries and explored 72.20 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 46717 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4.net.xml' ... done (7ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/../arterial4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/arterial4x4/emv/arterial4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 287.48s
+ TraCI-Duration: 284.62s
+ Real time factor: 4.17422
+ UPS: 492.265522
+Vehicles:
+ Inserted: 495 (Loaded: 1002)
+ Running: 212
+ Waiting: 473
+ Emergency Braking: 1
+DijkstraRouter answered 5 queries and explored 71.60 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.20ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/arterial4x4/run_20261026_124720_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/arterial4x4_with_emv_seed2.json
+RUN_DIR ../models/arterial4x4/run_20261026_124720_1926
+
+>>> [arterial4x4] evaluating with_emv (algorithm)
+nt Queue Total: 133.00, Completed Vehicles: 10
+Eval Step 250/1200 - Current Queue Total: 139.00, Completed Vehicles: 21
+Eval Step 300/1200 - Current Queue Total: 159.00, Completed Vehicles: 26
+Eval Step 350/1200 - Current Queue Total: 203.00, Completed Vehicles: 36
+Eval Step 400/1200 - Current Queue Total: 216.00, Completed Vehicles: 49
+Eval Step 450/1200 - Current Queue Total: 242.00, Completed Vehicles: 56
+Eval Step 500/1200 - Current Queue Total: 231.00, Completed Vehicles: 67
+Eval Step 550/1200 - Current Queue Total: 223.00, Completed Vehicles: 85
+Eval Step 600/1200 - Current Queue Total: 263.00, Completed Vehicles: 95
+Eval Step 650/1200 - Current Queue Total: 254.00, Completed Vehicles: 106
+Eval Step 700/1200 - Current Queue Total: 271.00, Completed Vehicles: 119
+Eval Step 750/1200 - Current Queue Total: 278.00, Completed Vehicles: 136
+Eval Step 800/1200 - Current Queue Total: 282.00, Completed Vehicles: 152
+Eval Step 850/1200 - Current Queue Total: 276.00, Completed Vehicles: 167
+Eval Step 900/1200 - Current Queue Total: 286.00, Completed Vehicles: 182
+Eval Step 950/1200 - Current Queue Total: 303.00, Completed Vehicles: 200
+Eval Step 1000/1200 - Current Queue Total: 337.00, Completed Vehicles: 211
+Eval Step 1050/1200 - Current Queue Total: 385.00, Completed Vehicles: 221
+Eval Step 1100/1200 - Current Queue Total: 391.00, Completed Vehicles: 241
+Eval Step 1150/1200 - Current Queue Total: 457.00, Completed Vehicles: 255
+Eval Step 1200/1200 - Current Queue Total: 459.00, Completed Vehicles: 267
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 267
+Throughput                 : 0.2225 vehicles/step
+Average Queue Length       : 243.30 vehicles
+Average Waiting Time       : 162.70 seconds
+Average Travel Time (ATT)  : 338.51 seconds
+Average Delay Time (ADT)   : 263.16 seconds
+Peak Total Queue Length    : 484.00 vehicles
+Jain Index (vehicle waits) : 0.6032
+Mean Intersection Jain     : 0.9197
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9197 (n=12781)
+Max / P95 Vehicle Wait     : 435.00 / 380.00 seconds
+Vehicles with wait >= 90s : 69.66%
+Max Intersection Timer     : 185.00 seconds
+Starvation/EMV Overrides   : 1597
+EMV Response Time (mean/P95): 127.00 / 155.00 seconds (n=3)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+DONE scenario=arterial4x4 (with_emv only)
+CAMPAIGN DONE

@@ -98,14 +98,11 @@ def make_pair(scenario, method):
         ys = [p[1] for p in pts]
         ax.scatter(
             xs, ys, s=point_size, color=color_map[cid], edgecolor="black", linewidth=0.3, zorder=3,
-            label=f"Cluster {cid} (n={len(pts)})",
         )
     ax.set_title(f"{scenario}: intersections after {method.upper()} clustering\n(same color = same cluster)")
     ax.set_xlabel("x (m)")
     ax.set_ylabel("y (m)")
     ax.set_aspect("equal")
-    if len(cluster_ids) <= 12:
-        ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), fontsize=7, borderaxespad=0)
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, f"after_cluster_{scenario}.png"), dpi=150)
     plt.close(fig)

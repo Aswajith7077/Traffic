@@ -1,0 +1,176 @@
+>>> [grid4x4] training with_emv seed=0 (emv=True)
+: 2.38787
+ UPS: 157.436224
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 108
+ Waiting: 0
+ Emergency Stops: 1
+ Emergency Braking: 3
+DijkstraRouter answered 4 queries and explored 40.25 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.25ms on average).
+Loading configuration ... done.
+***Starting server on port 33189 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4.net.xml' ... done (21ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/grid4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 497.02s
+ TraCI-Duration: 493.76s
+ Real time factor: 2.4144
+ UPS: 159.185702
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 108
+ Waiting: 0
+ Emergency Stops: 1
+ Emergency Braking: 3
+DijkstraRouter answered 4 queries and explored 40.25 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/grid4x4/run_20261026_142224_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/grid4x4_with_emv_seed0.json
+RUN_DIR ../models/grid4x4/run_20261026_142224_7311
+
+>>> [grid4x4] training with_emv seed=1 (emv=True)
+aCI-Duration: 488.96s
+ Real time factor: 2.44103
+ UPS: 155.650168
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 105
+ Waiting: 0
+ Emergency Braking: 3
+DijkstraRouter answered 4 queries and explored 41.50 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.25ms on average).
+Loading configuration ... done.
+***Starting server on port 40899 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4.net.xml' ... done (20ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/grid4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 489.77s
+ TraCI-Duration: 486.67s
+ Real time factor: 2.45012
+ UPS: 157.349047
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 104
+ Waiting: 0
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 41.00 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/grid4x4/run_20261026_150830_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/grid4x4_with_emv_seed1.json
+RUN_DIR ../models/grid4x4/run_20261026_150830_3201
+
+>>> [grid4x4] training with_emv seed=2 (emv=True)
+ 2.22922
+ UPS: 147.230933
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 107
+ Waiting: 0
+ Emergency Stops: 1
+ Emergency Braking: 2
+DijkstraRouter answered 4 queries and explored 40.25 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+Loading configuration ... done.
+***Starting server on port 39605 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4.net.xml' ... done (25ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/../grid4x4_1.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/grid4x4/emv/grid4x4_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 0.00.
+Simulation ended at time: 1200.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 555.20s
+ TraCI-Duration: 550.61s
+ Real time factor: 2.16139
+ UPS: 142.503859
+Vehicles:
+ Inserted: 343 (Loaded: 359)
+ Running: 108
+ Waiting: 0
+ Emergency Stops: 1
+ Emergency Braking: 3
+DijkstraRouter answered 4 queries and explored 40.25 edges on average.
+DijkstraRouter spent 0.00s answering queries (0.00ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/grid4x4/run_20261026_155235_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/grid4x4_with_emv_seed2.json
+RUN_DIR ../models/grid4x4/run_20261026_155235_1926
+
+>>> [grid4x4] evaluating with_emv (algorithm)
+rrent Queue Total: 117.00, Completed Vehicles: 6
+Eval Step 250/1200 - Current Queue Total: 117.00, Completed Vehicles: 13
+Eval Step 300/1200 - Current Queue Total: 141.00, Completed Vehicles: 14
+Eval Step 350/1200 - Current Queue Total: 159.00, Completed Vehicles: 22
+Eval Step 400/1200 - Current Queue Total: 159.00, Completed Vehicles: 27
+Eval Step 450/1200 - Current Queue Total: 162.00, Completed Vehicles: 39
+Eval Step 500/1200 - Current Queue Total: 180.00, Completed Vehicles: 50
+Eval Step 550/1200 - Current Queue Total: 165.00, Completed Vehicles: 64
+Eval Step 600/1200 - Current Queue Total: 177.00, Completed Vehicles: 77
+Eval Step 650/1200 - Current Queue Total: 189.00, Completed Vehicles: 85
+Eval Step 700/1200 - Current Queue Total: 162.00, Completed Vehicles: 96
+Eval Step 750/1200 - Current Queue Total: 192.00, Completed Vehicles: 109
+Eval Step 800/1200 - Current Queue Total: 204.00, Completed Vehicles: 115
+Eval Step 850/1200 - Current Queue Total: 228.00, Completed Vehicles: 127
+Eval Step 900/1200 - Current Queue Total: 231.00, Completed Vehicles: 137
+Eval Step 950/1200 - Current Queue Total: 267.00, Completed Vehicles: 147
+Eval Step 1000/1200 - Current Queue Total: 237.00, Completed Vehicles: 167
+Eval Step 1050/1200 - Current Queue Total: 249.00, Completed Vehicles: 187
+Eval Step 1100/1200 - Current Queue Total: 258.00, Completed Vehicles: 204
+Eval Step 1150/1200 - Current Queue Total: 270.00, Completed Vehicles: 218
+Eval Step 1200/1200 - Current Queue Total: 279.00, Completed Vehicles: 235
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 235
+Throughput                 : 0.1958 vehicles/step
+Average Queue Length       : 175.57 vehicles
+Average Waiting Time       : 135.62 seconds
+Average Travel Time (ATT)  : 263.11 seconds
+Average Delay Time (ADT)   : 167.22 seconds
+Peak Total Queue Length    : 297.00 vehicles
+Jain Index (vehicle waits) : 0.5309
+Mean Intersection Jain     : 0.9012
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9012 (n=17436)
+Max / P95 Vehicle Wait     : 410.00 / 332.00 seconds
+Vehicles with wait >= 90s : 67.23%
+Max Intersection Timer     : 112.00 seconds
+Starvation/EMV Overrides   : 1406
+EMV Response Time (mean/P95): 103.00 / 121.00 seconds (n=3)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+DONE scenario=grid4x4 (with_emv only)
+CAMPAIGN DONE

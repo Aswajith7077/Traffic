@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Emergency-vehicle trips for the city-wide multi-EMV routing extension
+     (Section 3.2), generated for the grid4x4 scenario so the with/without
+     EMV-routing comparison (Section 6.1) is meaningful here too: grid4x4's
+     base scenario files ship with no emergency vehicles at all. Lives in a
+     separate emv/ subfolder with its own sumocfg so the original, working
+     grid4x4.sumocfg and route files are left untouched. from/to edge pairs
+     are real start/end edges reused from grid4x4's own base route file, so
+     they are guaranteed routable. Same vType and depart-offset pattern as
+     scenarios/cologne8/cologne8_emv.rou.xml. -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/routes_file.xsd">
+	<vType id="emergency" vClass="emergency" speedFactor="1.3" length="6.0" minGap="1.0" guiShape="emergency"/>
+	<trip id="emv_0" type="emergency" depart="60.00" from="bottom2C0" to="C0bottom2"/>
+	<trip id="emv_1" type="emergency" depart="420.00" from="left3A3" to="A3left3"/>
+	<trip id="emv_2" type="emergency" depart="780.00" from="bottom3D0" to="D2right2"/>
+	<trip id="emv_3" type="emergency" depart="1140.00" from="top1B3" to="D0right0"/>
+	<trip id="emv_4" type="emergency" depart="1500.00" from="right1D1" to="B0bottom1"/>
+	<trip id="emv_5" type="emergency" depart="1860.00" from="top3D3" to="A3top0"/>
+</routes>

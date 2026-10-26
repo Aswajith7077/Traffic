@@ -84,14 +84,13 @@ def main():
             continue
         xs = [p[0] for p in pts]
         ys = [p[1] for p in pts]
-        ax.scatter(xs, ys, s=160, color=color_map[cid], edgecolor="black", zorder=3, label=f"Cluster {cid}")
+        ax.scatter(xs, ys, s=160, color=color_map[cid], edgecolor="black", zorder=3)
     for tls_id, (x, y) in coords.items():
         ax.annotate(tls_id, (x, y), textcoords="offset points", xytext=(6, 6), fontsize=7)
     ax.set_title("Cologne8: intersections after Leiden clustering\n(same color = same cluster)")
     ax.set_xlabel("x (m)")
     ax.set_ylabel("y (m)")
     ax.set_aspect("equal")
-    ax.legend(loc="best", fontsize=8)
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "after_cluster.png"), dpi=150)
     plt.close(fig)

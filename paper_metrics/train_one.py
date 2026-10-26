@@ -43,9 +43,18 @@ def main():
     )
 
     scenario = os.environ.get("TRAFFIC_SCENARIO", "cologne8")
+    sumocfg_path = f"../scenarios/{scenario}/{scenario}.sumocfg"
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # .../Traffic
+    emv_sumocfg_abs = os.path.join(repo_root, "scenarios", scenario, "emv", f"{scenario}_emv.sumocfg")
+    # Only cologne8's own sumocfg ships EMVs; the other 4 scenarios get them
+    # from this separate, additively-generated sumocfg instead of editing
+    # their original, working files (see scenarios/*/emv/).
+    if os.environ.get("USE_EMV_ROUTING") == "1" and os.path.exists(emv_sumocfg_abs):
+        sumocfg_path = f"../scenarios/{scenario}/emv/{scenario}_emv.sumocfg"
+
     trainer = Trainer(
         scenario=scenario,
-        sumocfg_path=f"../scenarios/{scenario}/{scenario}.sumocfg",
+        sumocfg_path=sumocfg_path,
         reward_config=reward_config,
     )
     run_dir = trainer.create_run_dir()

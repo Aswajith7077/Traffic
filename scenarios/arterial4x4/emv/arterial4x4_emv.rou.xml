@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Emergency-vehicle trips for the city-wide multi-EMV routing extension
+     (Section 3.2), generated for the arterial4x4 scenario so the with/without
+     EMV-routing comparison (Section 6.1) is meaningful here too: arterial4x4's
+     base scenario files ship with no emergency vehicles at all. Lives in a
+     separate emv/ subfolder with its own sumocfg so the original, working
+     arterial4x4.sumocfg and route files are left untouched. from/to edge pairs
+     are real start/end edges reused from arterial4x4's own base route file, so
+     they are guaranteed routable. Same vType and depart-offset pattern as
+     scenarios/cologne8/cologne8_emv.rou.xml. -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/routes_file.xsd">
+	<vType id="emergency" vClass="emergency" speedFactor="1.3" length="6.0" minGap="1.0" guiShape="emergency"/>
+	<trip id="emv_0" type="emergency" depart="60.00" from="np13_nt13" to="nt4_np5"/>
+	<trip id="emv_1" type="emergency" depart="420.00" from="np16_nt1" to="nt16_np8"/>
+	<trip id="emv_2" type="emergency" depart="780.00" from="np11_nt14" to="nt3_np3"/>
+	<trip id="emv_3" type="emergency" depart="1140.00" from="np3_nt3" to="nt14_np11"/>
+	<trip id="emv_4" type="emergency" depart="1500.00" from="np5_nt4" to="nt13_np13"/>
+	<trip id="emv_5" type="emergency" depart="1860.00" from="np8_nt16" to="nt1_np16"/>
+</routes>

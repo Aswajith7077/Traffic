@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Emergency-vehicle trips for the city-wide multi-EMV routing extension
+     (Section 3.2), generated for the ingolstadt21 scenario so the with/without
+     EMV-routing comparison (Section 6.1) is meaningful here too: ingolstadt21's
+     base scenario files ship with no emergency vehicles at all. Lives in a
+     separate emv/ subfolder with its own sumocfg so the original, working
+     ingolstadt21.sumocfg and route files are left untouched. from/to edge pairs
+     are real start/end edges reused from ingolstadt21's own base route file, so
+     they are guaranteed routable. Same vType and depart-offset pattern as
+     scenarios/cologne8/cologne8_emv.rou.xml. -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/routes_file.xsd">
+	<vType id="emergency" vClass="emergency" speedFactor="1.3" length="6.0" minGap="1.0" guiShape="emergency"/>
+	<trip id="emv_0" type="emergency" depart="57660.00" from="128361109#1" to="386687235"/>
+	<trip id="emv_1" type="emergency" depart="58020.00" from="272042143" to="-315358254#1"/>
+	<trip id="emv_2" type="emergency" depart="58380.00" from="-224892361#8" to="306240162#0"/>
+	<trip id="emv_3" type="emergency" depart="58740.00" from="128361102#0" to="201956811#0"/>
+	<trip id="emv_4" type="emergency" depart="59100.00" from="24608844" to="32978638#0"/>
+	<trip id="emv_5" type="emergency" depart="59460.00" from="386687232#0" to="306240162#0"/>
+</routes>

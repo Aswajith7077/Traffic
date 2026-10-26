@@ -3,34 +3,34 @@
     "with_emv": [
       {
         "seed": 0,
-        "run_dir": "../models/cologne8/run_20261025_233224_7311",
+        "run_dir": "../models/cologne8/run_20261026_202351_7311",
         "use_emv_routing": true
       },
       {
         "seed": 1,
-        "run_dir": "../models/cologne8/run_20261025_234407_3201",
+        "run_dir": "../models/cologne8/run_20261026_204034_3201",
         "use_emv_routing": true
       },
       {
         "seed": 2,
-        "run_dir": "../models/cologne8/run_20261025_235545_1926",
+        "run_dir": "../models/cologne8/run_20261026_205523_1926",
         "use_emv_routing": true
       }
     ],
     "without_emv": [
       {
         "seed": 0,
-        "run_dir": "../models/cologne8/run_20261026_000727_7311",
+        "run_dir": "../models/cologne8/run_20261026_211024_7311",
         "use_emv_routing": false
       },
       {
         "seed": 1,
-        "run_dir": "../models/cologne8/run_20261026_001847_3201",
+        "run_dir": "../models/cologne8/run_20261026_212419_3201",
         "use_emv_routing": false
       },
       {
         "seed": 2,
-        "run_dir": "../models/cologne8/run_20261026_003015_1926",
+        "run_dir": "../models/cologne8/run_20261026_213810_1926",
         "use_emv_routing": false
       }
     ]
@@ -39,17 +39,89 @@
     "with_emv": [
       {
         "seed": 0,
-        "run_dir": "../models/arterial4x4/run_20261025_204543_7311",
+        "run_dir": "../models/arterial4x4/run_20261026_083431_7311",
         "use_emv_routing": true
       },
       {
         "seed": 1,
-        "run_dir": "../models/arterial4x4/run_20261025_210847_3201",
+        "run_dir": "../models/arterial4x4/run_20261026_085951_3201",
         "use_emv_routing": true
       },
       {
         "seed": 2,
-        "run_dir": "../models/arterial4x4/run_20261025_213154_1926",
+        "run_dir": "../models/arterial4x4/run_20261026_092512_1926",
+        "use_emv_routing": true
+      }
+    ],
+    "without_emv": [
+      {
+        "seed": 0,
+        "run_dir": "../models/arterial4x4/run_20261026_095035_7311",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 1,
+        "run_dir": "../models/arterial4x4/run_20261026_101546_3201",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 2,
+        "run_dir": "../models/arterial4x4/run_20261026_104216_1926",
+        "use_emv_routing": false
+      }
+    ]
+  },
+  "grid4x4": {
+    "without_emv": [
+      {
+        "seed": 0,
+        "run_dir": "../models/grid4x4/run_20261026_113600_7311",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 1,
+        "run_dir": "../models/grid4x4/run_20261026_121906_3201",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 2,
+        "run_dir": "../models/grid4x4/run_20261026_130440_1926",
+        "use_emv_routing": false
+      }
+    ]
+  },
+  "ingolstadt21": {
+    "without_emv": [
+      {
+        "seed": 0,
+        "run_dir": "../models/ingolstadt21/run_20261026_135314_7311",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 1,
+        "run_dir": "../models/ingolstadt21/run_20261026_143531_3201",
+        "use_emv_routing": false
+      },
+      {
+        "seed": 2,
+        "run_dir": "../models/ingolstadt21/run_20261026_151807_1926",
+        "use_emv_routing": false
+      }
+    ],
+    "with_emv": [
+      {
+        "seed": 0,
+        "run_dir": "../models/ingolstadt21/run_20261026_163903_7311",
+        "use_emv_routing": true
+      },
+      {
+        "seed": 1,
+        "run_dir": "../models/ingolstadt21/run_20261026_172514_3201",
+        "use_emv_routing": true
+      },
+      {
+        "seed": 2,
+        "run_dir": "../models/ingolstadt21/run_20261026_180442_1926",
         "use_emv_routing": true
       }
     ]

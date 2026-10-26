@@ -304,6 +304,28 @@ class TraciService:
         """Bounded service score s = 1 / (1 + w / W_ref) used as the Jain-index input."""
         return 1.0 / (1.0 + wait / self.wait_ref)
 
+    def compute_network_jain_now(self):
+        """Network-wide Jain's index over every vehicle currently in the
+        simulation, using accumulated waiting time -> service_score -- the
+        same quantities evaluate.py's reported jain_network metric uses,
+        just computed live instead of only at the end of an eval run.
+
+        get_intersection_fairness() below is a *local*, per-intersection,
+        instantaneous signal; a policy can score well on it everywhere while
+        still producing large accumulated-wait disparities network-wide
+        (e.g. some vehicles repeatedly re-queueing at several intersections
+        in sequence). This method gives every agent the same network-level
+        fairness signal each step, the way compute_goal_reward() already
+        broadcasts global W/Q state, so the thing actually being reported
+        and compared against baselines (.claude/reports/fairness_implementation.md)
+        has direct training signal behind it, not just a local proxy.
+        """
+        waits = [traci.vehicle.getAccumulatedWaitingTime(v) for v in traci.vehicle.getIDList()]
+        if not waits:
+            return 1.0
+        scores = [self.service_score(w) for w in waits]
+        return self.compute_jain_index(scores)
+
     def get_intersection_fairness(self, tls_id):
         """Local fairness statistics at one intersection (Section 4.1).
 
@@ -382,10 +404,23 @@ class TraciService:
 
     def _starved_phase(self, tls_id, valid_phases, current_phase):
         """Valid phase serving the longest-waiting vehicle at/over W_max, else None.
-        The current phase is preferred when it already serves that vehicle."""
+
+        Checks both the local (this-intersection) wait timer and the
+        vehicle's accumulated trip-wide waiting time -- a vehicle that
+        crossed W_max via several shorter waits at earlier intersections
+        (e.g. 40s at one, 60s at the next) never trips a purely local check,
+        since neither single intersection ever sees the full 90s, even
+        though the vehicle is genuinely starved overall
+        (.claude/reports/fairness_implementation.md). The current phase is
+        preferred when it already serves the starved vehicle.
+        """
         timers = self.wait_timers.get(tls_id, {})
         lanes = self.timer_lanes.get(tls_id, {})
-        starved = sorted(((w, v) for v, w in timers.items() if w >= self.max_wait), reverse=True)
+        starved = sorted(
+            ((max(w, traci.vehicle.getAccumulatedWaitingTime(v)), v) for v, w in timers.items()),
+            reverse=True,
+        )
+        starved = [(w, v) for w, v in starved if w >= self.max_wait]
         for _, veh_id in starved:
             lane = lanes.get(veh_id)
             candidates = ([current_phase] if current_phase in valid_phases else []) + [

@@ -1,1 +1,460 @@
 >>> [cologne8] training with_emv seed=0 (emv=True)
+on port 37509 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (19ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 138.47s
+ TraCI-Duration: 136.12s
+ Real time factor: 8.66632
+ UPS: 895.780222
+Vehicles:
+ Inserted: 825 (Loaded: 838)
+ Running: 160
+ Waiting: 2
+ Emergency Braking: 1
+DijkstraRouter answered 870 queries and explored 46.91 edges on average.
+DijkstraRouter spent 0.05s answering queries (0.06ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_004928_7311/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_with_emv_seed0.json
+RUN_DIR ../models/cologne8/run_20261026_004928_7311
+
+>>> [cologne8] training with_emv seed=1 (emv=True)
+ading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (18ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 129.34s
+ TraCI-Duration: 127.11s
+ Real time factor: 9.27759
+ UPS: 909.497155
+Vehicles:
+ Inserted: 826 (Loaded: 838)
+ Running: 144
+ Waiting: 1
+ Emergency Stops: 1
+ Emergency Braking: 3
+DijkstraRouter answered 827 queries and explored 46.11 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_013424_3201/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_with_emv_seed1.json
+RUN_DIR ../models/cologne8/run_20261026_013424_3201
+
+>>> [cologne8] training with_emv seed=2 (emv=True)
+ading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 127.74s
+ TraCI-Duration: 125.55s
+ Real time factor: 9.39393
+ UPS: 907.970754
+Vehicles:
+ Inserted: 826 (Loaded: 838)
+ Running: 150
+ Waiting: 1
+ Emergency Stops: 1
+ Emergency Braking: 1
+DijkstraRouter answered 827 queries and explored 45.29 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_021835_1926/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_with_emv_seed2.json
+RUN_DIR ../models/cologne8/run_20261026_021835_1926
+
+>>> [cologne8] training without_emv seed=0 (emv=False)
+ng net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (17ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 123.82s
+ TraCI-Duration: 121.61s
+ Real time factor: 9.69125
+ UPS: 903.410513
+Vehicles:
+ Inserted: 826 (Loaded: 838)
+ Running: 150
+ Waiting: 1
+ Emergency Stops: 1
+ Emergency Braking: 2
+DijkstraRouter answered 827 queries and explored 43.82 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_030247_7311/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_without_emv_seed0.json
+RUN_DIR ../models/cologne8/run_20261026_030247_7311
+
+>>> [cologne8] training without_emv seed=1 (emv=False)
+***Starting server on port 33675 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (16ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 127.27s
+ TraCI-Duration: 125.03s
+ Real time factor: 9.42892
+ UPS: 932.213911
+Vehicles:
+ Inserted: 827 (Loaded: 838)
+ Running: 141
+ Waiting: 0
+DijkstraRouter answered 827 queries and explored 45.63 edges on average.
+DijkstraRouter spent 0.03s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_034522_3201/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_without_emv_seed1.json
+RUN_DIR ../models/cologne8/run_20261026_034522_3201
+
+>>> [cologne8] training without_emv seed=2 (emv=False)
+***Starting server on port 41145 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.net.xml' ... done (19ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/cologne8/cologne8_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 25200.00.
+Simulation ended at time: 26400.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 126.62s
+ TraCI-Duration: 124.38s
+ Real time factor: 9.47733
+ UPS: 954.445655
+Vehicles:
+ Inserted: 827 (Loaded: 838)
+ Running: 163
+ Waiting: 0
+DijkstraRouter answered 872 queries and explored 46.22 edges on average.
+DijkstraRouter spent 0.04s answering queries (0.04ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/cologne8/run_20261026_042826_1926/checkpoint_ep020.pth
+WROTE ../paper_metrics/raw/cologne8_without_emv_seed2.json
+RUN_DIR ../models/cologne8/run_20261026_042826_1926
+
+>>> [cologne8] evaluating with_emv (algorithm)
+nt Queue Total: 131.00, Completed Vehicles: 47
+Eval Step 250/1200 - Current Queue Total: 85.00, Completed Vehicles: 78
+Eval Step 300/1200 - Current Queue Total: 81.00, Completed Vehicles: 104
+Eval Step 350/1200 - Current Queue Total: 121.00, Completed Vehicles: 120
+Eval Step 400/1200 - Current Queue Total: 114.00, Completed Vehicles: 138
+Eval Step 450/1200 - Current Queue Total: 118.00, Completed Vehicles: 162
+Eval Step 500/1200 - Current Queue Total: 152.00, Completed Vehicles: 186
+Eval Step 550/1200 - Current Queue Total: 183.00, Completed Vehicles: 200
+Eval Step 600/1200 - Current Queue Total: 179.00, Completed Vehicles: 229
+Eval Step 650/1200 - Current Queue Total: 218.00, Completed Vehicles: 250
+Eval Step 700/1200 - Current Queue Total: 216.00, Completed Vehicles: 278
+Eval Step 750/1200 - Current Queue Total: 278.00, Completed Vehicles: 302
+Eval Step 800/1200 - Current Queue Total: 339.00, Completed Vehicles: 328
+Eval Step 850/1200 - Current Queue Total: 425.00, Completed Vehicles: 367
+Eval Step 900/1200 - Current Queue Total: 421.00, Completed Vehicles: 409
+Eval Step 950/1200 - Current Queue Total: 414.00, Completed Vehicles: 443
+Eval Step 1000/1200 - Current Queue Total: 423.00, Completed Vehicles: 483
+Eval Step 1050/1200 - Current Queue Total: 424.00, Completed Vehicles: 518
+Eval Step 1100/1200 - Current Queue Total: 444.00, Completed Vehicles: 557
+Eval Step 1150/1200 - Current Queue Total: 451.00, Completed Vehicles: 610
+Eval Step 1200/1200 - Current Queue Total: 405.00, Completed Vehicles: 652
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 652
+Throughput                 : 0.5433 vehicles/step
+Average Queue Length       : 245.47 vehicles
+Average Waiting Time       : 59.62 seconds
+Average Travel Time (ATT)  : 153.27 seconds
+Average Delay Time (ADT)   : 102.51 seconds
+Peak Total Queue Length    : 483.00 vehicles
+Jain Index (vehicle waits) : 0.7205
+Mean Intersection Jain     : 0.9074
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9074 (n=6645)
+Max / P95 Vehicle Wait     : 247.00 / 186.00 seconds
+Vehicles with wait >= 90s : 32.67%
+Max Intersection Timer     : 103.00 seconds
+Starvation/EMV Overrides   : 760
+EMV Response Time (mean/P95): 55.50 / 83.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> [cologne8] evaluating without_emv (algorithm)
+rrent Queue Total: 89.00, Completed Vehicles: 56
+Eval Step 250/1200 - Current Queue Total: 67.00, Completed Vehicles: 86
+Eval Step 300/1200 - Current Queue Total: 50.00, Completed Vehicles: 110
+Eval Step 350/1200 - Current Queue Total: 109.00, Completed Vehicles: 123
+Eval Step 400/1200 - Current Queue Total: 87.00, Completed Vehicles: 142
+Eval Step 450/1200 - Current Queue Total: 139.00, Completed Vehicles: 168
+Eval Step 500/1200 - Current Queue Total: 162.00, Completed Vehicles: 190
+Eval Step 550/1200 - Current Queue Total: 156.00, Completed Vehicles: 223
+Eval Step 600/1200 - Current Queue Total: 146.00, Completed Vehicles: 258
+Eval Step 650/1200 - Current Queue Total: 210.00, Completed Vehicles: 280
+Eval Step 700/1200 - Current Queue Total: 188.00, Completed Vehicles: 307
+Eval Step 750/1200 - Current Queue Total: 223.00, Completed Vehicles: 339
+Eval Step 800/1200 - Current Queue Total: 271.00, Completed Vehicles: 366
+Eval Step 850/1200 - Current Queue Total: 335.00, Completed Vehicles: 407
+Eval Step 900/1200 - Current Queue Total: 327.00, Completed Vehicles: 448
+Eval Step 950/1200 - Current Queue Total: 339.00, Completed Vehicles: 476
+Eval Step 1000/1200 - Current Queue Total: 340.00, Completed Vehicles: 521
+Eval Step 1050/1200 - Current Queue Total: 378.00, Completed Vehicles: 552
+Eval Step 1100/1200 - Current Queue Total: 356.00, Completed Vehicles: 601
+Eval Step 1150/1200 - Current Queue Total: 341.00, Completed Vehicles: 655
+Eval Step 1200/1200 - Current Queue Total: 341.00, Completed Vehicles: 692
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 692
+Throughput                 : 0.5767 vehicles/step
+Average Queue Length       : 205.14 vehicles
+Average Waiting Time       : 42.11 seconds
+Average Travel Time (ATT)  : 133.51 seconds
+Average Delay Time (ADT)   : 80.62 seconds
+Peak Total Queue Length    : 404.00 vehicles
+Jain Index (vehicle waits) : 0.7997
+Mean Intersection Jain     : 0.9406
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9406 (n=6661)
+Max / P95 Vehicle Wait     : 220.00 / 177.00 seconds
+Vehicles with wait >= 90s : 20.09%
+Max Intersection Timer     : 101.00 seconds
+Starvation/EMV Overrides   : 451
+EMV Response Time (mean/P95): 48.25 / 76.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> [cologne8] evaluating fixed (fixed)
+Current Queue Total: 108.00, Completed Vehicles: 52
+Eval Step 250/1200 - Current Queue Total: 86.00, Completed Vehicles: 73
+Eval Step 300/1200 - Current Queue Total: 88.00, Completed Vehicles: 100
+Eval Step 350/1200 - Current Queue Total: 72.00, Completed Vehicles: 129
+Eval Step 400/1200 - Current Queue Total: 101.00, Completed Vehicles: 150
+Eval Step 450/1200 - Current Queue Total: 153.00, Completed Vehicles: 168
+Eval Step 500/1200 - Current Queue Total: 172.00, Completed Vehicles: 189
+Eval Step 550/1200 - Current Queue Total: 176.00, Completed Vehicles: 213
+Eval Step 600/1200 - Current Queue Total: 219.00, Completed Vehicles: 235
+Eval Step 650/1200 - Current Queue Total: 240.00, Completed Vehicles: 263
+Eval Step 700/1200 - Current Queue Total: 260.00, Completed Vehicles: 290
+Eval Step 750/1200 - Current Queue Total: 310.00, Completed Vehicles: 316
+Eval Step 800/1200 - Current Queue Total: 376.00, Completed Vehicles: 341
+Eval Step 850/1200 - Current Queue Total: 450.00, Completed Vehicles: 377
+Eval Step 900/1200 - Current Queue Total: 449.00, Completed Vehicles: 408
+Eval Step 950/1200 - Current Queue Total: 447.00, Completed Vehicles: 447
+Eval Step 1000/1200 - Current Queue Total: 477.00, Completed Vehicles: 494
+Eval Step 1050/1200 - Current Queue Total: 468.00, Completed Vehicles: 525
+Eval Step 1100/1200 - Current Queue Total: 473.00, Completed Vehicles: 560
+Eval Step 1150/1200 - Current Queue Total: 444.00, Completed Vehicles: 612
+Eval Step 1200/1200 - Current Queue Total: 390.00, Completed Vehicles: 654
+
+==================================================
+EVALUATION METRICS SUMMARY (fixed)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 654
+Throughput                 : 0.5450 vehicles/step
+Average Queue Length       : 258.98 vehicles
+Average Waiting Time       : 58.75 seconds
+Average Travel Time (ATT)  : 155.90 seconds
+Average Delay Time (ADT)   : 103.18 seconds
+Peak Total Queue Length    : 519.00 vehicles
+Jain Index (vehicle waits) : 0.7326
+Mean Intersection Jain     : 0.9390
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9390 (n=6928)
+Max / P95 Vehicle Wait     : 205.00 / 167.00 seconds
+Vehicles with wait >= 90s : 28.44%
+Max Intersection Timer     : 116.00 seconds
+Starvation/EMV Overrides   : 301
+EMV Response Time (mean/P95): 48.25 / 79.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+>>> [cologne8] evaluating max_pressure (max_pressure)
+ - Current Queue Total: 52.00, Completed Vehicles: 75
+Eval Step 250/1200 - Current Queue Total: 35.00, Completed Vehicles: 95
+Eval Step 300/1200 - Current Queue Total: 35.00, Completed Vehicles: 120
+Eval Step 350/1200 - Current Queue Total: 43.00, Completed Vehicles: 139
+Eval Step 400/1200 - Current Queue Total: 73.00, Completed Vehicles: 153
+Eval Step 450/1200 - Current Queue Total: 114.00, Completed Vehicles: 181
+Eval Step 500/1200 - Current Queue Total: 112.00, Completed Vehicles: 206
+Eval Step 550/1200 - Current Queue Total: 114.00, Completed Vehicles: 242
+Eval Step 600/1200 - Current Queue Total: 96.00, Completed Vehicles: 277
+Eval Step 650/1200 - Current Queue Total: 108.00, Completed Vehicles: 314
+Eval Step 700/1200 - Current Queue Total: 120.00, Completed Vehicles: 342
+Eval Step 750/1200 - Current Queue Total: 148.00, Completed Vehicles: 370
+Eval Step 800/1200 - Current Queue Total: 194.00, Completed Vehicles: 401
+Eval Step 850/1200 - Current Queue Total: 274.00, Completed Vehicles: 440
+Eval Step 900/1200 - Current Queue Total: 251.00, Completed Vehicles: 484
+Eval Step 950/1200 - Current Queue Total: 250.00, Completed Vehicles: 526
+Eval Step 1000/1200 - Current Queue Total: 220.00, Completed Vehicles: 567
+Eval Step 1050/1200 - Current Queue Total: 234.00, Completed Vehicles: 604
+Eval Step 1100/1200 - Current Queue Total: 222.00, Completed Vehicles: 648
+Eval Step 1150/1200 - Current Queue Total: 225.00, Completed Vehicles: 697
+Eval Step 1200/1200 - Current Queue Total: 220.00, Completed Vehicles: 734
+
+==================================================
+EVALUATION METRICS SUMMARY (max_pressure)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 734
+Throughput                 : 0.6117 vehicles/step
+Average Queue Length       : 138.02 vehicles
+Average Waiting Time       : 11.95 seconds
+Average Travel Time (ATT)  : 96.54 seconds
+Average Delay Time (ADT)   : 43.04 seconds
+Peak Total Queue Length    : 301.00 vehicles
+Jain Index (vehicle waits) : 0.9396
+Mean Intersection Jain     : 0.9935
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9935 (n=6359)
+Max / P95 Vehicle Wait     : 58.00 / 39.00 seconds
+Vehicles with wait >= 90s : 0.00%
+Max Intersection Timer     : 56.00 seconds
+Starvation/EMV Overrides   : 27
+EMV Response Time (mean/P95): 42.50 / 53.00 seconds (n=4)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+DONE scenario=cologne8
+CAMPAIGN DONE

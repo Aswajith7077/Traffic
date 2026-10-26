@@ -1,0 +1,163 @@
+>>> [ingolstadt21] training with_emv seed=0 (emv=True)
+ 543
+ Waiting: 126
+ Teleports: 9 (Jam: 7, Yield: 1, Wrong Lane: 1)
+DijkstraRouter answered 1462 queries and explored 393.05 edges on average.
+DijkstraRouter spent 0.45s answering queries (0.31ms on average).
+Loading configuration ... done.
+***Starting server on port 46225 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.net.xml' ... done (91ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/ingolstadt21_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 57600.00.
+Simulation ended at time: 58800.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 497.60s
+ TraCI-Duration: 491.05s
+ Real time factor: 2.41156
+ UPS: 896.027765
+Vehicles:
+ Inserted: 1293 (Loaded: 1422)
+ Running: 543
+ Waiting: 126
+ Teleports: 9 (Jam: 7, Yield: 1, Wrong Lane: 1)
+DijkstraRouter answered 1462 queries and explored 393.05 edges on average.
+DijkstraRouter spent 0.45s answering queries (0.31ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/ingolstadt21/run_20261026_163903_7311/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/ingolstadt21_with_emv_seed0.json
+RUN_DIR ../models/ingolstadt21/run_20261026_163903_7311
+
+>>> [ingolstadt21] training with_emv seed=1 (emv=True)
+m: 4)
+ Emergency Stops: 7
+ Emergency Braking: 10
+DijkstraRouter answered 1448 queries and explored 381.16 edges on average.
+DijkstraRouter spent 0.44s answering queries (0.30ms on average).
+Loading configuration ... done.
+***Starting server on port 39103 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.net.xml' ... done (83ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/ingolstadt21_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 57600.00.
+Simulation ended at time: 58800.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 441.27s
+ TraCI-Duration: 435.29s
+ Real time factor: 2.71943
+ UPS: 764.390882
+Vehicles:
+ Inserted: 1315 (Loaded: 1422)
+ Running: 375
+ Waiting: 104
+ Teleports: 4 (Jam: 4)
+ Emergency Stops: 8
+ Emergency Braking: 11
+DijkstraRouter answered 1426 queries and explored 383.15 edges on average.
+DijkstraRouter spent 0.43s answering queries (0.30ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/ingolstadt21/run_20261026_172514_3201/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/ingolstadt21_with_emv_seed1.json
+RUN_DIR ../models/ingolstadt21/run_20261026_172514_3201
+
+>>> [ingolstadt21] training with_emv seed=2 (emv=True)
+am: 5)
+ Emergency Stops: 2
+ Emergency Braking: 5
+DijkstraRouter answered 1441 queries and explored 390.19 edges on average.
+DijkstraRouter spent 0.46s answering queries (0.32ms on average).
+Loading configuration ... done.
+***Starting server on port 40367 ***
+Loading net-file from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.net.xml' ... done (100ms).
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/../ingolstadt21.rou.xml'
+Loading route-files incrementally from '/home/aswajiths/Documents/Traffic/scenarios/ingolstadt21/emv/ingolstadt21_emv.rou.xml'
+Loading done.
+Simulation version 1.25.0 started with time: 57600.00.
+Simulation ended at time: 58800.00.
+Reason: TraCI requested termination.
+Performance:
+ Duration: 490.58s
+ TraCI-Duration: 483.85s
+ Real time factor: 2.44608
+ UPS: 752.580619
+Vehicles:
+ Inserted: 1311 (Loaded: 1422)
+ Running: 435
+ Waiting: 108
+ Teleports: 5 (Jam: 5)
+ Emergency Stops: 2
+ Emergency Braking: 4
+DijkstraRouter answered 1434 queries and explored 386.17 edges on average.
+DijkstraRouter spent 0.45s answering queries (0.31ms on average).
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+Checkpoint saved to ../models/ingolstadt21/run_20261026_180442_1926/checkpoint_ep005.pth
+WROTE ../paper_metrics/raw/ingolstadt21_with_emv_seed2.json
+RUN_DIR ../models/ingolstadt21/run_20261026_180442_1926
+
+>>> [ingolstadt21] evaluating with_emv (algorithm)
+eue Total: 113.00, Completed Vehicles: 17
+Eval Step 250/1200 - Current Queue Total: 110.00, Completed Vehicles: 41
+Eval Step 300/1200 - Current Queue Total: 161.00, Completed Vehicles: 59
+Eval Step 350/1200 - Current Queue Total: 206.00, Completed Vehicles: 83
+Eval Step 400/1200 - Current Queue Total: 228.00, Completed Vehicles: 108
+Eval Step 450/1200 - Current Queue Total: 204.00, Completed Vehicles: 135
+Eval Step 500/1200 - Current Queue Total: 209.00, Completed Vehicles: 149
+Eval Step 550/1200 - Current Queue Total: 225.00, Completed Vehicles: 179
+Eval Step 600/1200 - Current Queue Total: 250.00, Completed Vehicles: 216
+Eval Step 650/1200 - Current Queue Total: 187.00, Completed Vehicles: 257
+Eval Step 700/1200 - Current Queue Total: 202.00, Completed Vehicles: 292
+Eval Step 750/1200 - Current Queue Total: 248.00, Completed Vehicles: 337
+Eval Step 800/1200 - Current Queue Total: 257.00, Completed Vehicles: 372
+Eval Step 850/1200 - Current Queue Total: 241.00, Completed Vehicles: 414
+Eval Step 900/1200 - Current Queue Total: 205.00, Completed Vehicles: 441
+Eval Step 950/1200 - Current Queue Total: 219.00, Completed Vehicles: 494
+Eval Step 1000/1200 - Current Queue Total: 214.00, Completed Vehicles: 552
+Eval Step 1050/1200 - Current Queue Total: 217.00, Completed Vehicles: 596
+Eval Step 1100/1200 - Current Queue Total: 195.00, Completed Vehicles: 655
+Eval Step 1150/1200 - Current Queue Total: 201.00, Completed Vehicles: 700
+Eval Step 1200/1200 - Current Queue Total: 175.00, Completed Vehicles: 750
+
+==================================================
+EVALUATION METRICS SUMMARY (algorithm)
+==================================================
+Total Steps Evaluated      : 1200
+Completed Vehicles         : 750
+Throughput                 : 0.6250 vehicles/step
+Average Queue Length       : 179.30 vehicles
+Average Waiting Time       : 133.60 seconds
+Average Travel Time (ATT)  : 318.43 seconds
+Average Delay Time (ADT)   : 200.60 seconds
+Peak Total Queue Length    : 287.00 vehicles
+Jain Index (vehicle waits) : 0.5936
+Mean Intersection Jain     : 0.9182
+  ...during incidents      : 1.0000 (n=0)
+  ...incident-free         : 0.9182 (n=21080)
+Max / P95 Vehicle Wait     : 846.00 / 485.00 seconds
+Vehicles with wait >= 90s : 54.27%
+Max Intersection Timer     : 354.00 seconds
+Starvation/EMV Overrides   : 1936
+EMV Response Time (mean/P95): 148.67 / 235.00 seconds (n=3)
+==================================================
+Metrics row appended to ../paper_metrics/eval_results.csv
+
+DONE scenario=ingolstadt21 (with_emv only)
+CAMPAIGN DONE

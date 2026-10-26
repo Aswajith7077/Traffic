@@ -98,13 +98,24 @@ class Environment:
         return -(self.beta_q * (W_global - G_q) + self.beta_w * (Q_global - G_w))
 
     def _compute_fairness_reward(self):
-        """Per-intersection R_fair_j = -P_fair_j (dimensionless penalties, Section 4)."""
+        """Per-intersection R_fair_j = -P_fair_j (dimensionless penalties, Section 4).
+
+        Adds a network-wide Jain penalty, identical for every agent each
+        step (the same broadcast pattern compute_goal_reward() uses for
+        global W/Q state), alongside the existing local per-intersection
+        term -- see TraciService.compute_network_jain_now() for why the
+        local-only signal doesn't directly optimize the network-level
+        fairness metric actually reported and compared against baselines.
+        """
         w_max = self.traci_service.max_wait
+        network_jain = self.traci_service.compute_network_jain_now()
         rewards = []
         for i in self.intersections:
             jain, var, max_wait = self.traci_service.get_intersection_fairness(i)
             starve = max(max_wait - w_max, 0.0) / w_max
-            rewards.append(-(self.lam_var * var + self.lam_starve * starve + self.lam_jain * (1.0 - jain)))
+            local_penalty = self.lam_var * var + self.lam_starve * starve + self.lam_jain * (1.0 - jain)
+            network_penalty = self.lam_jain * (1.0 - network_jain)
+            rewards.append(-(local_penalty + network_penalty))
         return torch.tensor(rewards, dtype=torch.float32)
 
     def _compute_emv_reward(self):
